@@ -312,7 +312,7 @@
                                         <fileVersion>${long.version}</fileVersion>
                                         <txtFileVersion>${project.version}</txtFileVersion>
                                         <fileDescription>CrossMobile</fileDescription>
-                                        <copyright>2019 by Panayotis Katsaloulis</copyright>
+                                        <copyright>2020 by Panayotis Katsaloulis</copyright>
                                         <productVersion>${long.version}</productVersion>
                                         <txtProductVersion>${project.version}</txtProductVersion>
                                         <productName>CrossMobile</productName>
