@@ -135,9 +135,9 @@
                                                       tofile="@{dest}/lib/hrgui.jar"/>
                                                 <copy file="${user.home}/.m2/repository/com/eclipsesource/minimal-json/minimal-json/${version.minimal-json}/minimal-json-${version.minimal-json}.jar"
                                                       tofile="@{dest}/lib/minimal-json.jar"/>
-                                                <copy file="${user.home}/.m2/repository/org.crossmobile/cmutils-common/${project.version}/cmutils-common-${project.version}.jar"
+                                                <copy file="${user.home}/.m2/repository/org/crossmobile/cmutils-common/${project.version}/cmutils-common-${project.version}.jar"
                                                       tofile="@{dest}/lib/cmutils-common.jar"/>
-                                                <copy file="${user.home}/.m2/repository/org.crossmobile/cmutils-tools/${project.version}/cmutils-tools-${project.version}.jar"
+                                                <copy file="${user.home}/.m2/repository/org/crossmobile/cmutils-tools/${project.version}/cmutils-tools-${project.version}.jar"
                                                       tofile="@{dest}/lib/cmutils-tools.jar"/>
                                                 <copy file="${user.home}/.m2/repository/net/sf/proguard/proguard-retrace/${version.proguard}/proguard-retrace-${version.proguard}.jar"
                                                       tofile="@{dest}/lib/proguard-retrace.jar"/>
