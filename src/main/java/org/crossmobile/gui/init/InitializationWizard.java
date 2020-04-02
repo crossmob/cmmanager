@@ -222,7 +222,7 @@ public class InitializationWizard extends HiResDialog implements Active {
         infoL = new ActiveLabel();
         externalsP = new javax.swing.JPanel();
         jPanel14 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jLabel1 = new ActiveLabel();
         jPanel2 = new javax.swing.JPanel();
         jdkL = new ActiveLabel();
         jPanel9 = new javax.swing.JPanel();
@@ -232,7 +232,7 @@ public class InitializationWizard extends HiResDialog implements Active {
         jPanel10 = new javax.swing.JPanel();
         androidB = new HiResButton();
         jPanel15 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        jLabel2 = new ActiveLabel();
         jPanel5 = new javax.swing.JPanel();
         intellijL = new ActiveLabel();
         jPanel12 = new javax.swing.JPanel();
