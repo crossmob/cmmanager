@@ -244,12 +244,8 @@
                                         <exec executable="cp">
                                             <arg line="-R ${workinstall.dir}/CrossMobile.app /Volumes/CrossMobile/CrossMobile.app"/>
                                         </exec>
-                                        <!-- security find-identity -v -p codesigning -->
-                                        <exec executable="codesign" failonerror="true">
-                                            <arg line="--deep --force --verify --verbose --sign ${osx_id} --options runtime /Volumes/CrossMobile/CrossMobile.app"/>
-                                        </exec>
-                                        <exec executable="codesign" failonerror="true">
-                                            <arg line="--verify --verbose /Volumes/CrossMobile/CrossMobile.app"/>
+                                        <exec executable="../resources/installers/macosx/notarizing" failonerror="true">
+                                            <arg line="sign --target /Volumes/CrossMobile/CrossMobile.app -e ../resources/installers/macosx/entitlements.plist"/>
                                         </exec>
                                         <exec executable="hdiutil" failonerror="true">
                                             <arg line="detach -force /Volumes/CrossMobile"/>
@@ -257,11 +253,8 @@
                                         <exec executable="hdiutil" failonerror="true">
                                             <arg line="convert /tmp/CrossMobile.dmg -format UDZO -imagekey zlib-level=9 -ov -o ${installers.dir}/CrossMobile-${project.version}.dmg"/>
                                         </exec>
-                                        <exec executable="codesign" failonerror="true">
-                                            <arg line="--deep --force --verify --verbose --sign ${osx_id} --options runtime ${installers.dir}/CrossMobile-${project.version}.dmg"/>
-                                        </exec>
-                                        <exec executable="codesign" failonerror="true">
-                                            <arg line="--verify --verbose ${installers.dir}/CrossMobile-${project.version}.dmg"/>
+                                        <exec executable="../resources/installers/macosx/notarizing" failonerror="true">
+                                            <arg line="sign --target ${installers.dir}/CrossMobile-${project.version}.dmg -e ../resources/installers/macosx/entitlements.plist"/>
                                         </exec>
                                         <delete file="/tmp/CrossMobile.dmg"/>
 

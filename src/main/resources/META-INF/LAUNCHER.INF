@@ -12,6 +12,7 @@
   },
   "jvmargs": [
     "-Dawt.useSystemAAFontSettings=on",
-    "-Dswing.aatext=true"
+    "-Dswing.aatext=true",
+    "--illegal-access=permit"
   ]
 }

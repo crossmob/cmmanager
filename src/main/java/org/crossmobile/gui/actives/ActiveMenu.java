@@ -26,8 +26,8 @@ public class ActiveMenu extends JMenu {
                 popupMenuF.setAccessible(true);
                 popupMenuF.set(this, popupMenu);
             }
-        } catch (NoSuchFieldException | IllegalAccessException ignored) {
-            System.out.println(ignored);
+        } catch (NoSuchFieldException | IllegalAccessException exception) {
+            System.out.println(exception);
         }
     }
 

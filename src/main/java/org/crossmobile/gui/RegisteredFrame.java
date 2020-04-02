@@ -12,7 +12,6 @@ import java.util.Set;
 public class RegisteredFrame extends HiResFrame {
 
     private final static Set<JFrame> FRAMES = new HashSet<>();
-    private static Runnable finishCallback;
 
     @Override
     public void setVisible(boolean visible) {
@@ -23,19 +22,12 @@ public class RegisteredFrame extends HiResFrame {
             else {
                 FRAMES.remove(this);
                 if (FRAMES.isEmpty()) {
-                    if (finishCallback != null)
-                        finishCallback.run();
                     System.exit(0);
                 }
             }
         }
     }
-
     public static int count() {
         return FRAMES.size();
-    }
-
-    public static void setFinishCallback(Runnable finishCallback) {
-        RegisteredFrame.finishCallback = finishCallback;
     }
 }

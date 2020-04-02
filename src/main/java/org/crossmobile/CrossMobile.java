@@ -6,10 +6,10 @@ package org.crossmobile;
 import com.panayotis.appenh.Enhancer;
 import com.panayotis.appenh.EnhancerManager;
 import com.panayotis.hrgui.ScreenUtils;
-import org.crossmobile.gui.RegisteredFrame;
 import org.crossmobile.gui.WelcomeFrame;
 import org.crossmobile.gui.elements.About;
 import org.crossmobile.gui.elements.Config;
+import org.crossmobile.gui.elements.Theme;
 import org.crossmobile.gui.init.InitializationWizard;
 import org.crossmobile.gui.init.InitializationWizard.Card;
 import org.crossmobile.gui.project.ProjectInfo;
@@ -35,53 +35,48 @@ public class CrossMobile {
     public static void main(final String[] args) {
         java.awt.EventQueue.invokeLater(() -> {
             try {
-                initialize(args, null);
+                if (args == null || args.length == 0 || args[0].startsWith("-psn_")) {
+                    initEnhancer();
+                    Log.register(new Log.Default() {
+                        @Override
+                        public void info(String message) {
+                            JOptionPane.showMessageDialog(null, message, "CrossMobile", JOptionPane.INFORMATION_MESSAGE);
+                        }
+
+                        @Override
+                        public void warning(String message) {
+                            JOptionPane.showMessageDialog(null, message, "CrossMobile", JOptionPane.WARNING_MESSAGE);
+                        }
+
+                        @Override
+                        public void error(String message, Throwable th) {
+                            if (message != null || th != null) {
+                                if (message != null)
+                                    System.err.println(message);
+                                if (th != null) {
+                                    th.printStackTrace(System.err);
+                                    if (message == null)
+                                        message = th.toString();
+                                }
+                                JOptionPane.showMessageDialog(null, message, "CrossMobile", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    });
+                    WelcomeFrame frame = new WelcomeFrame();
+                    frame.setVisible(true);
+                    frame.setResizable(false);
+                    SwingUtilities.invokeLater(() -> postInit(frame));
+                } else if (args.length == 2 && args[0].equals("--project"))
+                    ProjectLoader.showProject(ProjectInfo.load(args[1]), null);
+                else if (args.length == 1 && args[0].equals("--help"))
+                    showHelp(0);
+                else
+                    showError(args);
             } catch (IllegalStateException | ProjectException ex) {
                 JOptionPane.showConfirmDialog(null, ex.getMessage(), "Initialization error", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
             }
         });
-    }
-
-    private static void initialize(String[] args, Runnable finishCallback) throws IllegalStateException, ProjectException {
-        RegisteredFrame.setFinishCallback(finishCallback);
-        if (args == null || args.length == 0 || args[0].startsWith("-psn_")) {
-            initEnhancer();
-            Log.register(new Log.Default() {
-                @Override
-                public void info(String message) {
-                    JOptionPane.showMessageDialog(null, message, "CrossMobile", JOptionPane.INFORMATION_MESSAGE);
-                }
-
-                @Override
-                public void warning(String message) {
-                    JOptionPane.showMessageDialog(null, message, "CrossMobile", JOptionPane.WARNING_MESSAGE);
-                }
-
-                @Override
-                public void error(String message, Throwable th) {
-                    if (message != null || th != null) {
-                        if (message != null)
-                            System.err.println(message);
-                        if (th != null) {
-                            th.printStackTrace(System.err);
-                            if (message == null)
-                                message = th.toString();
-                        }
-                        JOptionPane.showMessageDialog(null, message, "CrossMobile", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            });
-            WelcomeFrame frame = new WelcomeFrame();
-            frame.setVisible(true);
-            frame.setResizable(false);
-            SwingUtilities.invokeLater(() -> postInit(frame));
-        } else if (args.length == 2 && args[0].equals("--project"))
-            ProjectLoader.showProject(ProjectInfo.load(args[1]), null);
-        else if (args.length == 1 && args[0].equals("--help"))
-            showHelp(0);
-        else
-            showError(args);
     }
 
     private static void initEnhancer() {
@@ -91,6 +86,8 @@ public class CrossMobile {
         enhancer.registerAbout(About::showAbout);
         enhancer.setApplicationIcons("images/logo-frame.png");
         enhancer.registerApplication("CrossMobile", "create native iOS, Android, Windows 10 and Desktop Applications from a singe code base", "Development", "Building", "IDE", "Java");
+        Theme.set(enhancer.getThemeName());
+        enhancer.registerThemeChanged(name -> SwingUtilities.invokeLater(() -> Theme.set(name)));
         ScreenUtils.setShouldAdjust(false);
     }
 

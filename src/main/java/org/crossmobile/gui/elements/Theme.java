@@ -82,6 +82,13 @@ public final class Theme {
                 w.repaint();
     }
 
+    public static void set(String name) {
+        if (name.toLowerCase().contains("dark"))
+            setDark();
+        else
+            setBright();
+    }
+
     private Color c(float hue, float saturation, float value) {
         return isDark ?
                 Color.getHSBColor(hue, saturation, 1 - (value * 8 / 9)) :
