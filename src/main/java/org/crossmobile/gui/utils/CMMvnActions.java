@@ -88,18 +88,21 @@ public class CMMvnActions {
                         String BaseText = "Android SDK license not accepted yet\n\n"
                                 + "In order to build Android projects, the Android SDK license\n"
                                 + "should be accepted.\n";
+                        String Title = "Error while building Android project";
                         if (!FileUtils.isWritable(new File(Prefs.getAndroidSDKLocation()))) {
                             JOptionPane.showMessageDialog(null, BaseText + "\nThe provided SDK location at:\n"
-                                    + Prefs.getAndroidSDKLocation() + "\nis not writable.\n\nPlease accept the license agreement and relaunch "
-                                    + "the build procedure.");
+                                            + Prefs.getAndroidSDKLocation() + "\nis not writable.\n\nPlease accept the license agreement and relaunch "
+                                            + "the build procedure.",
+                                    Title, JOptionPane.ERROR_MESSAGE);
                         } else if (Prefs.getAndroidSDKManagerLocation().isEmpty()) {
-                            JOptionPane.showMessageDialog(null, BaseText + "\nUnable to locate the sdkmanager tool.\n" +
-                                    "Please use the Android Studio to accept the license agreement and then relauch the build procedure.");
+                            JOptionPane.showMessageDialog(null, BaseText + "\nUnable to locate the sdkmanager tool.\n\n" +
+                                            "Please use the Android Studio to accept the license agreement\nand then relauch the build procedure.",
+                                    Title, JOptionPane.ERROR_MESSAGE);
                         } else if (JOptionPane.showConfirmDialog(null, BaseText
                                         + "Do you want to accept the Android license now?\n\n"
                                         + "Note that after accepting, you will need to relaunch\n"
                                         + "the build procedure.",
-                                "Error while building Android project", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE) == JOptionPane.YES_OPTION)
+                                Title, JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE) == JOptionPane.YES_OPTION)
                             new InstallerFrame().launch();
                     }
                 });

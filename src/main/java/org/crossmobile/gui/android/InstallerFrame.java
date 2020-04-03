@@ -96,7 +96,8 @@ public final class InstallerFrame extends JDialog {
             cancelHasBeenPressed = true;
             if (installer != null)
                 installer.sendCancel();
-        }
+        } else
+            JOptionPane.showMessageDialog(null, "Please remember to rerun the build procedure", "Android License Agreement", JOptionPane.WARNING_MESSAGE);
         setVisible(false);
     }//GEN-LAST:event_cancelBActionPerformed
 
