@@ -92,6 +92,9 @@ public class CMMvnActions {
                             JOptionPane.showMessageDialog(null, BaseText + "\nThe provided SDK location at:\n"
                                     + Prefs.getAndroidSDKLocation() + "\nis not writable.\n\nPlease accept the license agreement and relaunch "
                                     + "the build procedure.");
+                        } else if (Prefs.getAndroidSDKManagerLocation().isEmpty()) {
+                            JOptionPane.showMessageDialog(null, BaseText + "\nUnable to locate the sdkmanager tool.\n" +
+                                    "Please use the Android Studio to accept the license agreement and then relauch the build procedure.");
                         } else if (JOptionPane.showConfirmDialog(null, BaseText
                                         + "Do you want to accept the Android license now?\n\n"
                                         + "Note that after accepting, you will need to relaunch\n"

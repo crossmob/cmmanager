@@ -19,7 +19,7 @@ public class InstallerThread extends Thread {
     public InstallerThread(InstallerFrame installer) {
         super("Android SDK License Agreement thread");
         this.installer = installer;
-        cmdAll = new Commander(Prefs.getAndroidManagerLocation(), "--sdk_root=" + Prefs.getAndroidSDKLocation(), "--licenses");
+        cmdAll = new Commander(Prefs.getAndroidSDKManagerLocation(), "--sdk_root=" + Prefs.getAndroidSDKLocation(), "--licenses");
         cmdAll.appendEnvironmentalParameter("JAVA_HOME", Prefs.getJDKLocation());
     }
 
