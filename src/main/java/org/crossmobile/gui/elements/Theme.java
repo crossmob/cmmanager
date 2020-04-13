@@ -111,7 +111,7 @@ public final class Theme {
         backCellSelected = c(primary, 0.063f, 1f);
         textSelCell = text;
         infoSelCell = subinfo;
-        textInfo = c(0.65f, dark ? 0.5f : 0.93f, dark ? 0f : 0.55f);
+        textInfo = c(0.65f, dark ? 0.35f : 0.93f, dark ? 0f : 0.55f);
         textError = c(0, dark ? 0.5f : 0.93f, dark ? 0.1f : 0.55f);
         textWarning = c(0.15f, 0.93f, dark ? 0.1f : 0.55f);
         textDebug = subinfo;
