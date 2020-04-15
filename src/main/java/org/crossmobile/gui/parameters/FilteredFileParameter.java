@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
+import static org.crossmobile.utils.FileUtils.forAllFiles;
 import static org.crossmobile.utils.FileUtils.removeExtension;
 
 public abstract class FilteredFileParameter extends ProjectParameter {
@@ -63,7 +64,7 @@ public abstract class FilteredFileParameter extends ProjectParameter {
                 AtomicReference<String> foundNoCase = new AtomicReference<>();
                 AtomicBoolean found = new AtomicBoolean(false);
                 String fileLC = file.toLowerCase();
-                FileUtils.forAllRecursively(basedir, f -> filter.test(f.getName()), (s, f) -> {
+                forAllFiles(basedir, f -> filter.test(f.getName()), (s, f) -> {
                     String element = removeExtension(s + (s.isEmpty() ? "" : "/") + f.getName());
                     model.addElement(element);
                     if (element.equals(file)) {

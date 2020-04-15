@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static org.crossmobile.bridge.system.BaseUtils.listFiles;
+
 public class OldSourceParser {
 
     private final static Map<String, String> MAP = new LinkedHashMap<>();
@@ -112,7 +114,7 @@ public class OldSourceParser {
         if (sourcedir.isFile())
             updateSourceFile(sourcedir);
         else if (sourcedir.isDirectory())
-            for (File sub : sourcedir.listFiles())
+            for (File sub : listFiles(sourcedir))
                 updateSourceRecursively(sub);
     }
 

@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static org.crossmobile.bridge.system.BaseUtils.listFiles;
+
 public class SourceParser {
 
     private static final String[] FILES = {".java"};
@@ -29,14 +31,11 @@ public class SourceParser {
                     sourcefiles.add(new SourceDocument(file, pack.substring(0, pack.length() - 5)));  // remove extension
                     return;
                 }
-        } else if (file.isDirectory()) {
-            File[] other = file.listFiles();
-            if (other != null)
-                for (File item : other) {
-                    String newpack = pack.isEmpty() ? item.getName() : (pack + "." + item.getName());
-                    getFilesRecursively(item, newpack);
-                }
-        }
+        } else if (file.isDirectory())
+            for (File item : listFiles(file)) {
+                String newPack = pack.isEmpty() ? item.getName() : (pack + "." + item.getName());
+                getFilesRecursively(item, newPack);
+            }
     }
 
     public void setPattern(Set<SourcePattern> permissions) {

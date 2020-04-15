@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Properties;
 
+import static org.crossmobile.bridge.system.BaseUtils.listFiles;
 import static org.crossmobile.gui.project.ProjectInfo.OLD_ANT;
 import static org.crossmobile.gui.project.ProjectInfo.OLD_XMLVM;
 import static org.crossmobile.prefs.Config.*;
@@ -89,7 +90,7 @@ public class ProjectUpdator {
         }
         // Move icons (after artwork relocation)
         File iconDir = new File(basedir, ICON_DIR);
-        FileUtils.list(new File(basedir, "src/main/artwork"), (dir, name) -> name.toLowerCase().startsWith("icon") && name.toLowerCase().endsWith(".png"))
+        listFiles(new File(basedir, "src/main/artwork")).stream().filter(f -> f.getName().toLowerCase().startsWith("icon") && f.getName().toLowerCase().endsWith(".png"))
                 .forEach(icon -> FileUtils.move(icon, new File(iconDir, icon.getName()), null));
 
         // Move old src/main/artwork
@@ -100,7 +101,7 @@ public class ProjectUpdator {
 
         // Update to adaptive icons
         File iconFore = new File(basedir, FORE_ICONS);
-        FileUtils.list(iconDir, ((dir, name) -> new File(dir, name).isFile() && name.toLowerCase().endsWith(".png")))
+        listFiles(iconDir).stream().filter(f -> f.isFile() && f.getName().toLowerCase().endsWith(".png"))
                 .forEach(icon -> FileUtils.move(icon, new File(iconFore, icon.getName()), null));
 
         // Maybe obsolete
