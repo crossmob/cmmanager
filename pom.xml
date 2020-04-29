@@ -203,7 +203,7 @@
                                             <arg value="${project.build.directory}:/usr/src/app"/>
                                             <arg value="-v"/>
                                             <arg value="${user.home}/.gnupg:/root/.gnupg"/>
-                                            <arg value="teras/appimage-builder"/>
+                                            <arg value="crossmob/appimage-builder"/>
                                             <arg value="bash"/>
                                             <arg value="-c"/>
                                             <arg value="gpg-agent --daemon; gpg2 --detach-sign --armor --pinentry-mode loopback --passphrase '${gnupgpass}' `mktemp` ; /opt/appimage/AppRun --comp xz -v crossmobile/CrossMobile.AppDir --sign -n CrossMobile-${project.version}.x86_64.appimage"/>
