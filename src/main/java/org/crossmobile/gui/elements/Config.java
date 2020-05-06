@@ -38,7 +38,16 @@ public class Config extends HiResDialog {
     private Config() {
         super((Dialog) null, true);
         initComponents();
-        themeGroup.setSelected(Theme.current() == Theme.dark() ? darkB.getModel() : lightB.getModel(), true);
+        switch (Prefs.getUserTheme()) {
+            case "dark":
+                themeGroup.setSelected(darkB.getModel(), true);
+                break;
+            case "bright":
+                themeGroup.setSelected(lightB.getModel(), true);
+                break;
+            default:
+                themeGroup.setSelected(autoB.getModel(), true);
+        }
 
         UIUtils.syncWidth(Arrays.asList(jdkL, androidL, netbeansL, intellijL, studioL, keystoreL));
         UIUtils.syncWidth(Arrays.asList(jdkB, androidB, netbeansB, intellijB, studioB, keystoreB));
@@ -108,16 +117,17 @@ public class Config extends HiResDialog {
         jPanel22 = new HiResPanel();
         lightB = new ActiveRadioButton();
         darkB = new ActiveRadioButton();
+        autoB = new ActiveRadioButton();
         jPanel1 = new HiResPanel();
         closeB = new HiResButton();
 
         setTitle("CrossMobile Configuration");
         setResizable(false);
 
-        jPanel4.setBorder(new HiResEmptyBorder(12, 12, 0, 12));
+        jPanel4.setBorder(new HiResEmptyBorder(12,12,0,12));
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
 
-        jPanel10.setBorder(new HiResEmptyBorder(8, 0, 8, 0));
+        jPanel10.setBorder(new HiResEmptyBorder(8,0,8,0));
         jPanel10.setOpaque(false);
         jPanel10.setLayout(new java.awt.BorderLayout());
 
@@ -179,7 +189,7 @@ public class Config extends HiResDialog {
 
         jPanel4.add(jPanel10);
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1, 0, 0, 0, Theme.current().line), new HiResEmptyBorder(8, 0, 8, 0)));
+        jPanel5.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1,0,0,0,Theme.current().line), new HiResEmptyBorder(8,0,8,0)));
         jPanel5.setOpaque(false);
         jPanel5.setLayout(new java.awt.BorderLayout());
 
@@ -239,7 +249,7 @@ public class Config extends HiResDialog {
 
         jPanel4.add(jPanel5);
 
-        jPanel11.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1, 0, 1, 0, Theme.current().line), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1)));
+        jPanel11.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1,0,1,0,Theme.current().line), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1)));
         jPanel11.setOpaque(false);
         jPanel11.setLayout(new java.awt.BorderLayout());
 
@@ -301,7 +311,7 @@ public class Config extends HiResDialog {
 
         jPanel4.add(jPanel11);
 
-        jPanel20.setBorder(new HiResEmptyBorder(8, 0, 8, 0));
+        jPanel20.setBorder(new HiResEmptyBorder(8,0,8,0));
         jPanel20.setOpaque(false);
         jPanel20.setLayout(new java.awt.BorderLayout());
 
@@ -310,10 +320,9 @@ public class Config extends HiResDialog {
         jPanel20.add(jLabel7, java.awt.BorderLayout.NORTH);
 
         jPanel22.setOpaque(false);
-        jPanel22.setLayout(new java.awt.GridLayout(0, 2));
+        jPanel22.setLayout(new java.awt.GridLayout(0, 3));
 
         themeGroup.add(lightB);
-        lightB.setSelected(true);
         lightB.setText("Light");
         lightB.setActionCommand("light");
         lightB.addActionListener(new java.awt.event.ActionListener() {
@@ -332,6 +341,17 @@ public class Config extends HiResDialog {
             }
         });
         jPanel22.add(darkB);
+
+        themeGroup.add(autoB);
+        autoB.setSelected(true);
+        autoB.setText("System");
+        autoB.setActionCommand("auto");
+        autoB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                themeActionPerformed(evt);
+            }
+        });
+        jPanel22.add(autoB);
 
         jPanel20.add(jPanel22, java.awt.BorderLayout.CENTER);
 
@@ -433,6 +453,9 @@ public class Config extends HiResDialog {
 
     private void themeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themeActionPerformed
         switch (((ActiveRadioButton) evt.getSource()).getActionCommand()) {
+            case "auto":
+                Theme.setAuto();
+                break;
             case "dark":
                 Theme.setDark();
                 break;
@@ -445,6 +468,7 @@ public class Config extends HiResDialog {
     private javax.swing.JButton androidB;
     private javax.swing.JLabel androidL;
     private javax.swing.JTextField androidT;
+    private javax.swing.JRadioButton autoB;
     private javax.swing.JButton closeB;
     private javax.swing.JRadioButton darkB;
     private javax.swing.JPanel ebuttonP;

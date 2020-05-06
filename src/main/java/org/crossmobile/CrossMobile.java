@@ -86,8 +86,8 @@ public class CrossMobile {
         enhancer.registerAbout(About::showAbout);
         enhancer.setApplicationIcons("images/logo-frame.png");
         enhancer.registerApplication("CrossMobile", "create native iOS, Android, Windows 10 and Desktop Applications from a singe code base", "Development", "Building", "IDE", "Java");
-        Theme.set(enhancer.getThemeName());
-        enhancer.registerThemeChanged(name -> SwingUtilities.invokeLater(() -> Theme.set(name)));
+        Theme.setSystemTheme(enhancer.getThemeName());
+        enhancer.registerThemeChanged(name -> SwingUtilities.invokeLater(() -> Theme.setSystemTheme(name)));
         ScreenUtils.setShouldAdjust(false);
     }
 

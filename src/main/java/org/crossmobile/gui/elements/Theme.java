@@ -47,7 +47,16 @@ public final class Theme {
     static {
         bright = new Theme(0.49f, 0.57f, false);
         dark = new Theme(0.49f, 0.57f, true);
-        current = Prefs.getTheme().equals("dark") ? dark : bright;
+        switch (Prefs.getUserTheme()) {
+            case "dark":
+                current = dark;
+                break;
+            case "bright":
+                current = bright;
+                break;
+            default:
+                updateThemeFromSystem();
+        }
     }
 
     public static Theme current() {
@@ -64,13 +73,32 @@ public final class Theme {
 
     public static void setDark() {
         current = dark;
-        Prefs.setTheme("dark");
+        Prefs.setUserTheme("dark");
         updateWindows();
     }
 
     public static void setBright() {
         current = bright;
-        Prefs.setTheme("bright");
+        Prefs.setUserTheme("bright");
+        updateWindows();
+    }
+
+    public static void setAuto() {
+        Prefs.setUserTheme("auto");
+        updateThemeFromSystem();
+    }
+
+    public static void setSystemTheme(String name) {
+        Prefs.setSystemTheme(name);
+        if ("auto".equals(Prefs.getUserTheme()))
+            updateThemeFromSystem();
+    }
+
+    private static void updateThemeFromSystem() {
+        if (Prefs.getSystemTheme().toLowerCase().contains("dark"))
+            current = dark;
+        else
+            current = bright;
         updateWindows();
     }
 
@@ -82,12 +110,6 @@ public final class Theme {
                 w.repaint();
     }
 
-    public static void set(String name) {
-        if (name.toLowerCase().contains("dark"))
-            setDark();
-        else
-            setBright();
-    }
 
     private Color c(float hue, float saturation, float value) {
         return isDark ?

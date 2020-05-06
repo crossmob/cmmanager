@@ -591,7 +591,7 @@
               </Constraints>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                <Property name="columns" type="int" value="2"/>
+                <Property name="columns" type="int" value="3"/>
                 <Property name="rows" type="int" value="0"/>
               </Layout>
               <SubComponents>
@@ -600,7 +600,6 @@
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                       <ComponentRef name="themeGroup"/>
                     </Property>
-                    <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="Light"/>
                     <Property name="actionCommand" type="java.lang.String" value="light"/>
                   </Properties>
@@ -618,6 +617,22 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Dark"/>
                     <Property name="actionCommand" type="java.lang.String" value="dark"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="themeActionPerformed"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveRadioButton()"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="autoB">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="themeGroup"/>
+                    </Property>
+                    <Property name="selected" type="boolean" value="true"/>
+                    <Property name="text" type="java.lang.String" value="System"/>
+                    <Property name="actionCommand" type="java.lang.String" value="auto"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="themeActionPerformed"/>
