@@ -340,6 +340,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         setLaunchButtonStatus(null, infoText);
         ActiveTextPane out = (ActiveTextPane) outputTxt;
         out.setText("");
+        pidL.setText("");
         if (!consoleText.isEmpty())
             out.addLine("\n" + consoleText + "\n", StreamQuality.INFO);
         return out;
@@ -404,7 +405,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private Commander execMavenInConsole(String goal, String profiles, Project proj, ActiveTextPane outP, Consumer<Integer> launchCallback, String... params) {
         if (profiles != null && profiles.contains("uwp"))
             outP.addLine(" *** WARNING *** Universal Windows Platform support  is still in alpha stage\n", StreamQuality.ERROR);
-        return CMMvnActions.callMaven(goal, profiles, proj.getPath(), outP, launchCallback, solutionCallbackRef, proj.getProfile(), params);
+        return CMMvnActions.callMaven(goal, profiles, proj.getPath(), outP, pidL, launchCallback, solutionCallbackRef, proj.getProfile(), params);
     }
 
     private File getApkPath(boolean preferRelease) {
@@ -513,7 +514,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         outputTxt = new ActiveTextPane();
         infoP = new ActiveContextPanel();
         outResult = new ActiveLabel();
-        idInfoP = new HiResPanel();
+        idInfoP = new ActivePanel();
         pidL = new ActiveLabel();
 
         runM.setIcon(RUN_I);
@@ -918,16 +919,14 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setOpaque(false);
         idInfoP.setLayout(new java.awt.BorderLayout());
-
-        pidL.setOpaque(true);
         idInfoP.add(pidL, java.awt.BorderLayout.EAST);
 
-        infoP.add(idInfoP, java.awt.BorderLayout.SOUTH);
+        infoP.add(idInfoP, java.awt.BorderLayout.EAST);
 
         outputP.add(infoP, java.awt.BorderLayout.SOUTH);
 

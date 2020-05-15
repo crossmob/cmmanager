@@ -4,6 +4,7 @@
 package org.crossmobile.gui.utils;
 
 import org.crossmobile.Version;
+import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.actives.ActiveTextPane;
 import org.crossmobile.gui.android.InstallerFrame;
 import org.crossmobile.gui.project.ProjectLauncher;
@@ -23,12 +24,16 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CMMvnActions {
 
     private static String repoLocation;
 
     private final static String DEPENDENCY_POM_DIR = "dependencies/pom.xml";
+
+    private static final Pattern PID_PATTERN = Pattern.compile("PID ([0-9]*) uses (.*) port.*");
 
     public static String resolveRepository() {
         if (repoLocation != null)
@@ -46,7 +51,7 @@ public class CMMvnActions {
         return repoLocation;
     }
 
-    public static Commander callMaven(String goal, String profiles, File projPath, ActiveTextPane outP,
+    public static Commander callMaven(String goal, String profiles, File projPath, ActiveTextPane outP, JLabel info,
                                       Consumer<Integer> launchCallback, AtomicReference<Runnable> solutionCallbackRef,
                                       Profile profile, String... params) {
         List<String> cmd = new ArrayList<>();
@@ -74,7 +79,7 @@ public class CMMvnActions {
         return ProjectLauncher.launch(cmd.toArray(new String[0]), projPath, outP, launchCallback, env, (line, quality) -> {
             if (line.toString().contains("sun.security.provider.certpath.SunCertPathBuilderException"))
                 solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null, "A Certification exception was found\n\n"
-                                + "You might need to upgrade your JDK version beyond 1.8.101,\n"
+                                + "You might need to upgrade your JDK 8 version beyond 1.8.101,\n"
                                 + "or else Maven resolving issues will occur.",
                         "Error while executing Java target", JOptionPane.ERROR_MESSAGE));
             if (line.toString().contains("platforms;android-"))
@@ -112,6 +117,12 @@ public class CMMvnActions {
                                     + "Please rerun the initialization wizard first\nand define the Android SDK location.",
                             "Error while locating Android SDK", JOptionPane.ERROR_MESSAGE);
                 });
+            if (info != null) {
+                Matcher pidMatcher = PID_PATTERN.matcher(line);
+                if (pidMatcher.matches()) {
+                    info.setText("PID: " + pidMatcher.group(1) + "    Debug port: " + pidMatcher.group(2));
+                }
+            }
         });
     }
 

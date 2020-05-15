@@ -1006,20 +1006,17 @@
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new HiResPanel()"/>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActivePanel()"/>
                       </AuxValues>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-                          <BorderConstraints direction="South"/>
+                          <BorderConstraints direction="East"/>
                         </Constraint>
                       </Constraints>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
                       <SubComponents>
                         <Component class="javax.swing.JLabel" name="pidL">
-                          <Properties>
-                            <Property name="opaque" type="boolean" value="true"/>
-                          </Properties>
                           <AuxValues>
                             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveLabel()"/>
                           </AuxValues>
