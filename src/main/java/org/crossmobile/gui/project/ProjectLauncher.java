@@ -22,19 +22,18 @@ public class ProjectLauncher {
     }
 
     public static Commander launch(String[] command, Project proj) {
-        return launch(command, proj.getPath(), null, null, null, getJavaEnv(), null, null, null);
+        return launch(command, proj.getPath(), null, null, getJavaEnv(), null);
     }
 
-    public static Commander launch(String[] command, File currentDir, final ActiveTextPane out, final ActiveTextPane err, final Consumer<Integer> result,
-                                   Map<String, String> env, StreamListener outButtonListener, StreamListener errButtonListener, StreamListener extraListener) {
+    public static Commander launch(String[] command, File currentDir, final ActiveTextPane out, final Consumer<Integer> result,
+                                   Map<String, String> env, StreamListener extraListener) {
         Commander cmd = new Commander(command);
         if (currentDir != null)
             cmd.setCurrentDir(currentDir);
         if (out != null) {
-            initializeTextPane(out, outButtonListener, extraListener);
-            initializeTextPane(err, errButtonListener, extraListener);
+            initializeTextPane(out, extraListener);
             cmd.setCharOutListener(out.getStreamManager()::incomingOutChar);
-            cmd.setCharErrListener(err.getStreamManager()::incomingErrChar);
+            cmd.setCharErrListener(out.getStreamManager()::incomingErrChar);
         }
         if (env != null)
             for (String key : env.keySet())
@@ -45,11 +44,9 @@ public class ProjectLauncher {
         return cmd;
     }
 
-    private static void initializeTextPane(ActiveTextPane atp, StreamListener buttonListener, StreamListener extraListener) {
+    private static void initializeTextPane(ActiveTextPane atp, StreamListener extraListener) {
         atp.getStreamManager().clearListeners();
         atp.getStreamManager().addListener(atp);
-        if (buttonListener != null)
-            atp.getStreamManager().addListener(buttonListener);
         if (extraListener != null)
             atp.getStreamManager().addListener(extraListener);
     }

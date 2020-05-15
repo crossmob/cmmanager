@@ -32,7 +32,7 @@ import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import static org.crossmobile.gui.actives.ActiveContextLabel.Context.*;
+import static org.crossmobile.gui.actives.ActiveContextPanel.Context.*;
 import static org.crossmobile.gui.utils.Profile.OBFUSCATE;
 import static org.crossmobile.prefs.Prefs.*;
 import static org.crossmobile.utils.ParamsCommon.DEBUG_PROFILE;
@@ -83,7 +83,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private Commander launch;
     private String taskName = null;
     private final AtomicReference<Runnable> solutionCallbackRef = new AtomicReference<>();
-    private boolean currentlyShowsOutput = true;
     private MagicWand magicWandB;
     private final Consumer<Integer> launchCallback = new Consumer<Integer>() {
         @Override
@@ -202,13 +201,12 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }
 
     public DebugInfo getDebugInfo() {
-        return new DebugInfo(outputTxt.getText(), errorTxt.getText(), proj.getArtifactID());
+        return new DebugInfo(outputTxt.getText(), proj.getArtifactID());
     }
 
     @Override
-    public void updateTo(String outStream, String errorStream) {
-        ((ActiveTextPane) outputTxt).setText(outStream, StreamQuality.INFO);
-        ((ActiveTextPane) errorTxt).setText(errorStream, StreamQuality.INFO);
+    public void updateTo(String text) {
+        ((ActiveTextPane) outputTxt).setText(text, StreamQuality.INFO);
     }
 
     private void displayOutput() {
@@ -246,7 +244,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             String tn = oldTaskName == null ? "Operation" : oldTaskName;
             tn += " : " + (success ? "success" : (wasKilled ? "interrupted" : (notSaved ? "not saved" : "failed, error code " + result)));
             outResult.setText(tn);
-            ((ActiveContextLabel) outResult).setContext(success ? SUCCESS : (wasKilled ? ActiveContextLabel.Context.ERROR : WARNING));
+            ((ActiveContextPanel) infoP).setContext(success ? SUCCESS : (wasKilled ? ActiveContextPanel.Context.ERROR : WARNING));
             outputB.setText(success ? "Output" : "Output*");
             if (success || wasKilled || notSaved)
                 displayProject();
@@ -256,7 +254,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             displayOutput();
             outputB.setText("Output");
             outResult.setText(currentTaskName);
-            ((ActiveContextLabel) outResult).setContext(RUNNING);
+            ((ActiveContextPanel) infoP).setContext(RUNNING);
             running = true;
         }
 
@@ -273,7 +271,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }
 
     private void updateToolButtons() {
-        inoutP.removeAll();
+        idInfoP.removeAll();
+        idInfoP.add(pidL, BorderLayout.CENTER);
         if (proj.getProfile() == OBFUSCATE) {
             String target = getCurrentTarget();
             File mapFile = "android".equals(target)
@@ -283,12 +282,10 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                     : null;
             if (mapFile != null) {
                 magicWandB.setMapFile(mapFile);
-                inoutP.add(magicWandB);
+                idInfoP.add(magicWandB, BorderLayout.EAST);
             }
         }
-        inoutP.add(outputTB);
-        inoutP.add(errorTB);
-        inoutP.validate();
+        idInfoP.validate();
     }
 
     private void updateLaunchVisuals() {
@@ -325,8 +322,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         File outfile = new AFileChooser().setFile("output.txt").save();
         if (outfile != null) {
             try (Writer writer = new OutputStreamWriter(new FileOutputStream(outfile), SystemDependent.getEncoding())) {
-                String text = currentlyShowsOutput ? outputTxt.getText() : errorTxt.getText();
-                writer.write(text);
+                writer.write(outputTxt.getText());
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this,
                         "Something went terribly wrong. :(  \n",
@@ -346,17 +342,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         out.setText("");
         if (!consoleText.isEmpty())
             out.addLine("\n" + consoleText + "\n", StreamQuality.INFO);
-        errorTxt.setText("");
-        showOutputView(true);
-        outputTB.setText("Out");
         return out;
-    }
-
-    private ActiveTextPane initLaunchVisualsErr() {
-        ActiveTextPane err = (ActiveTextPane) errorTxt;
-        errorTxt.setText("");
-        errorTB.setText("Error");
-        return err;
     }
 
     private void buildAndRun() {
@@ -375,7 +361,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                                     + (LAUNCH_ACTION_BUILD.equals(actionB.getActionCommand()) ? "" : ",run")
                                     + (proj.getProfile().isRelease() ? ",release" : "")
                                     + (proj.getProfile() == OBFUSCATE ? ",obfuscate" : "")
-                            , proj, outP, initLaunchVisualsErr(), launchCallback
+                            , proj, outP, launchCallback
                             , "-D" + DEBUG_PROFILE.tag().name + "=" + proj.getDebugProfile());
                 else
                     setLaunchButtonStatus(NOT_SAVED, "Unable to save project");
@@ -388,7 +374,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         ActiveTextPane outP = initLaunchVisualsOut(info, "Open project in " + target);
         String preproc = OPEN_STUDIO.equals(target) ? LAUNCH_TARGET_ANDROID : (OPEN_XCODE.equals(target) ? LAUNCH_TARGET_IOS : (OPEN_VSTUDIO.equals(target) ? LAUNCH_TARGET_UWP : null));
         if (preproc != null)
-            launch = execMavenInConsole("process-classes", preproc, proj, outP, initLaunchVisualsErr(), result -> {
+            launch = execMavenInConsole("process-classes", preproc, proj, outP, result -> {
                 if (result == 0)
                     postProcessCode(outP, "", target, outP);
                 else
@@ -401,7 +387,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     public void installPrivateArtifact(String signature) {
         ActiveTextPane outP = initLaunchVisualsOut("Retrieving artifact " + signature, "Retrieve and convert AAR artifact");
         launch = execMavenInConsole("org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get", null, proj,
-                outP, initLaunchVisualsErr(), result -> {
+                outP, result -> {
                     if (result == 0)
                         ExternalCommands.convertAARtoJAR(signature);
                     else
@@ -415,11 +401,10 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         ExternalCommands.openCode(ide, proj, out, launchCallback);
     }
 
-    private Commander execMavenInConsole(String goal, String profiles, Project proj, ActiveTextPane outP, ActiveTextPane errP, Consumer<Integer> launchCallback, String... params) {
+    private Commander execMavenInConsole(String goal, String profiles, Project proj, ActiveTextPane outP, Consumer<Integer> launchCallback, String... params) {
         if (profiles != null && profiles.contains("uwp"))
             outP.addLine(" *** WARNING *** Universal Windows Platform support  is still in alpha stage\n", StreamQuality.ERROR);
-        return CMMvnActions.callMaven(goal, profiles, proj.getPath(), outP, errP, launchCallback, solutionCallbackRef, proj.getProfile(),
-                (l, q) -> outputTB.setText("Out*"), (l, q) -> errorTB.setText("Error*"), params);
+        return CMMvnActions.callMaven(goal, profiles, proj.getPath(), outP, launchCallback, solutionCallbackRef, proj.getProfile(), params);
     }
 
     private File getApkPath(boolean preferRelease) {
@@ -456,27 +441,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         return path.exists() ? path : null;
     }
 
-    private void showOutputView(boolean asOutput) {
-        if (asOutput == currentlyShowsOutput) {
-            if (asOutput)
-                outputTB.setText("Out");
-            else
-                errorTB.setText("Error");
-            return;
-        }
-
-        // Also clear other button
-        outputTB.setText("Out");
-        errorTB.setText("Error");
-
-        currentlyShowsOutput = asOutput;
-        ((CardLayout) outerrorP.getLayout()).show(outerrorP, asOutput ? "out" : "error");
-        if (asOutput)
-            outputTB.setSelected(true);
-        else
-            errorTB.setSelected(true);
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -488,7 +452,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         targetG = new javax.swing.ButtonGroup();
         projectG = new javax.swing.ButtonGroup();
-        outputG = new javax.swing.ButtonGroup();
         actionsM = new ActivePopupMenu();
         runM = new ActiveMenuItem();
         buildM = new ActiveMenuItem();
@@ -548,13 +511,10 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         outerrorP = new javax.swing.JPanel();
         scrollOutP = new javax.swing.JScrollPane();
         outputTxt = new ActiveTextPane();
-        scrollErrP = new javax.swing.JScrollPane();
-        errorTxt = new ActiveTextPane();
-        infoP = new HiResPanel();
-        outResult = new ActiveContextLabel();
-        inoutP = new HiResPanel();
-        outputTB = new ActiveToggleButton("", STDOUT_I, 8);
-        errorTB = new ActiveToggleButton("", STDERR_I, 8);
+        infoP = new ActiveContextPanel();
+        outResult = new ActiveLabel();
+        idInfoP = new HiResPanel();
+        pidL = new ActiveLabel();
 
         runM.setIcon(RUN_I);
         runM.setText("Run");
@@ -945,54 +905,29 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         outputP.setOpaque(false);
         outputP.setLayout(new java.awt.BorderLayout());
 
-        outerrorP.setLayout(new java.awt.CardLayout());
+        outerrorP.setLayout(new java.awt.BorderLayout());
 
         scrollOutP.setName("out"); // NOI18N
 
         outputTxt.setEditable(false);
         scrollOutP.setViewportView(outputTxt);
 
-        outerrorP.add(scrollOutP, "out");
-
-        scrollErrP.setName("error"); // NOI18N
-
-        errorTxt.setEditable(false);
-        scrollErrP.setViewportView(errorTxt);
-
-        outerrorP.add(scrollErrP, "error");
+        outerrorP.add(scrollOutP, java.awt.BorderLayout.CENTER);
 
         outputP.add(outerrorP, java.awt.BorderLayout.CENTER);
 
-        infoP.setOpaque(false);
         infoP.setLayout(new java.awt.BorderLayout());
 
         outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
-        outResult.setOpaque(true);
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
-        inoutP.setOpaque(false);
-        inoutP.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 2, 0));
+        idInfoP.setOpaque(false);
+        idInfoP.setLayout(new java.awt.BorderLayout());
 
-        outputG.add(outputTB);
-        outputTB.setSelected(true);
-        outputTB.setText("Out");
-        outputTB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                outputTBActionPerformed(evt);
-            }
-        });
-        inoutP.add(outputTB);
+        pidL.setOpaque(true);
+        idInfoP.add(pidL, java.awt.BorderLayout.EAST);
 
-        outputG.add(errorTB);
-        errorTB.setText("Error");
-        errorTB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                errorTBActionPerformed(evt);
-            }
-        });
-        inoutP.add(errorTB);
-
-        infoP.add(inoutP, java.awt.BorderLayout.EAST);
+        infoP.add(idInfoP, java.awt.BorderLayout.SOUTH);
 
         outputP.add(infoP, java.awt.BorderLayout.SOUTH);
 
@@ -1077,10 +1012,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }//GEN-LAST:event_outputBtargetSelection
 
     private void cleanOMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cleanOMActionPerformed
-        if (currentlyShowsOutput)
-            outputTxt.setText("");
-        else
-            errorTxt.setText("");
+        outputTxt.setText("");
     }//GEN-LAST:event_cleanOMActionPerformed
 
     private void saveOMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveOMActionPerformed
@@ -1104,26 +1036,26 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private void apkMshowIDE(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_apkMshowIDE
         try {
             Desktop.getDesktop().open(getApkPath(proj.getProfile().isRelease()).getParentFile());
-        } catch (IOException ex) {
+        } catch (IOException ignored) {
         }
     }//GEN-LAST:event_apkMshowIDE
 
     private void jarMshowIDE(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jarMshowIDE
         try {
             Desktop.getDesktop().open(getJarPath().getParentFile());
-        } catch (IOException ex) {
+        } catch (IOException ignored) {
         }
     }//GEN-LAST:event_jarMshowIDE
 
     private void desktopMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desktopMActionPerformed
         try {
             Desktop.getDesktop().open(proj.getPath());
-        } catch (IOException ex) {
+        } catch (IOException ignored) {
         }
     }//GEN-LAST:event_desktopMActionPerformed
 
     private void cleanBactOnProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cleanBactOnProject
-        launch = execMavenInConsole("clean", null, proj, initLaunchVisualsOut("Clean up project", "Cleaning project"), initLaunchVisualsErr(), launchCallback);
+        launch = execMavenInConsole("clean", null, proj, initLaunchVisualsOut("Clean up project", "Cleaning project"), launchCallback);
     }//GEN-LAST:event_cleanBactOnProject
 
     private void expandCBMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_expandCBMousePressed
@@ -1132,20 +1064,12 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }//GEN-LAST:event_expandCBMousePressed
 
     private void cleanAllPMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cleanAllPMActionPerformed
-        launch = execMavenInConsole("clean", "distclean", proj, initLaunchVisualsOut("Clean project and build files", "Clean project"), initLaunchVisualsErr(), res -> {
+        launch = execMavenInConsole("clean", "distclean", proj, initLaunchVisualsOut("Clean project and build files", "Clean project"), res -> {
             if (res == 0)
                 saveProjectWithErrorMessage();
             launchCallback.accept(res);
         });
     }//GEN-LAST:event_cleanAllPMActionPerformed
-
-    private void outputTBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outputTBActionPerformed
-        showOutputView(true);
-    }//GEN-LAST:event_outputTBActionPerformed
-
-    private void errorTBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_errorTBActionPerformed
-        showOutputView(false);
-    }//GEN-LAST:event_errorTBActionPerformed
 
     private void logMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logMActionPerformed
         java.util.List<String> cmds = new ArrayList<>();
@@ -1161,8 +1085,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             case "err":
                 cmds.add("System.err:W");
         }
-        launch = ProjectLauncher.launch(cmds.toArray(new String[0]), null, initLaunchVisualsOut("Display Android Logs", "Android logs"), initLaunchVisualsErr(),
-                res -> launchCallback.accept(res), null, (l, q) -> outputTB.setText("Out*"), (l, q) -> errorTB.setText("Error*"), StreamListener.NONE);
+        launch = ProjectLauncher.launch(cmds.toArray(new String[0]), null, initLaunchVisualsOut("Display Android Logs", "Android logs"),
+                res -> launchCallback.accept(res), null, StreamListener.NONE);
     }//GEN-LAST:event_logMActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1185,14 +1109,12 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPanel controlP_R;
     private javax.swing.JMenuItem desktopM;
     private javax.swing.JToggleButton desktopT;
-    private javax.swing.JToggleButton errorTB;
-    private javax.swing.JTextPane errorTxt;
     private javax.swing.JButton expandCB;
     private javax.swing.JButton expandOB;
     private javax.swing.JButton expandPB;
     private javax.swing.JButton expandRB;
+    private javax.swing.JPanel idInfoP;
     private javax.swing.JPanel infoP;
-    private javax.swing.JPanel inoutP;
     private javax.swing.JMenuItem intellijM;
     private javax.swing.JToggleButton iosT;
     private javax.swing.JLabel jLabel1;
@@ -1212,11 +1134,10 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JLabel outResult;
     private javax.swing.JPanel outerrorP;
     private javax.swing.JToggleButton outputB;
-    private javax.swing.ButtonGroup outputG;
     private javax.swing.JPopupMenu outputM;
-    private javax.swing.JToggleButton outputTB;
     private javax.swing.JTextPane outputTxt;
     private javax.swing.JPanel parameters;
+    private javax.swing.JLabel pidL;
     private javax.swing.JToggleButton projectB;
     private javax.swing.ButtonGroup projectG;
     private javax.swing.JPopupMenu projectM;
@@ -1226,7 +1147,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JMenuItem runM;
     private javax.swing.JMenuItem saveOM;
     private javax.swing.JMenuItem savePM;
-    private javax.swing.JScrollPane scrollErrP;
     private javax.swing.JScrollPane scrollOutP;
     private javax.swing.JMenuItem studioM;
     private javax.swing.ButtonGroup targetG;

@@ -31,7 +31,6 @@ public class SendStackTrace extends javax.swing.JDialog {
         initComponents();
         DebugInfo info = frame.getDebugInfo();
         outA.setText(info.output);
-        errorA.setText(info.error);
         setLocationRelativeTo(null);
     }
 
@@ -49,10 +48,6 @@ public class SendStackTrace extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         outA = new ActiveTextArea();
-        errorP = new ActivePanel();
-        jLabel2 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        errorA = new ActiveTextArea();
         userP = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -83,11 +78,11 @@ public class SendStackTrace extends javax.swing.JDialog {
         sendInfoB.setText("Send system information (strongly suggested)");
         componentP.add(sendInfoB, java.awt.BorderLayout.NORTH);
 
-        outerrorP.setLayout(new java.awt.GridLayout(0, 2));
+        outerrorP.setLayout(new java.awt.GridLayout(0, 1));
 
         outP.setLayout(new java.awt.BorderLayout());
 
-        jLabel1.setText("Output Stream");
+        jLabel1.setText("Output");
         outP.add(jLabel1, java.awt.BorderLayout.PAGE_START);
 
         outA.setColumns(30);
@@ -97,19 +92,6 @@ public class SendStackTrace extends javax.swing.JDialog {
         outP.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         outerrorP.add(outP);
-
-        errorP.setLayout(new java.awt.BorderLayout());
-
-        jLabel2.setText("Error Stream");
-        errorP.add(jLabel2, java.awt.BorderLayout.PAGE_START);
-
-        errorA.setColumns(30);
-        errorA.setRows(15);
-        jScrollPane2.setViewportView(errorA);
-
-        errorP.add(jScrollPane2, java.awt.BorderLayout.CENTER);
-
-        outerrorP.add(errorP);
 
         componentP.add(outerrorP, java.awt.BorderLayout.CENTER);
 
@@ -141,13 +123,9 @@ public class SendStackTrace extends javax.swing.JDialog {
     private javax.swing.JPanel actionP;
     private javax.swing.JPanel backgroundP;
     private javax.swing.JPanel componentP;
-    private javax.swing.JTextArea errorA;
-    private javax.swing.JPanel errorP;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea outA;
     private javax.swing.JPanel outP;

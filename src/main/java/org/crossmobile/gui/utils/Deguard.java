@@ -19,7 +19,7 @@ public class Deguard {
         res.setIcon("images/magicwand");
         res.addActionListener(l -> {
             DebugInfo debugInfo = frame.getDebugInfo();
-            frame.updateTo(deGuardString(res.mapFile, debugInfo.output), deGuardString(res.mapFile, debugInfo.error));
+            frame.updateTo(deGuardString(res.mapFile, debugInfo.output));
         });
         return res;
     }

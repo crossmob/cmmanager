@@ -152,7 +152,7 @@ public class LicenseDialog extends HiResDialog {
                     addTxt("");
                     setEnabled(false);
                     ProjectLauncher.launch(new String[]{Paths.getMavenLocation(),
-                            "dependency:copy", "org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get", "-Dartifact=" + signature, "-Dtransitive=false", "-DoutputDirectory=."}, tempDir, (ActiveTextPane) pluginInfoT, (ActiveTextPane) pluginInfoT, r -> {
+                            "dependency:copy", "org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get", "-Dartifact=" + signature, "-Dtransitive=false", "-DoutputDirectory=."}, tempDir, (ActiveTextPane) pluginInfoT, r -> {
                         addTxt("");
                         if (r != 0) {
                             termTxt("Error while downloading " + signature, tempDir);
@@ -176,11 +176,11 @@ public class LicenseDialog extends HiResDialog {
                             ProjectLauncher.launch(new String[]{Paths.getMavenLocation(),
                                             "install:install-file", "-Dfile=" + jars.iterator().next(), "-DgroupId=" + prvGroupId,
                                             "-DartifactId=" + artifactId, "-Dversion=" + version, "-Dpackaging=jar"},
-                                    tempDir, (ActiveTextPane) pluginInfoT, (ActiveTextPane) pluginInfoT,
+                                    tempDir, (ActiveTextPane) pluginInfoT,
                                     r2 -> termTxt("\n" + (r2 == 0 ? "Successfully installed" : "Error while installing") + " " + signature + " into " + targetSignature, tempDir),
-                                    getJavaEnv(), null, null, null);
+                                    getJavaEnv(), null);
                         }
-                    }, getJavaEnv(), null, null, null);
+                    }, getJavaEnv(), null);
                 }
             });
         }

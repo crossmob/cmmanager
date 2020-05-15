@@ -46,9 +46,9 @@ public class CMMvnActions {
         return repoLocation;
     }
 
-    public static Commander callMaven(String goal, String profiles, File projPath, ActiveTextPane outP, ActiveTextPane errP,
+    public static Commander callMaven(String goal, String profiles, File projPath, ActiveTextPane outP,
                                       Consumer<Integer> launchCallback, AtomicReference<Runnable> solutionCallbackRef,
-                                      Profile profile, StreamListener outButtonListener, StreamListener errButtonListener, String... params) {
+                                      Profile profile, String... params) {
         List<String> cmd = new ArrayList<>();
         cmd.add(Paths.getMavenLocation());
         if (profiles != null) {
@@ -71,7 +71,7 @@ public class CMMvnActions {
                     cmd.add(param);
 
         AtomicBoolean foundOldVersion = new AtomicBoolean(false);
-        return ProjectLauncher.launch(cmd.toArray(new String[0]), projPath, outP, errP, launchCallback, env, outButtonListener, errButtonListener, (line, quality) -> {
+        return ProjectLauncher.launch(cmd.toArray(new String[0]), projPath, outP, launchCallback, env, (line, quality) -> {
             if (line.toString().contains("sun.security.provider.certpath.SunCertPathBuilderException"))
                 solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null, "A Certification exception was found\n\n"
                                 + "You might need to upgrade your JDK version beyond 1.8.101,\n"

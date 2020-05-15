@@ -5,12 +5,10 @@ package org.crossmobile.gui.elements;
 
 public class DebugInfo {
     public final String output;
-    public final String error;
     public final String appId;
 
-    public DebugInfo(String output, String error, String appId) {
+    public DebugInfo(String output, String appId) {
         this.output = output;
-        this.error = error;
         this.appId = appId;
     }
 
@@ -27,6 +25,6 @@ public class DebugInfo {
     }
 
     public interface Consumer {
-        void updateTo(String outStream, String errorStream);
+        void updateTo(String text);
     }
 }

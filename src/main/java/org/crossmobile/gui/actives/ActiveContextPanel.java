@@ -3,12 +3,11 @@
 
 package org.crossmobile.gui.actives;
 
-import com.panayotis.hrgui.HiResIcon;
 import org.crossmobile.gui.elements.Theme;
 
 import java.awt.*;
 
-public class ActiveContextLabel extends ActiveLabel implements ThemeChanged {
+public class ActiveContextPanel extends ActivePanel implements ThemeChanged {
 
     public enum Context {
         RUNNING {
@@ -41,29 +40,22 @@ public class ActiveContextLabel extends ActiveLabel implements ThemeChanged {
     {
         ThemeNotifier.register(this);
         themeChanged(Theme.current() == Theme.dark());
+        setOpaque(true);
     }
 
-    public ActiveContextLabel(String text, HiResIcon icon, int horizontalAlignment) {
-        super(text, icon, horizontalAlignment);
+    public ActiveContextPanel(LayoutManager layout, boolean isDoubleBuffered) {
+        super(layout, isDoubleBuffered);
     }
 
-    public ActiveContextLabel(String text, int horizontalAlignment) {
-        super(text, horizontalAlignment);
+    public ActiveContextPanel(LayoutManager layout) {
+        super(layout);
     }
 
-    public ActiveContextLabel(String text) {
-        super(text);
+    public ActiveContextPanel(boolean isDoubleBuffered) {
+        super(isDoubleBuffered);
     }
 
-    public ActiveContextLabel(HiResIcon icon, int horizontalAlignment) {
-        super(icon, horizontalAlignment);
-    }
-
-    public ActiveContextLabel(HiResIcon icon) {
-        super(icon);
-    }
-
-    public ActiveContextLabel() {
+    public ActiveContextPanel() {
     }
 
     public void setContext(Context context) {
