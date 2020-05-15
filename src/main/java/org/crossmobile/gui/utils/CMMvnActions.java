@@ -3,6 +3,7 @@
 
 package org.crossmobile.gui.utils;
 
+import com.sun.org.apache.xpath.internal.operations.Number;
 import org.crossmobile.Version;
 import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.actives.ActiveTextPane;
@@ -26,6 +27,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.crossmobile.utils.NumberUtils.safeInt;
+import static org.crossmobile.utils.NumberUtils.safeLong;
 
 public class CMMvnActions {
 
@@ -51,8 +55,9 @@ public class CMMvnActions {
         return repoLocation;
     }
 
-    public static Commander callMaven(String goal, String profiles, File projPath, ActiveTextPane outP, JLabel info,
-                                      Consumer<Integer> launchCallback, AtomicReference<Runnable> solutionCallbackRef,
+    public static Commander callMaven(String goal, String profiles, File projPath, ActiveTextPane outP,
+                                      Consumer<Long> pidConsumer, Consumer<Integer> debugPort, Consumer<Integer> launchCallback,
+                                      AtomicReference<Runnable> solutionCallbackRef,
                                       Profile profile, String... params) {
         List<String> cmd = new ArrayList<>();
         cmd.add(Paths.getMavenLocation());
@@ -76,15 +81,16 @@ public class CMMvnActions {
                     cmd.add(param);
 
         AtomicBoolean foundOldVersion = new AtomicBoolean(false);
-        return ProjectLauncher.launch(cmd.toArray(new String[0]), projPath, outP, launchCallback, env, (line, quality) -> {
-            if (line.toString().contains("sun.security.provider.certpath.SunCertPathBuilderException"))
+        return ProjectLauncher.launch(cmd.toArray(new String[0]), projPath, outP, launchCallback, env, (seqLine, quality) -> {
+            String line = seqLine.toString();
+            if (line.contains("sun.security.provider.certpath.SunCertPathBuilderException"))
                 solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null, "A Certification exception was found\n\n"
                                 + "You might need to upgrade your JDK 8 version beyond 1.8.101,\n"
                                 + "or else Maven resolving issues will occur.",
                         "Error while executing Java target", JOptionPane.ERROR_MESSAGE));
-            if (line.toString().contains("platforms;android-"))
+            if (line.contains("platforms;android-"))
                 foundOldVersion.set(true);
-            if (line.toString().contains("accept the SDK license agreements"))
+            if (line.contains("accept the SDK license agreements"))
                 solutionCallbackRef.set(() -> {
                     if (foundOldVersion.get() && Prefs.isAndroidLicenseLocationValid()) {
                         JOptionPane.showMessageDialog(null, "The Android License seems to be accepted,\nbut build tools refer to older versions.\n" +
@@ -111,16 +117,22 @@ public class CMMvnActions {
                             new InstallerFrame().launch();
                     }
                 });
-            if (line.toString().contains("SDK location not found"))
+            if (line.contains("SDK location not found"))
                 solutionCallbackRef.set(() -> {
                     JOptionPane.showMessageDialog(null, "Android SDK location is required\n\n"
                                     + "Please rerun the initialization wizard first\nand define the Android SDK location.",
                             "Error while locating Android SDK", JOptionPane.ERROR_MESSAGE);
                 });
-            if (info != null) {
-                Matcher pidMatcher = PID_PATTERN.matcher(line);
-                if (pidMatcher.matches()) {
-                    info.setText("PID: " + pidMatcher.group(1) + "    Debug port: " + pidMatcher.group(2));
+
+            if (debugPort != null) {
+                if (line.startsWith("Listening for transport dt_socket at address: "))
+                    safeInt(line.substring(line.indexOf(':') + 1).trim(), debugPort);
+                else {
+                    Matcher pidMatcher = PID_PATTERN.matcher(line);
+                    if (pidMatcher.matches()) {
+                        safeInt(pidMatcher.group(2), debugPort);
+                        safeLong(pidMatcher.group(1), pidConsumer);
+                    }
                 }
             }
         });

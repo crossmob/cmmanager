@@ -29,6 +29,8 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -402,10 +404,35 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         ExternalCommands.openCode(ide, proj, out, launchCallback);
     }
 
+    private void updateInfo(AtomicLong pid, AtomicInteger port) {
+        StringBuilder out = new StringBuilder();
+        if (pid.get() != Long.MIN_VALUE)
+            out.append("PID: ").append(pid.get());
+        if (port.get() != Integer.MIN_VALUE) {
+            if (out.length() > 0)
+                out.append("    ");
+            out.append("Debug port: ").append(port.get());
+        }
+        pidL.setText(out.toString());
+    }
+
     private Commander execMavenInConsole(String goal, String profiles, Project proj, ActiveTextPane outP, Consumer<Integer> launchCallback, String... params) {
         if (profiles != null && profiles.contains("uwp"))
             outP.addLine(" *** WARNING *** Universal Windows Platform support  is still in alpha stage\n", StreamQuality.ERROR);
-        return CMMvnActions.callMaven(goal, profiles, proj.getPath(), outP, pidL, launchCallback, solutionCallbackRef, proj.getProfile(), params);
+        AtomicLong pid = new AtomicLong(Long.MIN_VALUE);
+        AtomicInteger port = new AtomicInteger(Integer.MIN_VALUE);
+        Commander commander = CMMvnActions.callMaven(goal, profiles, proj.getPath(), outP, pidF -> {
+            pid.set(pidF);
+            updateInfo(pid, port);
+        }, portF -> {
+            port.set(portF);
+            updateInfo(pid, port);
+        }, launchCallback, solutionCallbackRef, proj.getProfile(), params);
+        if (profiles != null && profiles.contains("desktop")) {
+            pid.set(commander.getPid());
+            updateInfo(pid, port);
+        }
+        return commander;
     }
 
     private File getApkPath(boolean preferRelease) {
@@ -919,9 +946,10 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
+        idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
         idInfoP.setOpaque(false);
         idInfoP.setLayout(new java.awt.BorderLayout());
         idInfoP.add(pidL, java.awt.BorderLayout.EAST);
