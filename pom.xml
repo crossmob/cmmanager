@@ -86,25 +86,6 @@
             <id>release</id>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>properties-maven-plugin</artifactId>
-                        <version>1.0.0</version>
-                        <executions>
-                            <execution>
-                                <phase>initialize</phase>
-                                <goals>
-                                    <goal>read-project-properties</goal>
-                                </goals>
-                                <configuration>
-                                    <files>
-                                        <file>${basedir}/../resources/keys/password.properties</file>
-                                    </files>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
                     <!-- First obfuscate code, then create Linux (needs clean install), then OSX, then Windows with specific plugins-->
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
@@ -206,7 +187,7 @@
                                             <arg value="crossmob/appimage-builder"/>
                                             <arg value="bash"/>
                                             <arg value="-c"/>
-                                            <arg value="gpg-agent --daemon; gpg2 --detach-sign --armor --pinentry-mode loopback --passphrase '${gnupgpass}' `mktemp` ; /opt/appimage/AppRun --comp xz -v crossmobile/CrossMobile.AppDir --sign -n CrossMobile-${project.version}.x86_64.appimage"/>
+                                            <arg value="gpg-agent --daemon; gpg2 --detach-sign --armor --pinentry-mode loopback --passphrase '${env.GNUPG_PASS}' `mktemp` ; /opt/appimage/AppRun --comp xz -v crossmobile/CrossMobile.AppDir --sign -n CrossMobile-${project.version}.x86_64.appimage"/>
                                         </exec>
                                         <move todir="target/installers"
                                               file="target/CrossMobile-${project.version}.x86_64.appimage"/>
@@ -285,7 +266,7 @@
                                             <arg value="-pkcs12"/>
                                             <arg value="${resources.dir}/keys/windows-code-signing.p12"/>
                                             <arg value="-pass"/>
-                                            <arg value="${p12pass}"/>
+                                            <arg value="${env.P12_PASS}"/>
                                             <arg value="-n"/>
                                             <arg value="CrossMobile Installer"/>
                                             <arg value="-i"/>
