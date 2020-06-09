@@ -9,7 +9,7 @@ package org.crossmobile.gui.project;
 import javax.swing.*;
 import java.util.List;
 
-public class ProjectListModel extends AbstractListModel {
+public class ProjectListModel extends AbstractListModel<ProjectInfo> {
 
     private List<ProjectInfo> list;
 

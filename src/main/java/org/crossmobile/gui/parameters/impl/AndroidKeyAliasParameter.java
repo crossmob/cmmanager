@@ -11,6 +11,7 @@ import com.panayotis.hrgui.HiResComponent;
 import com.panayotis.hrgui.HiResPanel;
 import org.crossmobile.gui.elements.KeystoreManager;
 import org.crossmobile.gui.parameters.ParameterListener;
+import org.crossmobile.gui.parameters.ProjectParameter;
 import org.crossmobile.gui.parameters.SelectionListParameter;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.ParamDisplay;
@@ -26,7 +27,7 @@ import java.util.List;
 import static org.crossmobile.utils.ParamsCommon.KEY_ALIAS;
 import static org.crossmobile.utils.ParamsCommon.KEY_STORE;
 
-public class AndroidKeyAliasParameter extends SelectionListParameter implements ParameterListener<AndroidKeyStoreParameter> {
+public class AndroidKeyAliasParameter extends SelectionListParameter implements ParameterListener {
 
     public AndroidKeyAliasParameter(ParamList list) {
         super(list, KEY_ALIAS.tag(), getItems(list));
@@ -72,7 +73,7 @@ public class AndroidKeyAliasParameter extends SelectionListParameter implements 
     }
 
     @Override
-    public void updateParameter(AndroidKeyStoreParameter parameter) {
+    public void updateParameter(ProjectParameter parameter) {
         updateVisuals(getItems(properties), true);
     }
 

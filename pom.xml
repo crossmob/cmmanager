@@ -13,9 +13,13 @@
     <artifactId>cmmanager</artifactId>
 
     <properties>
-        <workinstall.dir>${project.build.directory}/crossmobile</workinstall.dir>
-        <installers.dir>${project.build.directory}/installers</installers.dir>
-        <resources.dir>${project.basedir}/../resources</resources.dir>
+        <app.out>${project.build.directory}/crossmobile</app.out>
+        <app.notarize>false</app.notarize>
+        <mac.dist/>
+        <win32.dist/>
+        <win64.dist/>
+        <linux.dist/>
+        <generic.dist/>
     </properties>
 
     <dependencies>
@@ -64,255 +68,146 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDirectory>${app.out}</outputDirectory>
+                    <stripVersion>true</stripVersion>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.2.0</version>
                 <configuration>
                     <archive>
                         <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathLayoutType>custom</classpathLayoutType>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <customClasspathLayout>${artifact.artifactId}${dashClassifier?}.${artifact.extension}
+                            </customClasspathLayout>
                             <mainClass>org.crossmobile.CrossMobile</mainClass>
                         </manifest>
                         <manifestEntries>
-                            <Class-Path>jupidator.jar appenh.jar loadlib.jar hrgui.jar minimal-json.jar cmutils-common.jar cmutils-tools.jar proguard-retrace.jar proguard-base.jar junidecode.jar</Class-Path>
                             <SplashScreen-Image>images/splash.png</SplashScreen-Image>
                         </manifestEntries>
                     </archive>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>copy-base-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
+                                      tofile="${app.out}/crossmobile.jar"/>
+                                <copy todir="${app.out}" file="../LICENSE"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
-            <id>release</id>
+            <id>notarize</id>
+            <properties>
+                <app.notarize>true</app.notarize>
+            </properties>
+        </profile>
+        <profile>
+            <id>macos</id>
+            <properties>
+                <mac.dist>macos</mac.dist>
+            </properties>
+        </profile>
+        <profile>
+            <id>win32</id>
+            <properties>
+                <win32.dist>win32</win32.dist>
+            </properties>
+        </profile>
+        <profile>
+            <id>win64</id>
+            <properties>
+                <win64.dist>win64</win64.dist>
+            </properties>
+        </profile>
+        <profile>
+            <id>linux</id>
+            <properties>
+                <linux.dist>linux64</linux.dist>
+            </properties>
+        </profile>
+        <profile>
+            <id>generic</id>
+            <properties>
+                <generic.dist>generic</generic.dist>
+            </properties>
+        </profile>
+        <profile>
+            <id>dist</id>
             <build>
                 <plugins>
-                    <!-- First obfuscate code, then create Linux (needs clean install), then OSX, then Windows with specific plugins-->
                     <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.8</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
                         <executions>
                             <execution>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
+                                <id>create</id>
                                 <configuration>
-                                    <target>
-                                        <!-- Common files installation macro -->
-                                        <macrodef name="installto">
-                                            <attribute name="dest"/>
-                                            <attribute name="jrearch"/>
-                                            <sequential>
-                                                <echo message="******************************************************${line.separator}Installing to @{dest}${line.separator}******************************************************"/>
-                                                <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
-                                                      tofile="@{dest}/lib/crossmobile.jar"/>
-                                                <copy file="${user.home}/.m2/repository/com/panayotis/appenh/${version.appenh}/appenh-${version.appenh}.jar"
-                                                      tofile="@{dest}/lib/appenh.jar"/>
-                                                <copy file="${user.home}/.m2/repository/com/panayotis/loadlib/${version.loadlib}/loadlib-${version.loadlib}.jar"
-                                                      tofile="@{dest}/lib/loadlib.jar"/>
-                                                <copy file="${user.home}/.m2/repository/com/panayotis/jupidator/${version.jupidator}/jupidator-${version.jupidator}-full.jar"
-                                                      tofile="@{dest}/lib/jupidator.jar"/>
-                                                <copy file="${user.home}/.m2/repository/com/panayotis/hrgui/${version.hrgui}/hrgui-${version.hrgui}.jar"
-                                                      tofile="@{dest}/lib/hrgui.jar"/>
-                                                <copy file="${user.home}/.m2/repository/com/eclipsesource/minimal-json/minimal-json/${version.minimal-json}/minimal-json-${version.minimal-json}.jar"
-                                                      tofile="@{dest}/lib/minimal-json.jar"/>
-                                                <copy file="${user.home}/.m2/repository/org/crossmobile/cmutils-common/${project.version}/cmutils-common-${project.version}.jar"
-                                                      tofile="@{dest}/lib/cmutils-common.jar"/>
-                                                <copy file="${user.home}/.m2/repository/org/crossmobile/cmutils-tools/${project.version}/cmutils-tools-${project.version}.jar"
-                                                      tofile="@{dest}/lib/cmutils-tools.jar"/>
-                                                <copy file="${user.home}/.m2/repository/net/sf/proguard/proguard-retrace/${version.proguard}/proguard-retrace-${version.proguard}.jar"
-                                                      tofile="@{dest}/lib/proguard-retrace.jar"/>
-                                                <copy file="${user.home}/.m2/repository/net/sf/proguard/proguard-base/${version.proguard}/proguard-base-${version.proguard}.jar"
-                                                      tofile="@{dest}/lib/proguard-base.jar"/>
-                                                <copy file="${user.home}/.m2/repository/net/gcardone/junidecode/junidecode/${version.junidecode}/junidecode-${version.junidecode}.jar"
-                                                      tofile="@{dest}/lib/junidecode.jar"/>
-                                                <copy todir="@{dest}/lib/apache-maven">
-                                                    <fileset dir="../resources/lib/apache-maven"/>
-                                                </copy>
-                                                <chmod file="@{dest}/lib/apache-maven/bin/mvn" perm="a+x"/>
-                                                <copy todir="@{dest}" file="../LICENSE"/>
-                                                <mkdir dir="@{dest}/jre"/>
-                                                <exec executable="docker" failonerror="true">
-                                                    <arg value="run"/>
-                                                    <arg value="--rm"/>
-                                                    <arg value="-v"/>
-                                                    <arg value="@{dest}:/target"/>
-                                                    <arg value="crossmob/jdk"/>
-                                                    <arg value="sh"/>
-                                                    <arg value="-c"/>
-                                                    <arg value="echo Copying JRE with flavour @{jrearch}; cp -Ra /jre/@{jrearch}/* /target/jre/"/>
-                                                </exec>
-                                            </sequential>
-                                        </macrodef>
-                                        <mkdir dir="${installers.dir}"/>
-
-                                        <!-- OS independent -->
-                                        <property name="gdir" value="${workinstall.dir}/crossmobile"/>
-                                        <installto dest="${gdir}" jrearch="none"/>
-                                        <delete dir="${gdir}/jre"/>
-                                        <copy file="../resources/installers/linux/crossmobile.sh" todir="${gdir}"/>
-                                        <chmod file="${gdir}/crossmobile.sh" perm="a+x"/>
-                                        <echo>${installers.dir}</echo>
-                                        <exec executable="tar" dir="${gdir}/..">
-                                            <arg line="jcf ${installers.dir}/CrossMobile-${project.version}.tar.bz2 crossmobile"/>
-                                        </exec>
-
-                                        <!-- Linux -->
-                                        <property name="ldir" value="${workinstall.dir}/CrossMobile.AppDir"/>
-                                        <installto dest="${ldir}" jrearch="linux"/>
-                                        <move tofile="${ldir}/lib/AppRun.jar" file="${ldir}/lib/crossmobile.jar"/>
-                                        <copy tofile="${ldir}/AppRun"
-                                              file="${resources.dir}/installers/linux/crossmobile64"/>
-                                        <copy tofile="${ldir}/usr/share/icons/hicolor/32x32/apps/crossmobile.png"
-                                              file="${resources.dir}/installers/linux/icon32.png"/>
-                                        <copy tofile="${ldir}/usr/share/icons/hicolor/64x64/apps/crossmobile.png"
-                                              file="${resources.dir}/installers/linux/icon64.png"/>
-                                        <copy tofile="${ldir}/usr/share/icons/hicolor/128x128/apps/crossmobile.png"
-                                              file="${resources.dir}/installers/linux/icon128.png"/>
-                                        <copy tofile="${ldir}/crossmobile.png"
-                                              file="${resources.dir}/installers/linux/icon32.png"/>
-                                        <copy tofile="${ldir}/crossmobile.desktop"
-                                              file="${resources.dir}/installers/linux/crossmobile.desktop"/>
-                                        <copy tofile="${ldir}/usr/share/metainfo/crossmobile.appdata.xml"
-                                              file="${resources.dir}/installers/linux/crossmobile.appdata.xml"/>
-                                        <chmod file="${ldir}/AppRun" perm="a+x"/>
-                                        <exec executable="docker" failonerror="true">
-                                            <arg value="run"/>
-                                            <arg value="-t"/>
-                                            <arg value="--rm"/>
-                                            <arg value="-v"/>
-                                            <arg value="${project.build.directory}:/usr/src/app"/>
-                                            <arg value="-v"/>
-                                            <arg value="${user.home}/.gnupg:/root/.gnupg"/>
-                                            <arg value="crossmob/appimage-builder"/>
-                                            <arg value="bash"/>
-                                            <arg value="-c"/>
-                                            <arg value="gpg-agent --daemon; gpg2 --detach-sign --armor --pinentry-mode loopback --passphrase '${env.GNUPG_PASS}' `mktemp` ; /opt/appimage/AppRun --comp xz -v crossmobile/CrossMobile.AppDir --sign -n CrossMobile-${project.version}.x86_64.appimage"/>
-                                        </exec>
-                                        <move todir="target/installers"
-                                              file="target/CrossMobile-${project.version}.x86_64.appimage"/>
-
-                                        <!-- OSX -->
-                                        <property name="odir" value="${workinstall.dir}/CrossMobile.app/Contents"/>
-                                        <installto dest="${odir}" jrearch="osx"/>
-                                        <move file="${odir}/lib" tofile="${odir}/Java"/>
-                                        <move file="${odir}/LICENSE" todir="${odir}/Java"/>
-                                        <copy todir="${odir}/MacOS"
-                                              file="${resources.dir}/installers/macosx/CrossMobile"/>
-                                        <copy todir="${odir}/Resources"
-                                              file="${resources.dir}/installers/macosx/CrossMobile.icns"/>
-                                        <copy todir="${odir}/Resources"
-                                              file="${resources.dir}/installers/macosx/Crossmobile_Document.icns"/>
-                                        <copy todir="${odir}/Resources"
-                                              file="${project.basedir}/src/main/resources/images/splash.png"/>
-                                        <copy todir="${odir}" file="${resources.dir}/installers/macosx/Info.plist"/>
-                                        <copy todir="${odir}" file="${resources.dir}/installers/macosx/PkgInfo"/>
-                                        <chmod file="${odir}/MacOS/CrossMobile" perm="a+x"/>
-                                        <replace file="${odir}/Info.plist">
-                                            <replacefilter token="@@VERSION@@" value="${project.version}"/>
-                                        </replace>
-                                        <delete file="/tmp/CrossMobile.dmg.bz2" quiet="true"/>
-                                        <delete file="/tmp/CrossMobile.dmg" quiet="true"/>
-                                        <exec executable="hdiutil" failonerror="false">
-                                            <arg line="detach /Volumes/CrossMobile"/>
-                                        </exec>
-                                        <bunzip2 src="${resources.dir}/installers/macosx/CrossMobile.dmg.bz2"
-                                                 dest="/tmp/CrossMobile.dmg"/>
-                                        <exec executable="hdiutil" failonerror="true">
-                                            <arg line="attach -noautoopen -mountpoint /Volumes/CrossMobile /tmp/CrossMobile.dmg"/>
-                                        </exec>
-                                        <delete dir="/Volumes/CrossMobile/CrossMobile.app" includeemptydirs="yes"/>
-                                        <exec executable="cp">
-                                            <arg line="-R ${workinstall.dir}/CrossMobile.app /Volumes/CrossMobile/CrossMobile.app"/>
-                                        </exec>
-                                        <exec executable="../resources/installers/macosx/notarizing" failonerror="true">
-                                            <arg line="sign --target /Volumes/CrossMobile/CrossMobile.app -e ../resources/installers/macosx/entitlements.plist"/>
-                                        </exec>
-                                        <exec executable="hdiutil" failonerror="true">
-                                            <arg line="detach -force /Volumes/CrossMobile"/>
-                                        </exec>
-                                        <exec executable="hdiutil" failonerror="true">
-                                            <arg line="convert /tmp/CrossMobile.dmg -format UDZO -imagekey zlib-level=9 -ov -o ${installers.dir}/CrossMobile-${project.version}.dmg"/>
-                                        </exec>
-                                        <exec executable="../resources/installers/macosx/notarizing" failonerror="true">
-                                            <arg line="sign --target ${installers.dir}/CrossMobile-${project.version}.dmg -e ../resources/installers/macosx/entitlements.plist"/>
-                                        </exec>
-                                        <delete file="/tmp/CrossMobile.dmg"/>
-
-                                        <!-- Prepare for Windows -->
-                                        <installto dest="${workinstall.dir}/Windows" jrearch="windows32"/>
-                                        <condition property="os.ext" value="32.exe">
-                                            <os family="windows" />
-                                        </condition>
-                                        <condition property="os.ext" value="osx">
-                                            <os family="mac" />
-                                        </condition>
-                                        <condition property="os.ext" value="linux">
-                                            <os family="unix" />
-                                        </condition>
-                                        <exec executable="../resources/installers/windows/launchercreator.${os.ext}" failonerror="true">
-                                            <arg value="-n=CrossMobile"/>
-                                            <arg value="-c=Panayotis Katsaloulis"/>
-                                            <arg value="-v=${project.version}"/>
-                                            <arg value="-l=${long.version}" />
-                                            <arg value="-i=../resources/installers/windows/app.ico"/>
-                                        </exec>
-                                        <move file="target/crossmobile.32.exe" tofile="target/crossmobile/Windows/CrossMobile.exe"/>
-                                        <exec executable="makensis" failonerror="true">
-                                            <arg line="-NOCD -DVERSION=${project.version} -DCMINSTDESTDIR=${workinstall.dir}/Windows ${resources.dir}/installers/windows/crossmobile.nsi"/>
-                                        </exec>
-                                        <exec executable="osslsigncode" failonerror="true">
-                                            <arg value="sign"/>
-                                            <arg value="-pkcs12"/>
-                                            <arg value="${resources.dir}/keys/windows-code-signing.p12"/>
-                                            <arg value="-pass"/>
-                                            <arg value="${env.P12_PASS_DIST}"/>
-                                            <arg value="-n"/>
-                                            <arg value="CrossMobile Installer"/>
-                                            <arg value="-i"/>
-                                            <arg value="https://crossmobile.tech"/>
-                                            <arg value="-in"/>
-                                            <arg value="${workinstall.dir}/Windows/CrossMobile-${project.version}.unsigned.exe"/>
-                                            <arg value="-out"/>
-                                            <arg value="${installers.dir}/CrossMobile-${project.version}.exe"/>
-                                        </exec>
-                                        <exec executable="osslsigncode" failonerror="true">
-                                            <arg line="verify ${installers.dir}/CrossMobile-${project.version}.exe"/>
-                                        </exec>
-                                    </target>
+                                    <executable>instres/makeapp</executable>
+                                    <arguments>
+                                        <argument>create</argument>
+                                        <argument>--name=CrossMobile</argument>
+                                        <argument>--appdir=target/crossmobile</argument>
+                                        <argument>--output=target/apps</argument>
+                                        <argument>--instoutput=target/installer</argument>
+                                        <argument>--res=instres</argument>
+                                        <argument>--jar=crossmobile.jar</argument>
+                                        <argument>--jvmopt=DEFAULT</argument>
+                                        <argument>--jvmopt=-splash:$APPDIR/splash.jpg</argument>
+                                        <argument>--version=${project.version}</argument>
+                                        <argument>--vendor=CrossMobile P.C.</argument>
+                                        <argument>--id=org.crossmobile.gui</argument>
+                                        <argument>--url=https://crossmobile.org</argument>
+                                        <argument>--descr=Create native iOS, Android, Windows 10 and Desktop Applications from a singe code base</argument>
+                                        <argument>--extra=extra</argument>
+                                        <argument>--notarize=${app.notarize}</argument>
+                                        <argument>--p12file=secret/code-signing.p12</argument>
+                                        <argument>--gpgdir=${user.home}/.gnupg</argument>
+                                        <argument>
+                                            --os=${mac.dist},${win32.dist},${win64.dist},${linux.dist},${generic.dist}
+                                        </argument>
+                                        <argument>--jdk=${user.home}/.sdkman/candidates/java/14.0.1.hs-adpt</argument>
+                                    </arguments>
                                 </configuration>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>net.sf.proguard</groupId>
-                                <artifactId>proguard-base</artifactId>
-                                <version>${version.proguard}</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                    <plugin>
-                        <groupId>net.nicoulaj.maven.plugins</groupId>
-                        <artifactId>checksum-maven-plugin</artifactId>
-                        <version>1.5</version>
-                        <executions>
-                            <execution>
-                                <phase>install</phase>
                                 <goals>
-                                    <goal>files</goal>
+                                    <goal>exec</goal>
                                 </goals>
+                                <phase>package</phase>
                             </execution>
                         </executions>
-                        <configuration>
-                            <fileSets>
-                                <fileSet>
-                                    <directory>${installers.dir}</directory>
-                                    <includes>
-                                        <include>CrossMobile-${project.version}.*</include>
-                                    </includes>
-                                </fileSet>
-                            </fileSets>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>

@@ -90,7 +90,7 @@ public abstract class ProjectParameter {
         }
     }
 
-    public final ProjectParameter addParameterListener(ParameterListener<?> listener) {
+    public final ProjectParameter addParameterListener(ParameterListener listener) {
         if (listener != null) {
             if (listeners == null)
                 listeners = new HashSet<>();

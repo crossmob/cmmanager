@@ -6,9 +6,7 @@
 
 package org.crossmobile.gui.utils;
 
-import com.sun.org.apache.xpath.internal.operations.Number;
 import org.crossmobile.Version;
-import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.actives.ActiveTextPane;
 import org.crossmobile.gui.android.InstallerFrame;
 import org.crossmobile.gui.project.ProjectLauncher;

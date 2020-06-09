@@ -6,7 +6,7 @@
 
 package org.crossmobile.gui.parameters;
 
-public interface ParameterListener<P extends ProjectParameter> {
+public interface ParameterListener {
 
-    public void updateParameter(P parameter);
+    void updateParameter(ProjectParameter parameter);
 }
