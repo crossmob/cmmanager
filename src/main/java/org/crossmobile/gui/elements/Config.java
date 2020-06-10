@@ -11,6 +11,7 @@ import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.actives.ActiveRadioButton;
 import org.crossmobile.gui.actives.ActiveTextField;
 import org.crossmobile.prefs.Prefs;
+import org.crossmobile.utils.Commander;
 import org.crossmobile.utils.LocationTarget;
 import org.crossmobile.utils.UIUtils;
 
@@ -19,6 +20,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 import static org.crossmobile.utils.SystemDependent.Execs.*;
 
@@ -28,7 +31,22 @@ public class Config extends HiResDialog {
     public static final LocationTarget Studio = new LocationTarget(STUDIO, STUDIO.filename(), STUDIO64.filename());
     public static final LocationTarget IntelliJ = new LocationTarget(IDEA, IDEA.filename());
     public static final LocationTarget Android = new LocationTarget("tools/bin/sdkmanager.bat", "tools/bin/sdkmanager", "platform-tools/adb", "platform-tools/adb.exe");
-    public static final LocationTarget JDK = new LocationTarget("lib/dt.jar", "lib/tools.jar", "jmods/jdk.compiler.jmod");
+    public static final LocationTarget JDK = new LocationTarget(f -> {
+        File javac = new File(f, "bin/" + JAVAC.filename());
+        if (!javac.isFile())
+            return false;
+        Commander exec = new Commander(javac.getAbsolutePath(), "-version");
+        AtomicBoolean correct = new AtomicBoolean(false);
+        Consumer<String> consumer = l -> {
+            if (l.startsWith("javac 1.8."))
+                correct.set(true);
+        };
+        exec.setOutListener(consumer);
+        exec.setErrListener(consumer);
+        exec.exec();
+        exec.waitFor();
+        return correct.get();
+    }, "lib/dt.jar", "lib/tools.jar", "jmods/jdk.compiler.jmod");
 
     private final static Config INSTANCE = new Config();
 
@@ -127,10 +145,10 @@ public class Config extends HiResDialog {
         setTitle("CrossMobile Configuration");
         setResizable(false);
 
-        jPanel4.setBorder(new HiResEmptyBorder(12,12,0,12));
+        jPanel4.setBorder(new HiResEmptyBorder(12, 12, 0, 12));
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
 
-        jPanel10.setBorder(new HiResEmptyBorder(8,0,8,0));
+        jPanel10.setBorder(new HiResEmptyBorder(8, 0, 8, 0));
         jPanel10.setOpaque(false);
         jPanel10.setLayout(new java.awt.BorderLayout());
 
@@ -192,7 +210,7 @@ public class Config extends HiResDialog {
 
         jPanel4.add(jPanel10);
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1,0,0,0,Theme.current().line), new HiResEmptyBorder(8,0,8,0)));
+        jPanel5.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1, 0, 0, 0, Theme.current().line), new HiResEmptyBorder(8, 0, 8, 0)));
         jPanel5.setOpaque(false);
         jPanel5.setLayout(new java.awt.BorderLayout());
 
@@ -252,7 +270,7 @@ public class Config extends HiResDialog {
 
         jPanel4.add(jPanel5);
 
-        jPanel11.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1,0,1,0,Theme.current().line), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1)));
+        jPanel11.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1, 0, 1, 0, Theme.current().line), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1)));
         jPanel11.setOpaque(false);
         jPanel11.setLayout(new java.awt.BorderLayout());
 
@@ -314,7 +332,7 @@ public class Config extends HiResDialog {
 
         jPanel4.add(jPanel11);
 
-        jPanel20.setBorder(new HiResEmptyBorder(8,0,8,0));
+        jPanel20.setBorder(new HiResEmptyBorder(8, 0, 8, 0));
         jPanel20.setOpaque(false);
         jPanel20.setLayout(new java.awt.BorderLayout());
 
