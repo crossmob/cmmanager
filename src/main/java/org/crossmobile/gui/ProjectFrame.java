@@ -58,6 +58,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private static final HiResIcon CLEAN_I = new ActiveIcon("images/clean");
     private static final HiResIcon CLEANPROJ_I = new ActiveIcon("images/cleanproj");
     private static final HiResIcon CLEAN_TI = new ActiveIcon("images/cleanT");
+    private static final HiResIcon PACK_I = new ActiveIcon("images/pack");
     private static final HiResIcon OPEN_I = new ActiveIcon("images/open");
     private static final HiResIcon DESKTOP_I = new ActiveIcon("images/desktop_small");
     private static final HiResIcon NETBEANS_I = new ActiveIcon("images/netbeans");
@@ -111,6 +112,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         autoDisabled.add(expandRB);
         autoDisabled.add(projectB);
         autoDisabled.add(expandPB);
+        autoDisabled.add(packB);
         magicWandB = Deguard.getWandButton(this);
         actionB.setEnabled(false);
         setProjectEnabled(false);
@@ -217,6 +219,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private void displayOutput() {
         ((CardLayout) contentP.getLayout()).show(contentP, "output");
         outputB.setSelected(true);
+        outputB.setText("Output");
     }
 
     private void displayProject() {
@@ -504,6 +507,18 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         xcodeM = new ActiveMenuItem();
         vstudioM = new ActiveMenuItem();
         studioM = new ActiveMenuItem();
+        packDM = new ActivePopupMenu();
+        genericP = new ActiveMenuItem();
+        jSeparator2 = new ActiveMenuSeparator();
+        macosP = new ActiveMenuItem();
+        linuxP = new ActiveMenuItem();
+        win32P = new ActiveMenuItem();
+        win64P = new ActiveMenuItem();
+        packAM = new ActivePopupMenu();
+        debugP = new ActiveMenuItem();
+        releaseP = new ActiveMenuItem();
+        packEM = new ActivePopupMenu();
+        nosupportedP = new ActiveMenuItem();
         cleanM = new ActivePopupMenu();
         cleanAllPM = new ActiveMenuItem();
         actionsAndroidM = new ActivePopupMenu();
@@ -519,7 +534,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         jPanel1 = new javax.swing.JPanel();
         outputB = new ActiveToggleButton("", null);
         expandOB = new ActiveButton();
-        jLabel1 = new ActiveLabel();
+        packB = new ActiveButton();
         openB = new ActiveButton();
         controlP_L = new javax.swing.JPanel();
         targetP = new javax.swing.JPanel();
@@ -530,7 +545,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         commandP = new javax.swing.JPanel();
         expandRB = new ActiveButton();
         actionB = new ActiveButton();
-        jPanel3 = new javax.swing.JPanel();
+        cleanP = new javax.swing.JPanel();
         expandCB = new ActiveButton();
         cleanB = new ActiveButton();
         contentP = new HiResPanel();
@@ -683,6 +698,74 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         openM.add(otherIDEs);
 
+        genericP.setText("as self-contained JAR");
+        genericP.setActionCommand("generic");
+        genericP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                desktopPackage(evt);
+            }
+        });
+        packDM.add(genericP);
+        packDM.add(jSeparator2);
+
+        macosP.setText("for macOS");
+        macosP.setActionCommand("macos");
+        macosP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                desktopPackage(evt);
+            }
+        });
+        packDM.add(macosP);
+
+        linuxP.setText("for Linux");
+        linuxP.setActionCommand("linux");
+        linuxP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                desktopPackage(evt);
+            }
+        });
+        packDM.add(linuxP);
+
+        win32P.setText("for Windows 32 bit");
+        win32P.setActionCommand("win32");
+        win32P.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                desktopPackage(evt);
+            }
+        });
+        packDM.add(win32P);
+
+        win64P.setText("fot Windows 64 bit");
+        win64P.setActionCommand("win64");
+        win64P.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                desktopPackage(evt);
+            }
+        });
+        packDM.add(win64P);
+
+        debugP.setText("as debug APK");
+        debugP.setActionCommand("debug");
+        debugP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                androidPackage(evt);
+            }
+        });
+        packAM.add(debugP);
+
+        releaseP.setText("as release APK");
+        releaseP.setActionCommand("release");
+        releaseP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                androidPackage(evt);
+            }
+        });
+        packAM.add(releaseP);
+
+        nosupportedP.setText("No supported packages");
+        nosupportedP.setEnabled(false);
+        packEM.add(nosupportedP);
+
         cleanAllPM.setIcon(CLEANPROJ_I);
         cleanAllPM.setText("Clean Project files");
         cleanAllPM.addActionListener(new java.awt.event.ActionListener() {
@@ -719,7 +802,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         });
         actionsAndroidM.add(logAM);
 
-        setMinimumSize(new java.awt.Dimension(800, 620));
+        setMinimumSize(new java.awt.Dimension(840, 620));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -791,8 +874,15 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         controlP_R.add(jPanel1);
 
-        jLabel1.setText("     ");
-        controlP_R.add(jLabel1);
+        packB.setIcon(PACK_I);
+        packB.setText("Pack");
+        packB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 12, 8, 8));
+        packB.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                packBMousePressed(evt);
+            }
+        });
+        controlP_R.add(packB);
 
         openB.setIcon(OPEN_I);
         openB.setText("Open");
@@ -883,8 +973,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         controlP_L.add(commandP);
 
-        jPanel3.setOpaque(false);
-        jPanel3.setLayout(new java.awt.BorderLayout());
+        cleanP.setOpaque(false);
+        cleanP.setLayout(new java.awt.BorderLayout());
 
         expandCB.setIcon(EXPAND_I);
         expandCB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 24, 8, 2));
@@ -893,7 +983,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 expandCBMousePressed(evt);
             }
         });
-        jPanel3.add(expandCB, java.awt.BorderLayout.WEST);
+        cleanP.add(expandCB, java.awt.BorderLayout.WEST);
 
         cleanB.setIcon(CLEAN_I);
         cleanB.setText("Clean");
@@ -903,9 +993,9 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 cleanBactOnProject(evt);
             }
         });
-        jPanel3.add(cleanB, java.awt.BorderLayout.CENTER);
+        cleanP.add(cleanB, java.awt.BorderLayout.CENTER);
 
-        controlP_L.add(jPanel3);
+        controlP_L.add(cleanP);
 
         controlP.add(controlP_L, java.awt.BorderLayout.WEST);
 
@@ -1012,8 +1102,16 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }//GEN-LAST:event_targetSelection
 
     private void expandRBMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_expandRBMousePressed
-        if (expandRB.isEnabled())
-            ("android".equals(getCurrentTarget()) ? actionsAndroidM : actionsM).show(expandRB, 0, expandRB.getHeight());
+        if (expandRB.isEnabled()) {
+            switch (getCurrentTarget()) {
+                case "android":
+                    actionsAndroidM.show(expandRB, 0, expandRB.getHeight());
+                    break;
+                default:
+                    actionsM.show(expandRB, 0, expandRB.getHeight());
+                    break;
+            }
+        }
     }//GEN-LAST:event_expandRBMousePressed
 
     private void openBMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_openBMousePressed
@@ -1119,6 +1217,52 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 res -> launchCallback.accept(res), null, StreamListener.NONE);
     }//GEN-LAST:event_logMActionPerformed
 
+    private void desktopPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desktopPackage
+        switch(evt.getActionCommand()) {
+            case "generic":
+                System.out.println("generic");
+                break;
+            case "macos":
+                System.out.println("macos");
+                break;
+            case "linux":
+                System.out.println("linux");
+                break;
+            case "win32":
+                System.out.println("win32");
+                break;
+            case "win64":
+                System.out.println("win64");
+                break;
+        }
+    }//GEN-LAST:event_desktopPackage
+
+    private void androidPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_androidPackage
+        switch (evt.getActionCommand()) {
+            case "release":
+                System.out.println("release");
+                break;
+            default:
+                System.out.println("debug");
+                break;
+        }
+    }//GEN-LAST:event_androidPackage
+
+    private void packBMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_packBMousePressed
+        if (packB.isEnabled()) {
+            switch (getCurrentTarget()) {
+                case "android":
+                    packAM.show(packB, 0, packB.getHeight());
+                    break;
+                case "desktop":
+                    packDM.show(packB, 0, packB.getHeight());
+                    break;
+                default:
+                    packEM.show(packB, 0, packB.getHeight());
+            }
+        }
+    }//GEN-LAST:event_packBMousePressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Background;
     private javax.swing.JButton actionB;
@@ -1132,32 +1276,37 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JButton cleanB;
     private javax.swing.JPopupMenu cleanM;
     private javax.swing.JMenuItem cleanOM;
+    private javax.swing.JPanel cleanP;
     private javax.swing.JPanel commandP;
     private javax.swing.JPanel contentP;
     private javax.swing.JPanel controlP;
     private javax.swing.JPanel controlP_L;
     private javax.swing.JPanel controlP_R;
+    private javax.swing.JMenuItem debugP;
     private javax.swing.JMenuItem desktopM;
     private javax.swing.JToggleButton desktopT;
     private javax.swing.JButton expandCB;
     private javax.swing.JButton expandOB;
     private javax.swing.JButton expandPB;
     private javax.swing.JButton expandRB;
+    private javax.swing.JMenuItem genericP;
     private javax.swing.JPanel idInfoP;
     private javax.swing.JPanel infoP;
     private javax.swing.JMenuItem intellijM;
     private javax.swing.JToggleButton iosT;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JMenuItem jarM;
     private javax.swing.JPanel leftButtonPanel;
+    private javax.swing.JMenuItem linuxP;
     private javax.swing.JMenuItem logAM;
+    private javax.swing.JMenuItem macosP;
     private javax.swing.JMenuItem netbeansM;
+    private javax.swing.JMenuItem nosupportedP;
     private javax.swing.JButton openB;
     private javax.swing.JPopupMenu openM;
     private javax.swing.JMenu otherIDEs;
@@ -1166,12 +1315,17 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JToggleButton outputB;
     private javax.swing.JPopupMenu outputM;
     private javax.swing.JTextPane outputTxt;
+    private javax.swing.JPopupMenu packAM;
+    private javax.swing.JButton packB;
+    private javax.swing.JPopupMenu packDM;
+    private javax.swing.JPopupMenu packEM;
     private javax.swing.JPanel parameters;
     private javax.swing.JLabel pidL;
     private javax.swing.JToggleButton projectB;
     private javax.swing.ButtonGroup projectG;
     private javax.swing.JPopupMenu projectM;
     private javax.swing.JPanel projectP;
+    private javax.swing.JMenuItem releaseP;
     private javax.swing.JPanel rightPanel;
     private javax.swing.JMenuItem runAM;
     private javax.swing.JMenuItem runM;
@@ -1183,6 +1337,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPanel targetP;
     private javax.swing.JToggleButton uwpT;
     private javax.swing.JMenuItem vstudioM;
+    private javax.swing.JMenuItem win32P;
+    private javax.swing.JMenuItem win64P;
     private javax.swing.JMenuItem xcodeM;
     // End of variables declaration//GEN-END:variables
 

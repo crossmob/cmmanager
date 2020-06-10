@@ -6,21 +6,19 @@
 
 package org.crossmobile.gui.utils;
 
-import org.crossmobile.utils.Commander;
 import org.crossmobile.utils.Log;
 import org.crossmobile.utils.SystemDependent;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.crossmobile.utils.SystemDependent.Execs.MVN;
 import static org.crossmobile.utils.SystemDependent.getHome;
 
 public final class Paths {
 
-    private static final String DEV_LIB_INSTALL2 = "../../resources/lib";   // location of libraries when debugging
+    private static final String DEV_LIB_INSTALL2 = "../extra/common";   // location of libraries when debugging
     private static final String MVNPATH = "apache-maven" + File.separator + "bin";
 
     private static File APPFILE;
