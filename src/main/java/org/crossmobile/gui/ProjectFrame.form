@@ -179,45 +179,6 @@
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
           </AuxValues>
         </MenuItem>
-        <Component class="javax.swing.JPopupMenu$Separator" name="jSeparator3">
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuSeparator()"/>
-          </AuxValues>
-        </Component>
-        <MenuItem class="javax.swing.JMenuItem" name="jarM">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="JAR_I" type="code"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value=" as Desktop JAR"/>
-            <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="JAR_D" type="code"/>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jarMshowIDE"/>
-          </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
-          </AuxValues>
-        </MenuItem>
-        <MenuItem class="javax.swing.JMenuItem" name="apkM">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="APK_I" type="code"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value=" as Android APK"/>
-            <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="APK_D" type="code"/>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="apkMshowIDE"/>
-          </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
-          </AuxValues>
-        </MenuItem>
         <Component class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuSeparator()"/>

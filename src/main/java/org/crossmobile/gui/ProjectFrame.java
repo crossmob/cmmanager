@@ -32,10 +32,12 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static org.crossmobile.gui.actives.ActiveContextPanel.Context.*;
 import static org.crossmobile.gui.utils.Profile.OBFUSCATE;
@@ -90,13 +92,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private String taskName = null;
     private final AtomicReference<Runnable> solutionCallbackRef = new AtomicReference<>();
     private MagicWand magicWandB;
-    private final Consumer<Integer> launchCallback = new Consumer<Integer>() {
-        @Override
-        public void accept(Integer result) {
-            setLaunchButtonStatus(result, null);
-            launch = null;
-        }
-    };
+
 
     @SuppressWarnings("LeakingThisInConstructor")
     public ProjectFrame(File path) {
@@ -233,7 +229,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             button.setEnabled(status);
     }
 
-    private synchronized void setLaunchButtonStatus(Integer result, String currentTaskName) {
+    private synchronized void setLaunchButtonStatus(Integer result, String currentTaskName, String target) {
         Nullable.safeCall(solutionCallbackRef.get(), r -> {
             solutionCallbackRef.set(null);
             SwingUtilities.invokeLater(r);
@@ -267,7 +263,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         }
 
         setProjectEnabled(!running);
-        updateToolButtons();
+        updateToolButtons(target);
         actionB.setText(running ? "Stop" : "Start");
         actionB.setIcon(running ? STOP_I : RUN_I);
         outputB.setEnabled(true);
@@ -278,11 +274,10 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         taskName = currentTaskName;
     }
 
-    private void updateToolButtons() {
+    private void updateToolButtons(String target) {
         idInfoP.removeAll();
         idInfoP.add(pidL, BorderLayout.CENTER);
         if (proj.getProfile() == OBFUSCATE) {
-            String target = getCurrentTarget();
             File mapFile = "android".equals(target)
                     ? new File(proj.getPath(), "target/app/build/outputs/mapping/release/mapping.txt")
                     : "desktop".equals(target)
@@ -344,8 +339,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         return targetG.getSelection().getActionCommand();
     }
 
-    private ActiveTextPane initLaunchVisualsOut(String consoleText, String infoText) {
-        setLaunchButtonStatus(null, infoText);
+    private ActiveTextPane initLaunchVisualsOut(String consoleText, String infoText, String target) {
+        setLaunchButtonStatus(null, infoText, target);
         ActiveTextPane out = (ActiveTextPane) outputTxt;
         out.setText("");
         pidL.setText("");
@@ -354,60 +349,77 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         return out;
     }
 
-    private void buildAndRun() {
+    private void buildAndRun(String target) {
+        buildAndRun(target, false,
+                proj.getProfile().isRelease(),
+                !LAUNCH_ACTION_BUILD.equals(actionB.getActionCommand()),
+                null);
+    }
+
+    private void buildAndRun(String target, boolean clean, boolean release, boolean run, Runnable onSuccess) {
         if (taskName != null)
             EventUtils.postAction(() -> {
                 Nullable.safeCall(launch, Commander::kill);
-                setLaunchButtonStatus(KILL_RESULT, null);
+                setLaunchButtonStatus(KILL_RESULT, null, null);
             });
         else {
-            String target = getCurrentTarget();
-            ActiveTextPane outP = initLaunchVisualsOut("Launch " + target + " target", "Building product");
+            ActiveTextPane outP = initLaunchVisualsOut("Launch " + target + " target", "Building product", target);
+            Supplier<Commander> launchSup = () -> execMavenInConsole("install",
+                    target
+                            + (run ? ",run" : "")
+                            + (release ? ",release" : "")
+                            + (proj.getProfile() == OBFUSCATE ? ",obfuscate" : "")
+                    , proj, outP, new CallResultAndRun(onSuccess)
+                    , "-D" + DEBUG_PROFILE.tag().name + "=" + proj.getDebugProfile());
             EventUtils.postAction(() -> {
-                if (saveProjectWithErrorMessage())
-                    launch = execMavenInConsole("install",
-                            target
-                                    + (LAUNCH_ACTION_BUILD.equals(actionB.getActionCommand()) ? "" : ",run")
-                                    + (proj.getProfile().isRelease() ? ",release" : "")
-                                    + (proj.getProfile() == OBFUSCATE ? ",obfuscate" : "")
-                            , proj, outP, launchCallback
-                            , "-D" + DEBUG_PROFILE.tag().name + "=" + proj.getDebugProfile());
-                else
-                    setLaunchButtonStatus(NOT_SAVED, "Unable to save project");
+                if (saveProjectWithErrorMessage()) {
+                    if (clean)
+                        launch = execMavenInConsole("clean", null, proj, initLaunchVisualsOut("Clean up project", "Cleaning project", null), result -> {
+                            if (result == 0) launch = launchSup.get();
+                        }, "-Dpdistclean");
+                    else
+                        launch = launchSup.get();
+                } else
+                    setLaunchButtonStatus(NOT_SAVED, "Unable to save project", null);
             });
         }
     }
 
+    private void callResult(Integer result) {
+        setLaunchButtonStatus(result, null, null);
+        launch = null;
+    }
+
     private void openTarget(String target) {
         String info = "Request to launch project in " + target;
-        ActiveTextPane outP = initLaunchVisualsOut(info, "Open project in " + target);
+        ActiveTextPane outP = initLaunchVisualsOut(info, "Open project in " + target, target);
         String preproc = OPEN_STUDIO.equals(target) ? LAUNCH_TARGET_ANDROID : (OPEN_XCODE.equals(target) ? LAUNCH_TARGET_IOS : (OPEN_VSTUDIO.equals(target) ? LAUNCH_TARGET_UWP : null));
         if (preproc != null)
             launch = execMavenInConsole("process-classes", preproc, proj, outP, result -> {
                 if (result == 0)
                     postProcessCode(outP, "", target, outP);
                 else
-                    launchCallback.accept(result);
+                    callResult(result);
             });
         else
             postProcessCode(outP, info, target, outP);
     }
 
-    public void installPrivateArtifact(String signature) {
-        ActiveTextPane outP = initLaunchVisualsOut("Retrieving artifact " + signature, "Retrieve and convert AAR artifact");
+    public void installPrivateArtifact(String signature, String target) {
+        ActiveTextPane outP = initLaunchVisualsOut("Retrieving artifact " + signature, "Retrieve and convert AAR artifact", target);
         launch = execMavenInConsole("org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get", null, proj,
                 outP, result -> {
                     if (result == 0)
                         ExternalCommands.convertAARtoJAR(signature);
                     else
-                        launchCallback.accept(result);
+                        callResult(result);
                 }, "-Dartifact=" + signature, "-Dtransitive=false");
     }
 
     private void postProcessCode(ActiveTextPane txtPane, String info, String ide, ActiveTextPane out) {
         if (!info.isEmpty())
             txtPane.addLine("\n" + info + "\n", StreamQuality.INFO);
-        ExternalCommands.openCode(ide, proj, out, launchCallback);
+        ExternalCommands.openCode(ide, proj, out, this::callResult);
     }
 
     private void updateInfo(AtomicLong pid, AtomicInteger port) {
@@ -475,6 +487,21 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         return path.exists() ? path : null;
     }
 
+    private class CallResultAndRun implements Consumer<Integer> {
+        private final Runnable onSuccess;
+
+        public CallResultAndRun(Runnable onSuccess) {
+            this.onSuccess = onSuccess;
+        }
+
+        @Override
+        public void accept(Integer result) {
+            callResult(result);
+            if (result != null && result == 0 && onSuccess != null)
+                onSuccess.run();
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -499,9 +526,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         jSeparator4 = new ActiveMenuSeparator();
         intellijM = new ActiveMenuItem();
         netbeansM = new ActiveMenuItem();
-        jSeparator3 = new ActiveMenuSeparator();
-        jarM = new ActiveMenuItem();
-        apkM = new ActiveMenuItem();
         jSeparator1 = new ActiveMenuSeparator();
         otherIDEs = new ActiveMenu();
         xcodeM = new ActiveMenuItem();
@@ -638,27 +662,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             }
         });
         openM.add(netbeansM);
-        openM.add(jSeparator3);
-
-        jarM.setIcon(JAR_I);
-        jarM.setText(" as Desktop JAR");
-        jarM.setDisabledIcon(JAR_D);
-        jarM.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jarMshowIDE(evt);
-            }
-        });
-        openM.add(jarM);
-
-        apkM.setIcon(APK_I);
-        apkM.setText(" as Android APK");
-        apkM.setDisabledIcon(APK_D);
-        apkM.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                apkMshowIDE(evt);
-            }
-        });
-        openM.add(apkM);
         openM.add(jSeparator1);
 
         otherIDEs.setText("Other IDEs...");
@@ -1039,7 +1042,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
@@ -1061,7 +1064,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }// </editor-fold>//GEN-END:initComponents
 
     private void actOnProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actOnProject
-        buildAndRun();
+        buildAndRun(getCurrentTarget());
     }//GEN-LAST:event_actOnProject
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -1088,13 +1091,13 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private void buildMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildMActionPerformed
         actionB.setActionCommand(LAUNCH_ACTION_BUILD);
         updateLaunchVisuals();
-        buildAndRun();
+        buildAndRun(getCurrentTarget());
     }//GEN-LAST:event_buildMActionPerformed
 
     private void runMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runMActionPerformed
         actionB.setActionCommand(LAUNCH_ACTION_RUN);
         updateLaunchVisuals();
-        buildAndRun();
+        buildAndRun(getCurrentTarget());
     }//GEN-LAST:event_runMActionPerformed
 
     private void targetSelection(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_targetSelection
@@ -1121,8 +1124,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             studioM.setEnabled(isProjectEnabled && !Prefs.getAndroidStudioLocation().isEmpty());
             vstudioM.setEnabled(isProjectEnabled && !Prefs.getVisualStudioLocation().isEmpty());
             xcodeM.setEnabled(isProjectEnabled && SystemDependent.canMakeIos());
-            apkM.setEnabled(getApkPath(proj.getProfile().isRelease()) != null);
-            jarM.setEnabled(getJarPath() != null);
             openM.show(openB, 0, openB.getHeight());
         }
     }//GEN-LAST:event_openBMousePressed
@@ -1161,20 +1162,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             projectM.show(expandPB, 0, expandPB.getHeight());
     }//GEN-LAST:event_expandPBMousePressed
 
-    private void apkMshowIDE(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_apkMshowIDE
-        try {
-            Desktop.getDesktop().open(getApkPath(proj.getProfile().isRelease()).getParentFile());
-        } catch (IOException ignored) {
-        }
-    }//GEN-LAST:event_apkMshowIDE
-
-    private void jarMshowIDE(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jarMshowIDE
-        try {
-            Desktop.getDesktop().open(getJarPath().getParentFile());
-        } catch (IOException ignored) {
-        }
-    }//GEN-LAST:event_jarMshowIDE
-
     private void desktopMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desktopMActionPerformed
         try {
             Desktop.getDesktop().open(proj.getPath());
@@ -1183,7 +1170,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }//GEN-LAST:event_desktopMActionPerformed
 
     private void cleanBactOnProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cleanBactOnProject
-        launch = execMavenInConsole("clean", null, proj, initLaunchVisualsOut("Clean up project", "Cleaning project"), launchCallback);
+        launch = execMavenInConsole("clean", null, proj, initLaunchVisualsOut("Clean up project", "Cleaning project", null), this::callResult);
     }//GEN-LAST:event_cleanBactOnProject
 
     private void expandCBMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_expandCBMousePressed
@@ -1192,10 +1179,10 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }//GEN-LAST:event_expandCBMousePressed
 
     private void cleanAllPMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cleanAllPMActionPerformed
-        launch = execMavenInConsole("clean", "distclean", proj, initLaunchVisualsOut("Clean project and build files", "Clean project"), res -> {
+        launch = execMavenInConsole("clean", "distclean", proj, initLaunchVisualsOut("Clean project and build files", "Clean project", null), res -> {
             if (res == 0)
                 saveProjectWithErrorMessage();
-            launchCallback.accept(res);
+            callResult(res);
         });
     }//GEN-LAST:event_cleanAllPMActionPerformed
 
@@ -1213,14 +1200,16 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             case "err":
                 cmds.add("System.err:W");
         }
-        launch = ProjectLauncher.launch(cmds.toArray(new String[0]), null, initLaunchVisualsOut("Display Android Logs", "Android logs"),
-                res -> launchCallback.accept(res), null, StreamListener.NONE);
+        launch = ProjectLauncher.launch(cmds.toArray(new String[0]), null, initLaunchVisualsOut("Display Android Logs", "Android logs", "android"),
+                this::callResult, null, StreamListener.NONE);
     }//GEN-LAST:event_logMActionPerformed
 
     private void desktopPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desktopPackage
-        switch(evt.getActionCommand()) {
+        switch (evt.getActionCommand()) {
             case "generic":
-                System.out.println("generic");
+                buildAndRun("desktop", true, true, false, () -> Opt.of(getJarPath())
+                        .onError(Log::error)
+                        .ifExists(file -> Desktop.getDesktop().open(file.getParentFile())));
                 break;
             case "macos":
                 System.out.println("macos");
@@ -1238,14 +1227,10 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }//GEN-LAST:event_desktopPackage
 
     private void androidPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_androidPackage
-        switch (evt.getActionCommand()) {
-            case "release":
-                System.out.println("release");
-                break;
-            default:
-                System.out.println("debug");
-                break;
-        }
+        boolean release = "release".equals(evt.getActionCommand());
+        buildAndRun("android", true, release, false, () -> Opt.of(getApkPath(true))
+                .onError(Log::error)
+                .ifExists(f -> Desktop.getDesktop().open(f.getParentFile())));
     }//GEN-LAST:event_androidPackage
 
     private void packBMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_packBMousePressed
@@ -1269,7 +1254,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPopupMenu actionsAndroidM;
     private javax.swing.JPopupMenu actionsM;
     private javax.swing.JToggleButton androidT;
-    private javax.swing.JMenuItem apkM;
     private javax.swing.JMenuItem buildAM;
     private javax.swing.JMenuItem buildM;
     private javax.swing.JMenuItem cleanAllPM;
@@ -1298,9 +1282,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
-    private javax.swing.JMenuItem jarM;
     private javax.swing.JPanel leftButtonPanel;
     private javax.swing.JMenuItem linuxP;
     private javax.swing.JMenuItem logAM;

@@ -157,10 +157,10 @@ public class Project {
         sheets.add(csheet);
 
         csheet = new PropertySheet("Desktop", listener);
-//        csheet.add(new DesktopFrameworkParameter(params));
         csheet.add(new SkinListParameter(params));
         csheet.add(new KeyboardSupportParameter(params));
-        csheet.setBottomPanel(SendStackTrace.getPanel());
+        csheet.add(new FullScreenDesktopParameter(params));
+//        csheet.setBottomPanel(SendStackTrace.getPanel());
         sheets.add(csheet);
     }
 

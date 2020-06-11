@@ -19,7 +19,7 @@ public class PrivateArtifactForm extends javax.swing.JDialog {
             form.setVisible(true);
             String signature = form.getSignature();
             if (signature != null)
-                frame.installPrivateArtifact(signature + ":aar");
+                frame.installPrivateArtifact(signature + ":aar", "android");
         });
     }
 
