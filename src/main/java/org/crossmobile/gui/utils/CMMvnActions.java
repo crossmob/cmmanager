@@ -119,11 +119,13 @@ public class CMMvnActions {
                     }
                 });
             if (line.contains("SDK location not found"))
-                solutionCallbackRef.set(() -> {
-                    JOptionPane.showMessageDialog(null, "Android SDK location is required\n\n"
-                                    + "Please rerun the initialization wizard first\nand define the Android SDK location.",
-                            "Error while locating Android SDK", JOptionPane.ERROR_MESSAGE);
-                });
+                solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null, "Android SDK location is required\n\n"
+                                + "Please rerun the initialization wizard first\nand define the Android SDK location.",
+                        "Error while locating Android SDK", JOptionPane.ERROR_MESSAGE));
+            if (line.contains("No value has been specified for property 'signingConfig"))
+                solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null, "No keystore passwords found\n\n"
+                                + "Please provide the Keystore/Alias password to sign the APK\nunder the Android preferences",
+                        "Error signing Android APK", JOptionPane.ERROR_MESSAGE));
 
             if (debugPort != null) {
                 if (line.startsWith("Listening for transport dt_socket at address: "))
