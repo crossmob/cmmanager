@@ -356,7 +356,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 null);
     }
 
-    private void buildAndRun(String target, boolean clean, boolean release, boolean run, Runnable onSuccess) {
+    private void buildAndRun(String target, boolean distClean, boolean release, boolean run, Runnable onSuccess) {
         if (taskName != null)
             EventUtils.postAction(() -> {
                 Nullable.safeCall(launch, Commander::kill);
@@ -373,7 +373,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                     , "-D" + DEBUG_PROFILE.tag().name + "=" + proj.getDebugProfile());
             EventUtils.postAction(() -> {
                 if (saveProjectWithErrorMessage()) {
-                    if (clean)
+                    if (distClean)
                         launch = execMavenInConsole("clean", null, proj, initLaunchVisualsOut("Clean up project", "Cleaning project", null), result -> {
                             if (result == 0) launch = launchSup.get();
                         }, "-Dpdistclean");
@@ -531,6 +531,13 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         xcodeM = new ActiveMenuItem();
         vstudioM = new ActiveMenuItem();
         studioM = new ActiveMenuItem();
+        packIM = new ActivePopupMenu();
+        nosupportedIP = new ActiveMenuItem();
+        packAM = new ActivePopupMenu();
+        debugP = new ActiveMenuItem();
+        releaseP = new ActiveMenuItem();
+        packWM = new ActivePopupMenu();
+        nosupportedWP = new ActiveMenuItem();
         packDM = new ActivePopupMenu();
         genericP = new ActiveMenuItem();
         jSeparator2 = new ActiveMenuSeparator();
@@ -538,11 +545,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         linuxP = new ActiveMenuItem();
         win32P = new ActiveMenuItem();
         win64P = new ActiveMenuItem();
-        packAM = new ActivePopupMenu();
-        debugP = new ActiveMenuItem();
-        releaseP = new ActiveMenuItem();
-        packEM = new ActivePopupMenu();
-        nosupportedP = new ActiveMenuItem();
         cleanM = new ActivePopupMenu();
         cleanAllPM = new ActiveMenuItem();
         actionsAndroidM = new ActivePopupMenu();
@@ -701,6 +703,32 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         openM.add(otherIDEs);
 
+        nosupportedIP.setText("No supported packages for iOS");
+        nosupportedIP.setEnabled(false);
+        packIM.add(nosupportedIP);
+
+        debugP.setText("as debug APK");
+        debugP.setActionCommand("debug");
+        debugP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                androidPackage(evt);
+            }
+        });
+        packAM.add(debugP);
+
+        releaseP.setText("as release APK");
+        releaseP.setActionCommand("release");
+        releaseP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                androidPackage(evt);
+            }
+        });
+        packAM.add(releaseP);
+
+        nosupportedWP.setText("No supported packages for UWP");
+        nosupportedWP.setEnabled(false);
+        packWM.add(nosupportedWP);
+
         genericP.setText("as self-contained JAR");
         genericP.setActionCommand("generic");
         genericP.addActionListener(new java.awt.event.ActionListener() {
@@ -746,28 +774,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             }
         });
         packDM.add(win64P);
-
-        debugP.setText("as debug APK");
-        debugP.setActionCommand("debug");
-        debugP.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                androidPackage(evt);
-            }
-        });
-        packAM.add(debugP);
-
-        releaseP.setText("as release APK");
-        releaseP.setActionCommand("release");
-        releaseP.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                androidPackage(evt);
-            }
-        });
-        packAM.add(releaseP);
-
-        nosupportedP.setText("No supported packages");
-        nosupportedP.setEnabled(false);
-        packEM.add(nosupportedP);
 
         cleanAllPM.setIcon(CLEANPROJ_I);
         cleanAllPM.setText("Clean Project files");
@@ -928,7 +934,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         targetP.add(androidT);
 
         targetG.add(uwpT);
-        uwpT.setToolTipText("Windows Universal Platform Project");
+        uwpT.setToolTipText("Universal Windows Platform Project");
         uwpT.setActionCommand(LAUNCH_TARGET_UWP);
         uwpT.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         uwpT.addActionListener(new java.awt.event.ActionListener() {
@@ -1042,7 +1048,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
@@ -1242,8 +1248,12 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 case "desktop":
                     packDM.show(packB, 0, packB.getHeight());
                     break;
-                default:
-                    packEM.show(packB, 0, packB.getHeight());
+                case "ios":
+                    packIM.show(packB, 0, packB.getHeight());
+                    break;
+                case "uwp":
+                    packWM.show(packB, 0, packB.getHeight());
+                    break;
             }
         }
     }//GEN-LAST:event_packBMousePressed
@@ -1288,7 +1298,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JMenuItem logAM;
     private javax.swing.JMenuItem macosP;
     private javax.swing.JMenuItem netbeansM;
-    private javax.swing.JMenuItem nosupportedP;
+    private javax.swing.JMenuItem nosupportedIP;
+    private javax.swing.JMenuItem nosupportedWP;
     private javax.swing.JButton openB;
     private javax.swing.JPopupMenu openM;
     private javax.swing.JMenu otherIDEs;
@@ -1300,7 +1311,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPopupMenu packAM;
     private javax.swing.JButton packB;
     private javax.swing.JPopupMenu packDM;
-    private javax.swing.JPopupMenu packEM;
+    private javax.swing.JPopupMenu packIM;
+    private javax.swing.JPopupMenu packWM;
     private javax.swing.JPanel parameters;
     private javax.swing.JLabel pidL;
     private javax.swing.JToggleButton projectB;
