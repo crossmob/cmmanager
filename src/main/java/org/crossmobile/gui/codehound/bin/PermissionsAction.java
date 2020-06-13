@@ -25,7 +25,7 @@ public class PermissionsAction {
                 "Calculate dependencies for plugins also", "Please wait while compiling project...");
         Collection<Permissions> permissions = new TreeSet<>();
 
-        Commander launcher = new Commander(Paths.getMavenLocation(), "clean", "compile", "-Pdesktop,findclasses");
+        Commander launcher = new Commander(Paths.getMavenExec(), "clean", "compile", "-Pdesktop,findclasses");
         launcher.setCurrentDir(proj.getPath());
         launcher.setOutListener(line -> {
             int idx = line.indexOf(CLASS_USAGE_SIGNATURE);

@@ -176,7 +176,7 @@
                             <execution>
                                 <id>create</id>
                                 <configuration>
-                                    <executable>instres/makeapp</executable>
+                                    <executable>extra/macos/bin/makeapp</executable>
                                     <arguments>
                                         <argument>create</argument>
                                         <argument>--name=CrossMobile</argument>

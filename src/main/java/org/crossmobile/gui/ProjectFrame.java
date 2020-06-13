@@ -538,13 +538,15 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         releaseP = new ActiveMenuItem();
         packWM = new ActivePopupMenu();
         nosupportedWP = new ActiveMenuItem();
-        packDM = new ActivePopupMenu();
+        packDMM = new ActivePopupMenu();
         genericP = new ActiveMenuItem();
         jSeparator2 = new ActiveMenuSeparator();
         macosP = new ActiveMenuItem();
         linuxP = new ActiveMenuItem();
         win32P = new ActiveMenuItem();
         win64P = new ActiveMenuItem();
+        packDEM = new ActivePopupMenu();
+        genericEP = new ActiveMenuItem();
         cleanM = new ActivePopupMenu();
         cleanAllPM = new ActiveMenuItem();
         actionsAndroidM = new ActivePopupMenu();
@@ -736,8 +738,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 desktopPackage(evt);
             }
         });
-        packDM.add(genericP);
-        packDM.add(jSeparator2);
+        packDMM.add(genericP);
+        packDMM.add(jSeparator2);
 
         macosP.setText("for macOS");
         macosP.setActionCommand("macos");
@@ -746,7 +748,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 desktopPackage(evt);
             }
         });
-        packDM.add(macosP);
+        packDMM.add(macosP);
 
         linuxP.setText("for Linux");
         linuxP.setActionCommand("linux");
@@ -755,7 +757,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 desktopPackage(evt);
             }
         });
-        packDM.add(linuxP);
+        packDMM.add(linuxP);
 
         win32P.setText("for Windows 32 bit");
         win32P.setActionCommand("win32");
@@ -764,7 +766,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 desktopPackage(evt);
             }
         });
-        packDM.add(win32P);
+        packDMM.add(win32P);
 
         win64P.setText("fot Windows 64 bit");
         win64P.setActionCommand("win64");
@@ -773,7 +775,16 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 desktopPackage(evt);
             }
         });
-        packDM.add(win64P);
+        packDMM.add(win64P);
+
+        genericEP.setText("as self-contained JAR");
+        genericEP.setActionCommand("generic");
+        genericEP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                desktopPackage(evt);
+            }
+        });
+        packDEM.add(genericEP);
 
         cleanAllPM.setIcon(CLEANPROJ_I);
         cleanAllPM.setText("Clean Project files");
@@ -1048,7 +1059,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
@@ -1246,7 +1257,10 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                     packAM.show(packB, 0, packB.getHeight());
                     break;
                 case "desktop":
-                    packDM.show(packB, 0, packB.getHeight());
+                    if (Paths.getMakeAppExec().isEmpty())
+                        packDEM.show(packB, 0, packB.getHeight());
+                    else
+                        packDMM.show(packB, 0, packB.getHeight());
                     break;
                 case "ios":
                     packIM.show(packB, 0, packB.getHeight());
@@ -1283,6 +1297,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JButton expandOB;
     private javax.swing.JButton expandPB;
     private javax.swing.JButton expandRB;
+    private javax.swing.JMenuItem genericEP;
     private javax.swing.JMenuItem genericP;
     private javax.swing.JPanel idInfoP;
     private javax.swing.JPanel infoP;
@@ -1310,7 +1325,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JTextPane outputTxt;
     private javax.swing.JPopupMenu packAM;
     private javax.swing.JButton packB;
-    private javax.swing.JPopupMenu packDM;
+    private javax.swing.JPopupMenu packDEM;
+    private javax.swing.JPopupMenu packDMM;
     private javax.swing.JPopupMenu packIM;
     private javax.swing.JPopupMenu packWM;
     private javax.swing.JPanel parameters;

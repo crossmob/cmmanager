@@ -154,7 +154,7 @@ public class LicenseDialog extends HiResDialog {
                     addTxt("Resolving " + signature);
                     addTxt("");
                     setEnabled(false);
-                    ProjectLauncher.launch(new String[]{Paths.getMavenLocation(),
+                    ProjectLauncher.launch(new String[]{Paths.getMavenExec(),
                             "dependency:copy", "org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get", "-Dartifact=" + signature, "-Dtransitive=false", "-DoutputDirectory=."}, tempDir, (ActiveTextPane) pluginInfoT, r -> {
                         addTxt("");
                         if (r != 0) {
@@ -176,7 +176,7 @@ public class LicenseDialog extends HiResDialog {
                         else if (jars.size() > 1)
                             termTxt("More than one JAR found, aborting", tempDir);
                         else {
-                            ProjectLauncher.launch(new String[]{Paths.getMavenLocation(),
+                            ProjectLauncher.launch(new String[]{Paths.getMavenExec(),
                                             "install:install-file", "-Dfile=" + jars.iterator().next(), "-DgroupId=" + prvGroupId,
                                             "-DartifactId=" + artifactId, "-Dversion=" + version, "-Dpackaging=jar"},
                                     tempDir, (ActiveTextPane) pluginInfoT,

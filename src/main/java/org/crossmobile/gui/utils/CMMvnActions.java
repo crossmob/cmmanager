@@ -43,7 +43,7 @@ public class CMMvnActions {
     public static String resolveRepository() {
         if (repoLocation != null)
             return repoLocation;
-        new Commander(Paths.getMavenLocation(), "help:evaluate", "-Dexpression=settings.localRepository").
+        new Commander(Paths.getMavenExec(), "help:evaluate", "-Dexpression=settings.localRepository").
                 appendEnvironmentalParameter("JAVA_HOME", Prefs.getJDKLocation()).
                 setOutListener((String data) -> {
                     if (data.contains("repository"))
@@ -61,7 +61,7 @@ public class CMMvnActions {
                                       AtomicReference<Runnable> solutionCallbackRef,
                                       Profile profile, String... params) {
         List<String> cmd = new ArrayList<>();
-        cmd.add(Paths.getMavenLocation());
+        cmd.add(Paths.getMavenExec());
         if (profiles != null) {
             cmd.add("-P");
             cmd.add(profiles);
@@ -151,13 +151,13 @@ public class CMMvnActions {
         } catch (IOException | ProjectException e) {
             return null;
         }
-        return new Commander(Paths.getMavenLocation(), "dependency:resolve").
+        return new Commander(Paths.getMavenExec(), "dependency:resolve").
                 appendEnvironmentalParameter("JAVA_HOME", Prefs.getJDKLocation()).
                 setCurrentDir(tempDirectory.toFile());
     }
 
     public static Commander createArchetypeCatalog() {
-        return new Commander(Paths.getMavenLocation(), "archetype:crawl").
+        return new Commander(Paths.getMavenExec(), "archetype:crawl").
                 appendEnvironmentalParameter("JAVA_HOME", Prefs.getJDKLocation());
     }
 
@@ -171,7 +171,7 @@ public class CMMvnActions {
      * @return
      */
     public static Commander createProject(String archetype, String name, String artifactId, String groupId, String version, File projectDir) {
-        Commander cprojCmd = new Commander(Paths.getMavenLocation(),
+        Commander cprojCmd = new Commander(Paths.getMavenExec(),
                 "org.apache.maven.plugins:maven-archetype-plugin:2.4:generate",
                 "-B",
                 "-DarchetypeGroupId=org.crossmobile",
