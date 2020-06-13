@@ -141,26 +141,6 @@ public class CMMvnActions {
         });
     }
 
-    public static Commander initRepository() {
-        Path tempDirectory;
-        try {
-            tempDirectory = Files.createTempDirectory("org.crossmobile.gui.utils");
-            System.out.println(tempDirectory);
-            FileUtils.copyResource(DEPENDENCY_POM_DIR, new File(tempDirectory.toFile(), "pom.xml").getAbsolutePath());
-            tempDirectory.toFile().deleteOnExit();
-        } catch (IOException | ProjectException e) {
-            return null;
-        }
-        return new Commander(Paths.getMavenExec(), "dependency:resolve").
-                appendEnvironmentalParameter("JAVA_HOME", Prefs.getJDKLocation()).
-                setCurrentDir(tempDirectory.toFile());
-    }
-
-    public static Commander createArchetypeCatalog() {
-        return new Commander(Paths.getMavenExec(), "archetype:crawl").
-                appendEnvironmentalParameter("JAVA_HOME", Prefs.getJDKLocation());
-    }
-
     /**
      * @param archetype  archetype name (i.e. base or empty)
      * @param artifactId artifactId of the project to be created
