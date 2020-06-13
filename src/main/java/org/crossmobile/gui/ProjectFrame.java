@@ -32,7 +32,6 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -230,7 +229,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }
 
     private synchronized void setLaunchButtonStatus(Integer result, String currentTaskName, String target) {
-        Nullable.safeCall(solutionCallbackRef.get(), r -> {
+        Opt.of(solutionCallbackRef.get()).ifExists(r -> {
             solutionCallbackRef.set(null);
             SwingUtilities.invokeLater(r);
         });
@@ -359,7 +358,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private void buildAndRun(String target, boolean distClean, boolean release, boolean run, Runnable onSuccess) {
         if (taskName != null)
             EventUtils.postAction(() -> {
-                Nullable.safeCall(launch, Commander::kill);
+                Opt.of(launch).ifExists(Commander::kill);
                 setLaunchButtonStatus(KILL_RESULT, null, null);
             });
         else {
@@ -1095,8 +1094,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                     } catch (ProjectException ex) {
                         JOptionPane.showMessageDialog(this, ex.getMessage(), "Project " + proj.getName() + " error", JOptionPane.ERROR_MESSAGE);
                     }
-                Nullable.safeCall(launch, Commander::kill);
-                Nullable.safeCall(closeCallback, c -> c.accept(proj));
+                Opt.of(launch).ifExists(Commander::kill);
+                Opt.of(closeCallback).ifExists(c -> c.accept(proj));
             }
             closeCallback = null;
         } catch (Throwable th) {

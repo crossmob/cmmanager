@@ -12,21 +12,19 @@ import org.crossmobile.gui.codehound.source.FileHit;
 import org.crossmobile.gui.codehound.source.SourceParser;
 import org.crossmobile.gui.codehound.source.SourcePattern;
 import org.crossmobile.gui.codehound.source.SourcePatternFactory;
-import org.crossmobile.gui.elements.PrivateArtifactForm;
-import org.crossmobile.gui.elements.SendStackTrace;
 import org.crossmobile.gui.parameters.DependenciesParameter;
 import org.crossmobile.gui.parameters.ProjectParameter;
 import org.crossmobile.gui.parameters.ScreenScaleParameter;
 import org.crossmobile.gui.parameters.impl.*;
-import org.crossmobile.gui.utils.Profile;
 import org.crossmobile.gui.utils.Paths;
+import org.crossmobile.gui.utils.Profile;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.*;
 
 import java.awt.*;
 import java.io.File;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -222,7 +220,7 @@ public class Project {
             updatedPom.save();
             updateProperties("local.properties", new File(basedir, "local.properties"), params, null);
             listener.updateDefaults();
-            Nullable.safeCall(saveCallback, s -> s.accept(this));
+            Opt.of(saveCallback).ifExists(s -> s.accept(this));
         } catch (Throwable th) {
             if (th instanceof ProjectException)
                 BaseUtils.throwException(th);
