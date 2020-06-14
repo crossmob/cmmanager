@@ -154,36 +154,35 @@ public class LicenseDialog extends HiResDialog {
                     addTxt("Resolving " + signature);
                     addTxt("");
                     setEnabled(false);
-                    ProjectLauncher.launch(new String[]{Paths.getMavenExec(),
-                            "dependency:copy", "org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get", "-Dartifact=" + signature, "-Dtransitive=false", "-DoutputDirectory=."}, tempDir, (ActiveTextPane) pluginInfoT, r -> {
-                        addTxt("");
-                        if (r != 0) {
-                            termTxt("Error while downloading " + signature, tempDir);
-                            return;
-                        }
+                    ProjectLauncher.launch(tempDir, (ActiveTextPane) pluginInfoT, r -> {
+                                addTxt("");
+                                if (r != 0) {
+                                    termTxt("Error while downloading " + signature, tempDir);
+                                    return;
+                                }
 
-                        File aar = new File(tempDir, artifactId + "-" + version + ".aar");
-                        File outAar = new File(tempDir, "out");
-                        if (!FileUtils.unzip(aar, outAar)) {
-                            termTxt("Unable to unzip file " + aar.getAbsolutePath(), tempDir);
-                            return;
-                        }
+                                File aar = new File(tempDir, artifactId + "-" + version + ".aar");
+                                File outAar = new File(tempDir, "out");
+                                if (!FileUtils.unzip(aar, outAar)) {
+                                    termTxt("Unable to unzip file " + aar.getAbsolutePath(), tempDir);
+                                    return;
+                                }
 
-                        Collection<File> jars = new ArrayList<>();
-                        forAllFiles(outAar, extensions("jar"), (path, file) -> jars.add(file));
-                        if (jars.isEmpty())
-                            termTxt("No JARs found, aborting", tempDir);
-                        else if (jars.size() > 1)
-                            termTxt("More than one JAR found, aborting", tempDir);
-                        else {
-                            ProjectLauncher.launch(new String[]{Paths.getMavenExec(),
-                                            "install:install-file", "-Dfile=" + jars.iterator().next(), "-DgroupId=" + prvGroupId,
-                                            "-DartifactId=" + artifactId, "-Dversion=" + version, "-Dpackaging=jar"},
-                                    tempDir, (ActiveTextPane) pluginInfoT,
-                                    r2 -> termTxt("\n" + (r2 == 0 ? "Successfully installed" : "Error while installing") + " " + signature + " into " + targetSignature, tempDir),
-                                    getJavaEnv(), null);
-                        }
-                    }, getJavaEnv(), null);
+                                Collection<File> jars = new ArrayList<>();
+                                forAllFiles(outAar, extensions("jar"), (path, file) -> jars.add(file));
+                                if (jars.isEmpty())
+                                    termTxt("No JARs found, aborting", tempDir);
+                                else if (jars.size() > 1)
+                                    termTxt("More than one JAR found, aborting", tempDir);
+                                else {
+                                    ProjectLauncher.launch(tempDir, (ActiveTextPane) pluginInfoT,
+                                            r2 -> termTxt("\n" + (r2 == 0 ? "Successfully installed" : "Error while installing") + " " + signature + " into " + targetSignature, tempDir),
+                                            getJavaEnv(), null,
+                                            Paths.getMavenExec(), "install:install-file", "-Dfile=" + jars.iterator().next(), "-DgroupId=" + prvGroupId,
+                                            "-DartifactId=" + artifactId, "-Dversion=" + version, "-Dpackaging=jar");
+                                }
+                            }, getJavaEnv(), null, Paths.getMavenExec(),
+                            "dependency:copy", "org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get", "-Dartifact=" + signature, "-Dtransitive=false", "-DoutputDirectory=.");
                 }
             });
         }

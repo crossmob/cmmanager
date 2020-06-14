@@ -340,71 +340,108 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="javax.swing.JMenuItem" name="genericP">
+        <Menu class="javax.swing.JMenu" name="filesOnlyM">
           <Properties>
-            <Property name="text" type="java.lang.String" value="as self-contained JAR"/>
-            <Property name="actionCommand" type="java.lang.String" value="generic"/>
+            <Property name="text" type="java.lang.String" value="Files only"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="desktopPackage"/>
-          </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenu()"/>
           </AuxValues>
-        </MenuItem>
-        <Component class="javax.swing.JPopupMenu$Separator" name="jSeparator2">
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuSeparator()"/>
-          </AuxValues>
-        </Component>
-        <MenuItem class="javax.swing.JMenuItem" name="macosP">
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="genericP">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="as self-contained JAR"/>
+                <Property name="actionCommand" type="java.lang.String" value="generic"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="desktopPackage"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
+              </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="linuxP">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="for Linux"/>
+                <Property name="actionCommand" type="java.lang.String" value="linux64"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="desktopPackage"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
+              </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="linuxA32P">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="for ARM Linux 32 bit"/>
+                <Property name="actionCommand" type="java.lang.String" value="linuxarm32"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="desktopPackage"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
+              </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="linuxA64P">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="for ARM Linux 64 bit"/>
+                <Property name="actionCommand" type="java.lang.String" value="linuxarm64"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="desktopPackage"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
+              </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="win32P">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="for Windows 32 bit"/>
+                <Property name="actionCommand" type="java.lang.String" value="win32"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="desktopPackage"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
+              </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="win64P">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="fot Windows 64 bit"/>
+                <Property name="actionCommand" type="java.lang.String" value="win64"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="desktopPackage"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
+              </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="macosP">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="for macOS"/>
+                <Property name="actionCommand" type="java.lang.String" value="macos"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="desktopPackage"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
+              </AuxValues>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="filesInstallerM">
           <Properties>
-            <Property name="text" type="java.lang.String" value="for macOS"/>
-            <Property name="actionCommand" type="java.lang.String" value="macos"/>
+            <Property name="text" type="java.lang.String" value="Files and Installer"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="desktopPackage"/>
-          </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenu()"/>
           </AuxValues>
-        </MenuItem>
-        <MenuItem class="javax.swing.JMenuItem" name="linuxP">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="for Linux"/>
-            <Property name="actionCommand" type="java.lang.String" value="linux"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="desktopPackage"/>
-          </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
-          </AuxValues>
-        </MenuItem>
-        <MenuItem class="javax.swing.JMenuItem" name="win32P">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="for Windows 32 bit"/>
-            <Property name="actionCommand" type="java.lang.String" value="win32"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="desktopPackage"/>
-          </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
-          </AuxValues>
-        </MenuItem>
-        <MenuItem class="javax.swing.JMenuItem" name="win64P">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="fot Windows 64 bit"/>
-            <Property name="actionCommand" type="java.lang.String" value="win64"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="desktopPackage"/>
-          </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
-          </AuxValues>
-        </MenuItem>
+        </Menu>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPopupMenu" name="packDEM">

@@ -82,7 +82,7 @@ public class CMMvnActions {
                     cmd.add(param);
 
         AtomicBoolean foundOldVersion = new AtomicBoolean(false);
-        return ProjectLauncher.launch(cmd.toArray(new String[0]), projPath, outP, launchCallback, env, (seqLine, quality) -> {
+        return ProjectLauncher.launch(projPath, outP, launchCallback, env, (seqLine, quality) -> {
             String line = seqLine.toString();
             if (line.contains("sun.security.provider.certpath.SunCertPathBuilderException"))
                 solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null, "A Certification exception was found\n\n"
@@ -138,7 +138,7 @@ public class CMMvnActions {
                     }
                 }
             }
-        });
+        }, cmd.toArray(new String[0]));
     }
 
     /**

@@ -24,12 +24,12 @@ public class ProjectLauncher {
         return javaMap;
     }
 
-    public static Commander launch(String[] command, Project proj) {
-        return launch(command, proj.getPath(), null, null, getJavaEnv(), null);
+    public static Commander launch(Project proj, String... command) {
+        return launch(proj.getPath(), null, null, getJavaEnv(), null, command);
     }
 
-    public static Commander launch(String[] command, File currentDir, final ActiveTextPane out, final Consumer<Integer> result,
-                                   Map<String, String> env, StreamListener extraListener) {
+    public static Commander launch(File currentDir, final ActiveTextPane out, final Consumer<Integer> result,
+                                   Map<String, String> env, StreamListener extraListener, String... command) {
         Commander cmd = new Commander(command);
         if (currentDir != null)
             cmd.setCurrentDir(currentDir);

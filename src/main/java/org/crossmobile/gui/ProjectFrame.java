@@ -355,7 +355,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 null);
     }
 
-    private void buildAndRun(String target, boolean distClean, boolean release, boolean run, Runnable onSuccess) {
+    private void buildAndRun(String target, boolean distClean, boolean release, boolean run, Consumer<Integer> execCallback) {
         if (taskName != null)
             EventUtils.postAction(() -> {
                 Opt.of(launch).ifExists(Commander::kill);
@@ -368,14 +368,14 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                             + (run ? ",run" : "")
                             + (release ? ",release" : "")
                             + (proj.getProfile() == OBFUSCATE ? ",obfuscate" : "")
-                    , proj, outP, new CallResultAndRun(onSuccess)
+                    , proj, outP, execCallback == null ? this::callResult : execCallback
                     , "-D" + DEBUG_PROFILE.tag().name + "=" + proj.getDebugProfile());
             EventUtils.postAction(() -> {
                 if (saveProjectWithErrorMessage()) {
                     if (distClean)
-                        launch = execMavenInConsole("clean", null, proj, initLaunchVisualsOut("Clean up project", "Cleaning project", null), result -> {
+                        launch = execMavenInConsole("clean", null, proj, outP, result -> {
                             if (result == 0) launch = launchSup.get();
-                        }, "-Dpdistclean");
+                        }, "-Pdistclean");
                     else
                         launch = launchSup.get();
                 } else
@@ -486,21 +486,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         return path.exists() ? path : null;
     }
 
-    private class CallResultAndRun implements Consumer<Integer> {
-        private final Runnable onSuccess;
-
-        public CallResultAndRun(Runnable onSuccess) {
-            this.onSuccess = onSuccess;
-        }
-
-        @Override
-        public void accept(Integer result) {
-            callResult(result);
-            if (result != null && result == 0 && onSuccess != null)
-                onSuccess.run();
-        }
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -538,12 +523,15 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         packWM = new ActivePopupMenu();
         nosupportedWP = new ActiveMenuItem();
         packDMM = new ActivePopupMenu();
+        filesOnlyM = new ActiveMenu();
         genericP = new ActiveMenuItem();
-        jSeparator2 = new ActiveMenuSeparator();
-        macosP = new ActiveMenuItem();
         linuxP = new ActiveMenuItem();
+        linuxA32P = new ActiveMenuItem();
+        linuxA64P = new ActiveMenuItem();
         win32P = new ActiveMenuItem();
         win64P = new ActiveMenuItem();
+        macosP = new ActiveMenuItem();
+        filesInstallerM = new ActiveMenu();
         packDEM = new ActivePopupMenu();
         genericEP = new ActiveMenuItem();
         cleanM = new ActivePopupMenu();
@@ -730,6 +718,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         nosupportedWP.setEnabled(false);
         packWM.add(nosupportedWP);
 
+        filesOnlyM.setText("Files only");
+
         genericP.setText("as self-contained JAR");
         genericP.setActionCommand("generic");
         genericP.addActionListener(new java.awt.event.ActionListener() {
@@ -737,26 +727,34 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 desktopPackage(evt);
             }
         });
-        packDMM.add(genericP);
-        packDMM.add(jSeparator2);
-
-        macosP.setText("for macOS");
-        macosP.setActionCommand("macos");
-        macosP.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                desktopPackage(evt);
-            }
-        });
-        packDMM.add(macosP);
+        filesOnlyM.add(genericP);
 
         linuxP.setText("for Linux");
-        linuxP.setActionCommand("linux");
+        linuxP.setActionCommand("linux64");
         linuxP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 desktopPackage(evt);
             }
         });
-        packDMM.add(linuxP);
+        filesOnlyM.add(linuxP);
+
+        linuxA32P.setText("for ARM Linux 32 bit");
+        linuxA32P.setActionCommand("linuxarm32");
+        linuxA32P.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                desktopPackage(evt);
+            }
+        });
+        filesOnlyM.add(linuxA32P);
+
+        linuxA64P.setText("for ARM Linux 64 bit");
+        linuxA64P.setActionCommand("linuxarm64");
+        linuxA64P.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                desktopPackage(evt);
+            }
+        });
+        filesOnlyM.add(linuxA64P);
 
         win32P.setText("for Windows 32 bit");
         win32P.setActionCommand("win32");
@@ -765,7 +763,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 desktopPackage(evt);
             }
         });
-        packDMM.add(win32P);
+        filesOnlyM.add(win32P);
 
         win64P.setText("fot Windows 64 bit");
         win64P.setActionCommand("win64");
@@ -774,7 +772,21 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 desktopPackage(evt);
             }
         });
-        packDMM.add(win64P);
+        filesOnlyM.add(win64P);
+
+        macosP.setText("for macOS");
+        macosP.setActionCommand("macos");
+        macosP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                desktopPackage(evt);
+            }
+        });
+        filesOnlyM.add(macosP);
+
+        packDMM.add(filesOnlyM);
+
+        filesInstallerM.setText("Files and Installer");
+        packDMM.add(filesInstallerM);
 
         genericEP.setText("as self-contained JAR");
         genericEP.setActionCommand("generic");
@@ -1058,7 +1070,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
@@ -1216,37 +1228,33 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             case "err":
                 cmds.add("System.err:W");
         }
-        launch = ProjectLauncher.launch(cmds.toArray(new String[0]), null, initLaunchVisualsOut("Display Android Logs", "Android logs", "android"),
-                this::callResult, null, StreamListener.NONE);
+        launch = ProjectLauncher.launch(null, initLaunchVisualsOut("Display Android Logs", "Android logs", "android"),
+                this::callResult, null, StreamListener.NONE, cmds.toArray(new String[0]));
     }//GEN-LAST:event_logMActionPerformed
 
     private void desktopPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desktopPackage
-        switch (evt.getActionCommand()) {
-            case "generic":
-                buildAndRun("desktop", true, true, false, () -> Opt.of(getJarPath())
-                        .onError(Log::error)
-                        .ifExists(file -> Desktop.getDesktop().open(file.getParentFile())));
-                break;
-            case "macos":
-                System.out.println("macos");
-                break;
-            case "linux":
-                System.out.println("linux");
-                break;
-            case "win32":
-                System.out.println("win32");
-                break;
-            case "win64":
-                System.out.println("win64");
-                break;
-        }
+        String target = evt.getActionCommand();
+        buildAndRun("desktop", true, true, false, res -> Opt.of(getJarPath()).onError(Log::error).filter(File::isFile).ifExists(jar -> {
+            File destDir = new File(jar.getParent(), target + "_package");
+            if (!destDir.mkdir()) {
+                Log.error("Unable to create folder " + destDir.getAbsolutePath());
+                callResult(-1);
+                return;
+            }
+            ProjectLauncher.launch(proj.getPath(), (ActiveTextPane) outputTxt, mres -> {
+                        SwingUtilities.invokeLater(() -> Opt.of(destDir).ifExists(d -> Desktop.getDesktop().open(d)));
+                        callResult(res);
+                    }, null, null,
+                    Paths.getMakeAppExec(), "java", "--os", target, "--name", proj.getName(), "--version", proj.getVersion(),
+                    "--jar", jar.getAbsolutePath(), "--output", destDir.getAbsolutePath(), "--jdk=/Users/teras/.sdkman/candidates/java/14.0.1.hs-adpt/");
+        }).ifMissing(() -> callResult(res)));
     }//GEN-LAST:event_desktopPackage
 
     private void androidPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_androidPackage
         boolean release = "release".equals(evt.getActionCommand());
-        buildAndRun("android", true, release, false, () -> Opt.of(getApkPath(true))
+        buildAndRun("android", true, release, false, res -> Opt.of(getApkPath(true))
                 .onError(Log::error)
-                .ifExists(f -> Desktop.getDesktop().open(f.getParentFile())));
+                .ifExists(f -> Desktop.getDesktop().open(f.getParentFile())).always(i -> callResult(res)));
     }//GEN-LAST:event_androidPackage
 
     private void packBMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_packBMousePressed
@@ -1296,6 +1304,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JButton expandOB;
     private javax.swing.JButton expandPB;
     private javax.swing.JButton expandRB;
+    private javax.swing.JMenu filesInstallerM;
+    private javax.swing.JMenu filesOnlyM;
     private javax.swing.JMenuItem genericEP;
     private javax.swing.JMenuItem genericP;
     private javax.swing.JPanel idInfoP;
@@ -1305,9 +1315,10 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
-    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPanel leftButtonPanel;
+    private javax.swing.JMenuItem linuxA32P;
+    private javax.swing.JMenuItem linuxA64P;
     private javax.swing.JMenuItem linuxP;
     private javax.swing.JMenuItem logAM;
     private javax.swing.JMenuItem macosP;

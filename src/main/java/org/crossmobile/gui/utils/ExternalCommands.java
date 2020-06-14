@@ -52,7 +52,7 @@ public class ExternalCommands {
             launchCallback.accept(-1);
             return;
         }
-        ProjectLauncher.launch(args, proj);
+        ProjectLauncher.launch(proj, args);
         launchCallback.accept(0);
     }
 
