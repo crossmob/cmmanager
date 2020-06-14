@@ -43,6 +43,7 @@ public class ProjectLauncher {
                 cmd.appendEnvironmentalParameter(key, env.get(key));
         if (result != null)
             cmd.setEndListener(result);
+        cmd.setDebug(true);
         cmd.exec();
         return cmd;
     }

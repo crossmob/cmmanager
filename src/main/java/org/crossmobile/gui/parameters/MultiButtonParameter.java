@@ -14,19 +14,16 @@ import org.crossmobile.utils.Param;
 import org.crossmobile.utils.ParamList;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public abstract class MultiButtonParameter extends MultiBooleanParameter {
 
+    private final String[] icons;
     private ActiveToggleButton[] items;
-    private String[] icons;
     private final int columns;
-
-    public MultiButtonParameter(ParamList plist, Param key, String[] parameter, String[] display, String[] icons, String textValue, char separator) {
-        this(plist, key, parameter, display, null, icons, textValue, separator);
-    }
 
     public MultiButtonParameter(ParamList plist, Param key, String[] parameter, String[] display, String[] tooltips, String[] icons, String textValue, char separator) {
         this(plist, key, parameter, display, tooltips, icons, textValue, 0, separator);
@@ -53,6 +50,7 @@ public abstract class MultiButtonParameter extends MultiBooleanParameter {
         if (columns <= 1) {
             bpanel = new HiResPanel();
             bpanel.setOpaque(false);
+            bpanel.setBorder(new EmptyBorder(4, 0, 0, 0));
             visuals.setLayout(new BorderLayout());
             visuals.add(bpanel, BorderLayout.WEST);
         } else

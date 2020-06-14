@@ -8,6 +8,7 @@ package org.crossmobile.gui.project;
 
 import org.crossmobile.Version;
 import org.crossmobile.bridge.system.BaseUtils;
+import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.codehound.source.FileHit;
 import org.crossmobile.gui.codehound.source.SourceParser;
 import org.crossmobile.gui.codehound.source.SourcePattern;
@@ -21,6 +22,7 @@ import org.crossmobile.gui.utils.Profile;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.*;
 
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.util.List;
@@ -33,6 +35,7 @@ import static org.crossmobile.gui.project.ProjectInfo.OLD_XMLVM;
 import static org.crossmobile.prefs.Config.MATERIALS_PATH;
 import static org.crossmobile.utils.ParamsCommon.*;
 import static org.crossmobile.utils.TemplateUtils.updateProperties;
+import static org.crossmobile.utils.ScopeUtils.with;
 
 public class Project {
 
@@ -158,6 +161,10 @@ public class Project {
         csheet.add(new SkinListParameter(params));
         csheet.add(new KeyboardSupportParameter(params));
         csheet.add(new FullScreenDesktopParameter(params));
+        csheet.add(with(new ActiveLabel("Installer properties"), it -> it.setBorder(new EmptyBorder(24, 0, 0, 0))));
+        csheet.add(new DescriptionParameter(params));
+        csheet.add(new VendorParameter(params));
+        csheet.add(new URLParameter(params));
 //        csheet.setBottomPanel(SendStackTrace.getPanel());
         sheets.add(csheet);
     }
@@ -166,16 +173,8 @@ public class Project {
         this.listener.setApplicationNameListener(listener);
     }
 
-    public String getName() {
-        return params.get(DISPLAY_NAME.tag());
-    }
-
-    public String getArtifactID() {
-        return params.get(ARTIFACT_ID.tag());
-    }
-
-    public String getVersion() {
-        return params.get(BUNDLE_VERSION.tag());
+    public String getProperty(ParamsCommon param) {
+        return params.get(param.tag());
     }
 
     public File getPath() {

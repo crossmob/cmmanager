@@ -26,7 +26,6 @@ public class AndroidPermissionsParameter extends MultiButtonParameter {
 
     private final Project proj;
     private static final char SEPARATOR = ':';
-    private HiResButton recalculate;
 
     public AndroidPermissionsParameter(ParamList plist, Project proj) {
         super(plist, USES_PERMISSIONS.tag(), getPermissions(), getNames(), getTooltips(), getIcons(), null, 3, SEPARATOR);
@@ -42,13 +41,11 @@ public class AndroidPermissionsParameter extends MultiButtonParameter {
     protected HiResComponent initVisuals() {
         HiResPanel bottom = new HiResPanel(new FlowLayout(FlowLayout.LEFT));
         bottom.setOpaque(false);
-        recalculate = new HiResButton("Try to gather automatically");
+        HiResButton recalculate = new HiResButton("Try to gather automatically");
         bottom.add(recalculate);
         recalculate.addActionListener((ActionEvent e) -> {
-            Collection<Permissions> perms = PermissionsAction.findPermissions(proj);
-            if (perms != null)
-                for (Permissions perm : perms)
-                    activateValue(perm.getPermission());
+            for (Permissions perm : PermissionsAction.findPermissions(proj))
+                activateValue(perm.getPermission());
         });
 
         HiResPanel visuals = new HiResPanel(new BorderLayout());

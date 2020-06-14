@@ -14,11 +14,13 @@ import org.crossmobile.utils.UIUtils;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 public class PropertySheet {
 
     private final List<ProjectParameter> properties = new ArrayList<>();
+    private final List<SheetItem> visuals = new ArrayList<>();
     private final String name;
     private final GlobalParamListener listener;
     private ActivePanel bottomPanel;
@@ -28,13 +30,36 @@ public class PropertySheet {
         this.listener = listener;
     }
 
+    public void add(HiResComponent component) {
+        visuals.add(new SheetItem(component));
+    }
+
     public void add(ProjectParameter pp) {
-        if (properties.add(pp))
-            listener.addParameter(pp);
+        properties.add(pp);
+        listener.addParameter(pp);
+        visuals.add(new SheetItem(pp));
     }
 
     public Iterable<ProjectParameter> getProperties() {
         return properties;
+    }
+
+    public Iterable<HiResComponent> getVisuals() {
+        return () -> new Iterator<HiResComponent>() {
+
+            private final Iterator<SheetItem> it = visuals.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public HiResComponent next() {
+                SheetItem item = it.next();
+                return item.visual != null ? item.visual : (item.param != null ? item.param.getVisuals() : null);
+            }
+        };
     }
 
     public String getName() {
@@ -57,5 +82,20 @@ public class PropertySheet {
 
     public ActivePanel getBottomPanel() {
         return bottomPanel;
+    }
+
+    private static final class SheetItem {
+        private final ProjectParameter param;
+        private final HiResComponent visual;
+
+        private SheetItem(ProjectParameter param) {
+            this.param = param;
+            this.visual = null;
+        }
+
+        private SheetItem(HiResComponent visual) {
+            this.param = null;
+            this.visual = visual;
+        }
     }
 }

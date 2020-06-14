@@ -14,13 +14,14 @@ import org.crossmobile.utils.Param;
 import org.crossmobile.utils.ParamList;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class RadioParameter<T> extends ProjectParameter {
+public abstract class RadioParameter extends ProjectParameter {
 
     private String[] values;
     private final String[] icons;
@@ -65,6 +66,7 @@ public abstract class RadioParameter<T> extends ProjectParameter {
     protected HiResComponent initVisuals() {
         HiResPanel comp = new HiResPanel();
         comp.setLayout(new BoxLayout(comp, BoxLayout.X_AXIS));
+        comp.setBorder(new EmptyBorder(4, 0, 0, 0));
         comp.setOpaque(false);
         ButtonGroup bg = new ButtonGroup();
         Collection<ActiveToggleButton> buttons = new ArrayList<>();

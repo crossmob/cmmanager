@@ -10,11 +10,13 @@ import org.crossmobile.gui.actives.ActiveTextPane;
 import org.crossmobile.gui.project.Project;
 import org.crossmobile.gui.project.ProjectLauncher;
 import org.crossmobile.prefs.Prefs;
+import org.crossmobile.utils.ParamsCommon;
 
 import java.io.File;
 import java.util.function.Consumer;
 
 import static org.crossmobile.prefs.Prefs.*;
+import static org.crossmobile.utils.ParamsCommon.ARTIFACT_ID;
 
 public class ExternalCommands {
 
@@ -36,11 +38,11 @@ public class ExternalCommands {
                 break;
             case OPEN_XCODE:
                 args = new String[]{"/usr/bin/open",
-                        proj.getPath().getAbsolutePath() + File.separator + proj.getArtifactID() + ".xcodeproj"};
+                        proj.getPath().getAbsolutePath() + File.separator + proj.getProperty(ARTIFACT_ID) + ".xcodeproj"};
                 break;
             case OPEN_VSTUDIO:
                 args = new String[]{"cmd.exe", "/C", "start",
-                        proj.getPath().getAbsolutePath() + File.separator + proj.getArtifactID() + "-WinStore10.sln"};
+                        proj.getPath().getAbsolutePath() + File.separator + proj.getProperty(ARTIFACT_ID) + "-WinStore10.sln"};
                 break;
             default:
                 txtPane.appendText("\nNo IDE is selected.\n", null);
