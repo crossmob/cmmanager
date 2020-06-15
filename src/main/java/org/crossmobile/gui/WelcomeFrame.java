@@ -41,6 +41,7 @@ import java.io.File;
 import java.util.Collection;
 
 import static com.panayotis.appenh.AFileChooser.FileSelectionMode.FilesAndDirectories;
+import static com.panayotis.hrgui.ScreenUtils.isHiDPI;
 import static org.crossmobile.Version.RELEASE;
 import static org.crossmobile.Version.VERSION;
 
@@ -522,17 +523,17 @@ final class CustomListRenderer implements ListCellRenderer {
         ActiveLabel name = new ActiveLabel();
         ActiveLabel location = new ActiveLabel();
         Font font = list.getFont();
-        ProjectInfo value = (ProjectInfo) item;
+        ProjectInfo projectInfo = (ProjectInfo) item;
 
-        icon.setIcon(value.getIcon());
+        icon.setIcon(new HiResIcon(projectInfo.getImageHound().requestImage(32 * (isHiDPI() ? 2 : 1))));
         icon.setBorder(new HiResEmptyBorder(4, 4, 4, 8));
 
-        name.setText(value.getName());
+        name.setText(projectInfo.getName());
         name.setEnabled(list.isEnabled());
         name.setForeground(isSelected ? Theme.current().textSelCell : Theme.current().text);
         name.setFont(font);
 
-        location.setText(Paths.getPath(value.getPath(), HomeReference.PATH_STYLE));
+        location.setText(Paths.getPath(projectInfo.getPath(), HomeReference.PATH_STYLE));
         location.setEnabled(list.isEnabled());
         location.setFont(font.deriveFont(font.getSize() - 1f).deriveFont(Font.ITALIC));
         location.setForeground(isSelected ? Theme.current().infoSelCell : Theme.current().subinfo);

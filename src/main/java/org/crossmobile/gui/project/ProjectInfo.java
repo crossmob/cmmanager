@@ -6,18 +6,17 @@
 
 package org.crossmobile.gui.project;
 
-import com.panayotis.hrgui.HiResIcon;
-import com.panayotis.hrgui.ScreenUtils;
 import org.crossmobile.gui.elements.NewProjectInfo;
 import org.crossmobile.gui.init.InitializationWizard;
 import org.crossmobile.gui.init.InitializationWizard.Card;
 import org.crossmobile.gui.utils.CMMvnActions;
 import org.crossmobile.gui.utils.NameConverter;
-import org.crossmobile.utils.*;
+import org.crossmobile.utils.Commander;
+import org.crossmobile.utils.FileUtils;
+import org.crossmobile.utils.Pom;
+import org.crossmobile.utils.ProjectException;
 import org.crossmobile.utils.images.ImageHound;
 
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -25,7 +24,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -41,8 +39,7 @@ public class ProjectInfo {
     public static final String OLD_XMLVM = "xmlvm.properties";
     private final static String INITIAL_VERSION = "1.0.0.0";
 
-    private Icon iconThumb;
-    private Collection<Image> icons;
+    private ImageHound imageHound;
     private String name;
     private final File basedir;
 
@@ -132,20 +129,13 @@ public class ProjectInfo {
         props.computeIfAbsent(DISPLAY_NAME.tag().name, k -> newProjectInfo != null ? newProjectInfo.getDisplayName() : basedir.getName());
         name = props.get(DISPLAY_NAME.tag().name).toString();
 
-        int multiplier = ScreenUtils.isHiDPI() ? 2 : 1;
-        ImageHound imageSet = new ImageHound()
+        imageHound = new ImageHound()
                 .addForegroundImages("/images/logo-icon@2x.png", new File(basedir, FORE_ICONS), new File(basedir, ICON_DIR))
                 .addBackgroundImages("/images/empty.png", new File(basedir, BACK_ICONS));
-        icons = imageSet.getImages();
-        iconThumb = new HiResIcon(imageSet.findFore(32 * multiplier, true).withBackground(imageSet.findBack(32 * multiplier, true)).image);
     }
 
-    public Icon getIcon() {
-        return iconThumb;
-    }
-
-    public Collection<Image> getIcons() {
-        return icons;
+    public ImageHound getImageHound() {
+        return imageHound;
     }
 
     public String getName() {

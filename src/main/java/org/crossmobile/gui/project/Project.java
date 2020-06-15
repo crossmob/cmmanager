@@ -21,9 +21,10 @@ import org.crossmobile.gui.utils.Paths;
 import org.crossmobile.gui.utils.Profile;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.*;
+import org.crossmobile.utils.func.Opt;
+import org.crossmobile.utils.images.ImageHound;
 
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
 import java.io.File;
 import java.util.List;
 import java.util.*;
@@ -35,14 +36,15 @@ import static org.crossmobile.gui.project.ProjectInfo.OLD_XMLVM;
 import static org.crossmobile.prefs.Config.MATERIALS_PATH;
 import static org.crossmobile.utils.ParamsCommon.*;
 import static org.crossmobile.utils.TemplateUtils.updateProperties;
-import static org.crossmobile.utils.ScopeUtils.with;
+import static org.crossmobile.utils.func.ScopeUtils.with;
 
 public class Project {
 
     private final File basedir;
     private final ParamList params;
     private final List<PropertySheet> sheets;
-    private final Collection<Image> appicons;
+    private ImageHound imageHound;
+    //    private final Collection<Image> appicons;
     private final boolean asOldCrossmobile;
     ProjectPlugins plugins;
     private boolean asOldXMLVMProject;
@@ -70,7 +72,7 @@ public class Project {
 
         profile = Profile.safeValueOf(Prefs.getLaunchType(basedir.getAbsolutePath()));
         plugins = new ProjectPlugins(params);
-        appicons = projinf.getIcons();
+        imageHound = projinf.getImageHound();
 
         // Update main class
         SourceParser parser = new SourceParser(basedir.getAbsolutePath() + "/src/main/java");
@@ -185,8 +187,8 @@ public class Project {
         return new File(basedir, "pom.xml");
     }
 
-    public Collection<Image> getIcons() {
-        return appicons;
+    public ImageHound getIconHound() {
+        return imageHound;
     }
 
     public Profile getProfile() {

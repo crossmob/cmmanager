@@ -7,7 +7,6 @@
 package org.crossmobile.gui.utils;
 
 import org.crossmobile.utils.Log;
-import org.crossmobile.utils.Opt;
 import org.crossmobile.utils.SystemDependent;
 
 import java.io.File;
