@@ -6,9 +6,7 @@
 
 package org.crossmobile.gui.utils;
 
-import com.github.gino0631.icns.IcnsBuilder;
-import com.github.gino0631.icns.IcnsIcons;
-import com.github.gino0631.icns.IcnsType;
+import org.crossmobile.utils.FileUtils;
 import org.crossmobile.utils.Log;
 import org.crossmobile.utils.images.ImageHound;
 import org.crossmobile.utils.images.MetaImage;
@@ -16,24 +14,13 @@ import org.crossmobile.utils.images.MetaImage;
 import javax.imageio.ImageIO;
 import java.awt.image.RenderedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class ResourceInstaller {
-    public static File createResourceDir(ImageHound hound, String target) {
-        File resDir;
-        try {
-            resDir = File.createTempFile("res_", ".d");
-        } catch (IOException e) {
-            Log.error(e);
-            return null;
-        }
-        //noinspection ResultOfMethodCallIgnored
-        resDir.delete();
-        //noinspection ResultOfMethodCallIgnored
+    public static File createResourceDir(File projectDir, ImageHound hound, String target) {
+        File resDir = new File(projectDir, "target" + File.separator + "installer-resources");
+        FileUtils.delete(resDir);
         resDir.mkdirs();
-        resDir.deleteOnExit();
         if (!resDir.isDirectory())
             return null;
         int[] size;

@@ -6,9 +6,6 @@
 
 package org.crossmobile.gui;
 
-import com.github.gino0631.icns.IcnsBuilder;
-import com.github.gino0631.icns.IcnsParser;
-import com.github.gino0631.icns.IcnsType;
 import com.panayotis.appenh.AFileChooser;
 import com.panayotis.appenh.EnhancerManager;
 import com.panayotis.hrgui.*;
@@ -27,13 +24,11 @@ import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.*;
 import org.crossmobile.utils.func.Opt;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.RenderedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -500,7 +495,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                         callResult(-1);
                         return;
                     }
-                    File resDir = ResourceInstaller.createResourceDir(proj.getIconHound(), os);
+                    File resDir = ResourceInstaller.createResourceDir(proj.getPath(), proj.getIconHound(), os);
                     if (resDir == null) {
                         Log.error("Unable to create resources folder");
                         callResult(-1);
