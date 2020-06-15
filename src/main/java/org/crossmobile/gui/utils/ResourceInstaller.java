@@ -27,13 +27,13 @@ public class ResourceInstaller {
         switch (target) {
             case "win32":
             case "win64":
-            case "lin64":
-            case "linarm32":
-            case "linarm64":
+            case "linux64":
+            case "linuxarm32":
+            case "linuxarm64":
                 size = new int[]{128, 64, 32};
                 break;
             case "macos":
-                size = new int[]{1024, 512, 256, 128, 64};
+                size = new int[]{1024, 512, 256, 128};
                 break;
             default:
                 size = new int[]{};
