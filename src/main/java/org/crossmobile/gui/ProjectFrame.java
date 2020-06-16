@@ -110,6 +110,10 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         autoDisabled.add(packB);
         magicWandB = Deguard.getWandButton(this);
         actionB.setEnabled(false);
+        if (!SystemDependent.canMakeMacos()) {
+            macosP.setEnabled(false);
+            macosI.setEnabled(false);
+        }
         setProjectEnabled(false);
     }
 

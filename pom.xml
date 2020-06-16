@@ -191,9 +191,7 @@
                                         <argument>--vendor=CrossMobile P.C.</argument>
                                         <argument>--id=org.crossmobile.gui</argument>
                                         <argument>--url=https://crossmobile.org</argument>
-                                        <argument>--descr=Create native iOS, Android, Windows 10 and Desktop
-                                            Applications from a singe code base
-                                        </argument>
+                                        <argument>--descr=Create native iOS, Android, Windows 10 and Desktop Applications from a singe code base</argument>
                                         <argument>--extra=extra</argument>
                                         <argument>--notarize=${app.notarize}</argument>
                                         <argument>--p12file=secret/code-signing.p12</argument>
