@@ -510,8 +510,9 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                             Paths.getMakeAppExec(), alsoInstaller ? "create" : "java",
                             "--os", os, "--name", proj.getProperty(DISPLAY_NAME), "--version", proj.getProperty(BUNDLE_VERSION),
                             "--jar", jar.getAbsolutePath(), "--output", destDir.getAbsolutePath(),
-                            "--res", resDir.getAbsolutePath(),
-                            "--descr", proj.getProperty(CM_DESCRIPTION), "--vendor", proj.getProperty(CM_VENDOR),
+                            "--res", resDir.getAbsolutePath(), "--descr", proj.getProperty(CM_DESCRIPTION),
+                            "--id", proj.getProperty(GROUP_ID) + "." + proj.getProperty(ARTIFACT_ID),
+                            "--vendor", Opt.of(proj.getProperty(CM_VENDOR)).filter(s -> !s.trim().isEmpty()).getOrElse(SystemDependent.getFullName()),
                             "--url", proj.getProperty(CM_URL), alsoInstaller ? "--nosign" : null,
                             "--jdk=/Users/teras/.sdkman/candidates/java/14.0.1.hs-adpt/");
                 }));
