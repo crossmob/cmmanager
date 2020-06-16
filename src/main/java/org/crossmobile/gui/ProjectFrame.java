@@ -489,6 +489,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         buildAndRun("desktop", true, true, false, res -> Opt.of(getJarPath()).onError(Log::error).filter(File::isFile)
                 .ifMissing(() -> callResult(res))
                 .ifExists(jar -> {
+                    ((ActiveTextPane) outputTxt).addLine("\nCREATING " + os.toUpperCase() + " " + (alsoInstaller ? "INSTALLER" : "PACKAGE") + "\n------------------------------------------------------------------------", StreamQuality.INFO);
                     File destDir = new File(jar.getParent(), os + "_package");
                     if (!destDir.mkdir()) {
                         Log.error("Unable to create folder " + destDir.getAbsolutePath());

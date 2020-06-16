@@ -44,7 +44,7 @@ public class ResourceInstaller {
             for (int i = 0; i < size.length; i++) {
                 MetaImage fore = hound.findFore(size[i], i >= size.length - 1);
                 if (fore.isValid()) {
-                    RenderedImage iconImage = hound.requestImage(size[i]);
+                    RenderedImage iconImage = hound.findFore(size[i], true).image;
                     File iconFile = new File(resDir, "app.png");
                     try {
                         if (!ImageIO.write(iconImage, "PNG", iconFile))
