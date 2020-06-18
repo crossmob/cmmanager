@@ -9,8 +9,6 @@ package org.crossmobile.gui.utils;
 import org.crossmobile.utils.Commander;
 
 import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -105,17 +103,5 @@ public class AndroidDeviceResolver {
             return info;
         }
 
-    }
-
-    static class DefaultClassLoader extends URLClassLoader {
-
-        public DefaultClassLoader(URLClassLoader cl) {
-            super(cl.getURLs());
-        }
-
-        @Override
-        public void addURL(URL url) {
-            super.addURL(url);
-        }
     }
 }
