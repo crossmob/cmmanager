@@ -30,8 +30,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -43,6 +42,7 @@ import static org.crossmobile.gui.utils.Profile.OBFUSCATE;
 import static org.crossmobile.prefs.Prefs.*;
 import static org.crossmobile.utils.ParamsCommon.*;
 import static org.crossmobile.utils.SystemDependent.Execs.ADB;
+import static org.crossmobile.utils.TextUtils.iterableToString;
 
 public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Consumer {
 
@@ -493,7 +493,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         buildAndRun("desktop", true, true, false, res -> Opt.of(getJarPath()).onError(Log::error).filter(File::isFile)
                 .ifMissing(() -> callResult(res))
                 .ifExists(jar -> {
-                    ((ActiveTextPane) outputTxt).addLine("\nCREATING " + os.toUpperCase() + " " + (alsoInstaller ? "INSTALLER" : "PACKAGE") + "\n------------------------------------------------------------------------", StreamQuality.INFO);
+                    ((ActiveTextPane) outputTxt).addLine("CREATING " + os.toUpperCase() + " " + (alsoInstaller ? "INSTALLER" : "PACKAGE") + "\n------------------------------------------------------------------------", StreamQuality.INFO);
                     File destDir = new File(jar.getParent(), os + "_package");
                     if (!destDir.mkdir()) {
                         Log.error("Unable to create folder " + destDir.getAbsolutePath());
@@ -510,7 +510,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                                 if (pres == 0)
                                     SwingUtilities.invokeLater(() -> Opt.of(destDir).ifExists(d -> Desktop.getDesktop().open(d)));
                                 callResult(pres);
-                            }, null, null,
+                            }, SystemDependent.getEnvWithFixedPaths(), null,
                             Paths.getMakeAppExec(), alsoInstaller ? "create" : "java",
                             "--os", os, "--name", proj.getProperty(DISPLAY_NAME), "--version", proj.getProperty(BUNDLE_VERSION),
                             "--jar", jar.getAbsolutePath(), "--output", destDir.getAbsolutePath(),
