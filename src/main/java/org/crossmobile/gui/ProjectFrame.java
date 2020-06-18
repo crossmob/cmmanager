@@ -1203,8 +1203,9 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }//GEN-LAST:event_actOnProject
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        String name = proj.getProperty(DISPLAY_NAME);
+        String name = "--unknown--";
         try {
+            name = proj.getProperty(DISPLAY_NAME);
             if (proj != null) {
                 if (!proj.isSaved() && JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, "Project " + name + " is not saved.\nDo you want to save it before proceeding?",
                         name + " Project",
