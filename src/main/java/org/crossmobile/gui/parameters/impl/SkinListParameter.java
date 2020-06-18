@@ -20,7 +20,7 @@ public class SkinListParameter extends SelectionListParameter {
 
     @Override
     public String getVisualTag() {
-        return "Skin";
+        return "Window display and behaviour";
     }
 
 }

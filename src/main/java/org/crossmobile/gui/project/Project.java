@@ -162,7 +162,6 @@ public class Project {
         csheet = new PropertySheet("Desktop", listener);
         csheet.add(new SkinListParameter(params));
         csheet.add(new KeyboardSupportParameter(params));
-        csheet.add(new FullScreenDesktopParameter(params));
         csheet.add(with(new ActiveLabel("Installer properties"), it -> it.setBorder(new EmptyBorder(24, 0, 0, 0))));
         csheet.add(new DescriptionParameter(params));
         csheet.add(new VendorParameter(params));
