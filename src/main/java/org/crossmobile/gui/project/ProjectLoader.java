@@ -50,25 +50,19 @@ public class ProjectLoader {
                 return;
             }
         }
-
         if (frame != null)
             frame.ProjectsL.setEnabled(false);
+        RecentsProjectManager.addProject(pinfo, true);
+
         final ProjectFrame projframe = new ProjectFrame(pinfo.getPath());
-        projframe.setVisible(true);
         EventUtils.postAction(() -> {
             try {
                 Project proj = new Project(pinfo);
                 proj.save();
                 projframe.initVisuals(proj);
-                ProjectLoader.registerProject(projframe, proj.getPath());
-                RecentsProjectManager.addProject(pinfo, true);
-                if (frame != null)
-                    frame.updateProjects(pinfo);
-                proj.setApplicationNameListener((dirty, name) -> {
-                    EnhancerManager.getDefault().setFrameSaveState(projframe, dirty);
-                    projframe.setTitle(name);
-                });
+                projframe.setVisible(true);
                 if (frame != null) {
+                    frame.updateProjects(pinfo);
                     projframe.setCloseCallback(selected -> {
                         frame.updateProjects(pinfo);
                         if (frame.isVisible() || RegisteredFrame.count() <= 1)  // if welcome frame is already visible or if the closing frame is the last one
@@ -79,8 +73,13 @@ public class ProjectLoader {
                         frame.updateProjects(pinfo);
                     });
                 }
-            } catch (ProjectException ex) {
-                Log.error("Error while loading project" + (ex.getMessage() == null ? "" : "\n" + ex.getMessage()), ex);
+                proj.setApplicationNameListener((dirty, name) -> {
+                    EnhancerManager.getDefault().setFrameSaveState(projframe, dirty);
+                    projframe.setTitle(name);
+                });
+                ProjectLoader.registerProject(projframe, proj.getPath());
+            } catch (Exception ex) {
+                Log.error("Error while loading project\n" + (ex instanceof ProjectException ? ex.getMessage() : ex.toString()), ex);
             } finally {
                 if (frame != null)
                     frame.ProjectsL.setEnabled(true);

@@ -33,6 +33,8 @@ public abstract class SelectionListParameter extends ProjectParameter {
     public SelectionListParameter(ParamList plist, Param key, Collection<? extends ParamDisplay> pdds) {
         super(plist, key);
         updateVisuals(pdds, false);
+        if (parameter.length == 0)
+            throw new NullPointerException("Empty parameter list found for " + key.name);
         try {
             String v = plist.get(key).trim().toLowerCase();
             for (int i = 0; i < parameter.length; i++)

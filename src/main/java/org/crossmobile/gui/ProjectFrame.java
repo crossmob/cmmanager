@@ -124,8 +124,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     public void initVisuals(Project p) {
         proj = p;
         setTitle(proj.getProperty(DISPLAY_NAME));
-        getRootPane().putClientProperty("Window.documentFile", p.getPath());
-        EnhancerManager.getDefault().updateFrameIconsWithImages(this, p.getIconHound().getDeclaredImages());
+        getRootPane().putClientProperty("Window.documentFile", proj.getPath());
+        EnhancerManager.getDefault().updateFrameIconsWithImages(this, proj.getIconHound().getDeclaredImages());
         if (!SystemDependent.canMakeUwp())
             vstudioM.setVisible(false);
         if (!SystemDependent.canMakeIos())
@@ -1204,25 +1204,26 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         String name = "--unknown--";
-        try {
-            name = proj.getProperty(DISPLAY_NAME);
-            if (proj != null) {
-                if (!proj.isSaved() && JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, "Project " + name + " is not saved.\nDo you want to save it before proceeding?",
-                        name + " Project",
-                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
-                    try {
-                        proj.save();
-                    } catch (ProjectException ex) {
-                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Project " + name + " error", JOptionPane.ERROR_MESSAGE);
-                    }
-                Opt.of(launch).ifExists(Commander::kill);
-                Opt.of(closeCallback).ifExists(c -> c.accept(proj));
+        if (proj != null)
+            try {
+                name = proj.getProperty(DISPLAY_NAME);
+                if (proj != null) {
+                    if (!proj.isSaved() && JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, "Project " + name + " is not saved.\nDo you want to save it before proceeding?",
+                            name + " Project",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
+                        try {
+                            proj.save();
+                        } catch (ProjectException ex) {
+                            JOptionPane.showMessageDialog(this, ex.getMessage(), "Project " + name + " error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    Opt.of(launch).ifExists(Commander::kill);
+                    Opt.of(closeCallback).ifExists(c -> c.accept(proj));
+                }
+                closeCallback = null;
+            } catch (Throwable th) {
+                String projectName = proj == null ? "" : " for project " + name;
+                Log.error("A serious runtime error has occurred" + projectName, th);
             }
-            closeCallback = null;
-        } catch (Throwable th) {
-            String projectName = proj == null ? "" : " for project " + name;
-            Log.error("A serious runtime error has occurred" + projectName, th);
-        }
     }//GEN-LAST:event_formWindowClosing
 
     private void buildMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildMActionPerformed
