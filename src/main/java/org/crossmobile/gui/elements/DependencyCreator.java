@@ -18,6 +18,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -32,7 +33,7 @@ public final class DependencyCreator extends javax.swing.JFrame {
 
     public DependencyCreator(Consumer<Dependency> dependency, boolean theme, String appId) {
         List<Dependency> deplist = new ArrayList<>();
-        Map<String, List<Dependency>> categories = theme ? Dependency.getCategorizedSystemThemes() : Dependency.getCategorizedSystemPlugins();
+        Map<String, Collection<Dependency>> categories = theme ? Dependency.getCategorizedSystemThemes() : Dependency.getCategorizedSystemPlugins();
         for (String name : categories.keySet()) {
             if (categories.size() != 1)
                 deplist.add(getTitle(name));
