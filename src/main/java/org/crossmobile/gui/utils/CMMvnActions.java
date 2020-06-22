@@ -36,7 +36,7 @@ public class CMMvnActions {
 
     private static String repoLocation;
 
-    private final static String DEPENDENCY_POM_DIR = "dependencies/pom.xml";
+    private final static Pattern INSTALL_FAILED = Pattern.compile("\\[H");
 
     private static final Pattern PID_PATTERN = Pattern.compile("PID ([0-9]*) uses (.*) port.*");
 
@@ -84,14 +84,14 @@ public class CMMvnActions {
         AtomicBoolean foundOldVersion = new AtomicBoolean(false);
         return ProjectLauncher.launch(projPath, outP, launchCallback, env, (seqLine, quality) -> {
             String line = seqLine.toString();
+            if (line.contains("platforms;android-"))
+                foundOldVersion.set(true);
             if (line.contains("sun.security.provider.certpath.SunCertPathBuilderException"))
                 solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null, "A Certification exception was found\n\n"
                                 + "You might need to upgrade your JDK 8 version beyond 1.8.101,\n"
                                 + "or else Maven resolving issues will occur.",
                         "Error while executing Java target", JOptionPane.ERROR_MESSAGE));
-            if (line.contains("platforms;android-"))
-                foundOldVersion.set(true);
-            if (line.contains("accept the SDK license agreements"))
+            else if (line.contains("accept the SDK license agreements"))
                 solutionCallbackRef.set(() -> {
                     if (foundOldVersion.get() && Prefs.isAndroidLicenseLocationValid()) {
                         JOptionPane.showMessageDialog(null, "The Android License seems to be accepted,\nbut build tools refer to older versions.\n" +
@@ -118,14 +118,18 @@ public class CMMvnActions {
                             new InstallerFrame().launch();
                     }
                 });
-            if (line.contains("SDK location not found"))
+            else if (line.contains("SDK location not found"))
                 solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null, "Android SDK location is required\n\n"
                                 + "Please rerun the initialization wizard first\nand define the Android SDK location.",
                         "Error while locating Android SDK", JOptionPane.ERROR_MESSAGE));
-            if (line.contains("No value has been specified for property 'signingConfig"))
+            else if (line.contains("No value has been specified for property 'signingConfig"))
                 solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null, "No keystore passwords found\n\n"
                                 + "Please provide the Keystore/Alias password to sign the APK\nunder the Android preferences",
                         "Error signing Android APK", JOptionPane.ERROR_MESSAGE));
+            else if (line.contains("[INSTALL_FAILED"))
+                solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null,
+                        line.substring(line.indexOf("[INSTALL_FAILED") + 1, line.length() - 1).replace(":", "\n"),
+                        "Error installing Android APK", JOptionPane.ERROR_MESSAGE));
 
             if (debugPort != null) {
                 if (line.startsWith("Listening for transport dt_socket at address: "))
