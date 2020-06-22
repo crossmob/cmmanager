@@ -73,9 +73,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private static final HiResIcon VSTUDIO_I = new ActiveIcon("images/vstudio");
     private static final HiResIcon VSTUDIO_D = VSTUDIO_I.getDisabledIcon();
     private static final HiResIcon JAR_I = new ActiveIcon("images/jar");
-    private static final HiResIcon JAR_D = JAR_I.getDisabledIcon();
     private static final HiResIcon APK_I = new ActiveIcon("images/apk");
-    private static final HiResIcon APK_D = APK_I.getDisabledIcon();
     private static final HiResIcon PROJECT_I = new ActiveIcon("images/project");
     private static final HiResIcon PROJECT_D = PROJECT_I.getDisabledIcon();
     private static final HiResIcon OUTPUT_I = new ActiveIcon("images/output");
@@ -108,6 +106,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         autoDisabled.add(projectB);
         autoDisabled.add(expandPB);
         autoDisabled.add(packB);
+        autoDisabled.add(openB);
         magicWandB = Deguard.getWandButton(this);
         actionB.setEnabled(false);
         if (!SystemDependent.canMakeMacos()) {
