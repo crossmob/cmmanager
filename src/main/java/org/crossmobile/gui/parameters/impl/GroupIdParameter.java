@@ -34,6 +34,7 @@ public class GroupIdParameter extends FreeTextParameter {
         String val = super.getValue();
         if (val == null)
             return DEFAULT_GROUP_ID;
+        val = val.replaceAll("\\.\\.\\.*", ".");
         if (val.startsWith("."))
             val = val.substring(1);
         if (val.endsWith("."))
