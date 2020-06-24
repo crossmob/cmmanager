@@ -13,6 +13,7 @@ import org.crossmobile.gui.actives.ActiveTextField;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.Commander;
 import org.crossmobile.utils.LocationTarget;
+import org.crossmobile.utils.SystemDependent;
 import org.crossmobile.utils.UIUtils;
 
 import javax.imageio.ImageIO;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+import static org.crossmobile.prefs.Config.*;
 import static org.crossmobile.utils.SystemDependent.Execs.*;
 
 public class Config extends HiResDialog {
@@ -38,8 +40,8 @@ public class Config extends HiResDialog {
         Commander exec = new Commander(javac.getAbsolutePath(), "-version");
         AtomicBoolean correct = new AtomicBoolean(false);
         Consumer<String> consumer = l -> {
-            if (l.startsWith("javac 1.8."))
-                correct.set(true);
+            if (l.startsWith("javac "))
+                correct.set(SystemDependent.isJavaValid(l.substring(6).trim()));
         };
         exec.setOutListener(consumer);
         exec.setErrListener(consumer);
@@ -163,7 +165,7 @@ public class Config extends HiResDialog {
         jPanel14.setLayout(new java.awt.GridLayout(0, 1));
 
         jdkL.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jdkL.setText("Java JDK 1.8");
+        jdkL.setText("Java JDK");
         jPanel14.add(jdkL);
 
         androidL.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -416,7 +418,7 @@ public class Config extends HiResDialog {
 
     private void jdkBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jdkBActionPerformed
         jdkB.setEnabled(false);
-        JWizard wiz = new JWizard("Java Development Kit 1.8");
+        JWizard wiz = new JWizard("Java Development Kit " + JAVA_RANGE);
         wiz.setCallback((String fname) -> {
             if (fname != null) {
                 Prefs.setJDKLocation(fname);

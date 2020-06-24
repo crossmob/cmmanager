@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
+import static org.crossmobile.prefs.Config.JAVA_RANGE;
 
 public class InitializationWizard extends HiResDialog implements Active {
 
@@ -308,7 +309,7 @@ public class InitializationWizard extends HiResDialog implements Active {
         jPanel2.setOpaque(false);
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        jdkL.setText("Java Development Environment 1.8");
+        jdkL.setText("Java Development Environment " + JAVA_RANGE);
         jdkL.setIconTextGap(8);
         jPanel2.add(jdkL, java.awt.BorderLayout.WEST);
 

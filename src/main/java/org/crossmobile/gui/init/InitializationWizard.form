@@ -214,7 +214,9 @@
                       <SubComponents>
                         <Component class="javax.swing.JLabel" name="jdkL">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Java Development Environment 1.8"/>
+                            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="&quot;Java Development Environment &quot; + JAVA_RANGE" type="code"/>
+                            </Property>
                             <Property name="iconTextGap" type="int" value="8"/>
                           </Properties>
                           <AuxValues>

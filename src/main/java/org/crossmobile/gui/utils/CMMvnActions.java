@@ -10,6 +10,7 @@ import org.crossmobile.Version;
 import org.crossmobile.gui.actives.ActiveTextPane;
 import org.crossmobile.gui.android.InstallerFrame;
 import org.crossmobile.gui.project.ProjectLauncher;
+import org.crossmobile.prefs.Config;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.Commander;
 import org.crossmobile.utils.FileUtils;
@@ -88,7 +89,7 @@ public class CMMvnActions {
                 foundOldVersion.set(true);
             if (line.contains("sun.security.provider.certpath.SunCertPathBuilderException"))
                 solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null, "A Certification exception was found\n\n"
-                                + "You might need to upgrade your JDK 8 version beyond 1.8.101,\n"
+                                + "You might need to upgrade your JDK 8 version beyond " + Config.MIN_JAVA_VERSION_FULL + ",\n"
                                 + "or else Maven resolving issues will occur.",
                         "Error while executing Java target", JOptionPane.ERROR_MESSAGE));
             else if (line.contains("accept the SDK license agreements"))

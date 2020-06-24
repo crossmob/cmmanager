@@ -11,6 +11,8 @@ import org.crossmobile.utils.SystemDependent;
 import javax.swing.*;
 import java.awt.*;
 
+import static org.crossmobile.prefs.Config.JAVA_RANGE;
+import static org.crossmobile.prefs.Config.MIN_JAVA_VERSION_FULL;
 import static org.crossmobile.prefs.Prefs.getAndroidSDKLocation;
 import static org.crossmobile.prefs.Prefs.getJDKLocation;
 
@@ -32,8 +34,8 @@ public class ApplicationRequirements {
                 }
             } catch (InterruptedException ignored) {
             }
-            if (SystemDependent.isJavaOld(System.getProperty("java.version")))
-                JOptionPane.showOptionDialog(relative, "<html><b>Your Java version seems to be too old</b>.\n\nIt is strongly recommended to upgrade to at least\nJDK version 1.8_144 for security reasons.\n\nPlease update your system to a newer Java version,\nor you might experience connectivity issues.\n\n"
+            if (!SystemDependent.isJavaValid(System.getProperty("java.version")))
+                JOptionPane.showOptionDialog(relative, "<html><b>Incorrect java version, required: " + JAVA_RANGE + "</b>.\n\nIt is strongly recommended to update at least\nto JDK version " + MIN_JAVA_VERSION_FULL + " for security reasons.\n\nPlease update your system to a newer Java version,\nor you might experience connectivity issues.\n\n"
                         + "Current Java version: " + System.getProperty("java.version"), "CrossMobile", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, new String[]{"I will"}, 0);
             if (andAfter != null)
                 andAfter.run();

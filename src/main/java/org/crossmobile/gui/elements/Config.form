@@ -108,7 +108,7 @@
                     <Component class="javax.swing.JLabel" name="jdkL">
                       <Properties>
                         <Property name="horizontalAlignment" type="int" value="2"/>
-                        <Property name="text" type="java.lang.String" value="Java JDK 1.8"/>
+                        <Property name="text" type="java.lang.String" value="Java JDK"/>
                       </Properties>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveLabel()"/>
