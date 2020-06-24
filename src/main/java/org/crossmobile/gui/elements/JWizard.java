@@ -246,7 +246,7 @@ public class JWizard extends JDialog {
 
         SearchTitle.setFont(SearchTitle.getFont().deriveFont(SearchTitle.getFont().getStyle() | java.awt.Font.BOLD, SearchTitle.getFont().getSize() + 2));
         SearchTitle.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        SearchTitle.setText("Locating " + name + " executable...");
+        SearchTitle.setText("Locating executable " + name + "...");
         SearchTitle.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 3, 12, 0));
         SearchTitle.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         jPanel3.add(SearchTitle, java.awt.BorderLayout.NORTH);
