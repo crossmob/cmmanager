@@ -19,6 +19,7 @@ public enum TemplateType {
     CAMERA_PROJECT,
     MAP_PROJECT,
     SINGLE_PROJECT,
+    PLUGIN_PROJECT,
     EMPTY_PROJECT;
 
     public final String actual;

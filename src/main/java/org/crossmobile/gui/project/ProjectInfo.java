@@ -42,13 +42,14 @@ public class ProjectInfo {
     private ImageHound imageHound;
     private String name;
     private final File basedir;
+    private boolean plugin = false;
 
     public static ProjectInfo load(String path) throws ProjectException {
         return new ProjectInfo(path, null);
     }
 
-    public static ProjectInfo create(String path, NewProjectInfo project) throws ProjectException {
-        return new ProjectInfo(path, project);
+    public static ProjectInfo create(String path, NewProjectInfo newProjectInfo) throws ProjectException {
+        return new ProjectInfo(path, newProjectInfo);
     }
 
     private static File findProjectDir(String givenPath, boolean baseLevel) throws ProjectException {
@@ -118,9 +119,11 @@ public class ProjectInfo {
 
     public void refresh(NewProjectInfo newProjectInfo) {
         Properties props = new Properties();
-        if (new File(basedir, MAVEN_SIGNATURE).exists())
-            new Pom(new File(basedir, MAVEN_SIGNATURE)).updatePropertiesFromPom(props);
-        else
+        if (new File(basedir, MAVEN_SIGNATURE).exists()) {
+            Pom pom = new Pom(new File(basedir, MAVEN_SIGNATURE));
+            pom.updatePropertiesFromPom(props);
+            plugin = pom.isPlugin();
+        } else
             try {
                 props.load(new InputStreamReader(new FileInputStream(new File(basedir, "nbproject" + File.separator + "project.properties")), StandardCharsets.UTF_8));
             } catch (IOException ignored) {
@@ -129,9 +132,9 @@ public class ProjectInfo {
         props.computeIfAbsent(DISPLAY_NAME.tag().name, k -> newProjectInfo != null ? newProjectInfo.getDisplayName() : basedir.getName());
         name = props.get(DISPLAY_NAME.tag().name).toString();
 
-        imageHound = new ImageHound()
-                .addForegroundImages("/images/logo-icon@2x.png", new File(basedir, FORE_ICONS), new File(basedir, ICON_DIR))
-                .addBackgroundImages("/images/empty.png", new File(basedir, BACK_ICONS));
+        imageHound = new ImageHound();
+        imageHound.addForegroundImages("/images/logo-" + (plugin ? "plugin" : "icon") + "@2x.png", new File(basedir, FORE_ICONS), new File(basedir, ICON_DIR));
+        imageHound.addBackgroundImages("/images/empty.png", new File(basedir, BACK_ICONS));
     }
 
     public ImageHound getImageHound() {
@@ -148,6 +151,10 @@ public class ProjectInfo {
 
     public boolean isValid() {
         return new File(basedir, OLD_ANT).isFile() || new File(basedir, OLD_XMLVM).isFile() || new Pom(new File(basedir, MAVEN_SIGNATURE)).isValid();
+    }
+
+    public boolean isPlugin() {
+        return plugin;
     }
 
     @Override

@@ -122,53 +122,55 @@ public final class NewProjectInfo extends HiResDialog {
         themeBG = new javax.swing.ButtonGroup();
         themeRG = new javax.swing.ButtonGroup();
         BasePanel = new GradientPanel();
-        jPanel10 = new ActivePanel();
-        jPanel9 = new ActivePanel();
+        javax.swing.JPanel jPanel10 = new ActivePanel();
+        javax.swing.JPanel jPanel9 = new ActivePanel();
         jLabel1 = new ActiveLabel();
         locationT = new ActiveTextField();
-        browseB = new HiResButton();
-        jPanel1 = new ActivePanel();
+        javax.swing.JButton browseB = new HiResButton();
+        javax.swing.JPanel jPanel1 = new ActivePanel();
         appnameT = new ActiveTextField();
         appnameL = new ActiveLabel();
-        jPanel2 = new ActivePanel();
+        javax.swing.JPanel jPanel2 = new ActivePanel();
         idL = new ActiveLabel();
         idT = new ActiveTextField();
-        jPanel12 = new javax.swing.JPanel();
-        jLabel3 = new ActiveLabel();
-        jPanel3 = new ActivePanel();
+        javax.swing.JPanel jPanel12 = new javax.swing.JPanel();
+        javax.swing.JLabel infotemplateL = new ActiveLabel();
+        javax.swing.JPanel jPanel3 = new ActivePanel();
         buttonR = new ActiveRadioButton();
-        buttonL = new javax.swing.JLabel();
+        javax.swing.JLabel buttonL = new javax.swing.JLabel();
         singleR = new ActiveRadioButton();
-        singleL = new javax.swing.JLabel();
+        javax.swing.JLabel singleL = new javax.swing.JLabel();
         navigationR = new ActiveRadioButton();
-        nagivationL = new javax.swing.JLabel();
+        javax.swing.JLabel nagivationL = new javax.swing.JLabel();
         tableR = new ActiveRadioButton();
-        tableL = new javax.swing.JLabel();
+        javax.swing.JLabel tableL = new javax.swing.JLabel();
         cameraR = new ActiveRadioButton();
-        cameraL = new javax.swing.JLabel();
+        javax.swing.JLabel cameraL = new javax.swing.JLabel();
         mapR = new ActiveRadioButton();
-        mapL = new javax.swing.JLabel();
+        javax.swing.JLabel mapL = new javax.swing.JLabel();
         i18nR = new ActiveRadioButton();
-        i18nL = new javax.swing.JLabel();
+        javax.swing.JLabel i18nL = new javax.swing.JLabel();
         storyboardR = new ActiveRadioButton();
-        storyboardL = new javax.swing.JLabel();
-        jPanel13 = new javax.swing.JPanel();
+        javax.swing.JLabel storyboardL = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel13 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
+        pluginR = new ActiveRadioButton();
+        pluginL = new javax.swing.JLabel();
         emptyR = new ActiveRadioButton();
-        jPanel6 = new ActivePanel();
+        javax.swing.JPanel jPanel6 = new ActivePanel();
         createB = new HiResButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Create new CrossMobile project");
         setResizable(false);
         setSize(new java.awt.Dimension(500, 400));
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         BasePanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 4, 8));
         BasePanel.setLayout(new java.awt.BorderLayout());
 
         jPanel10.setLayout(new javax.swing.BoxLayout(jPanel10, javax.swing.BoxLayout.Y_AXIS));
 
-        jPanel9.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        jPanel9.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 4, 0));
         jPanel9.setLayout(new java.awt.BorderLayout());
 
         jLabel1.setText("<html>The location of the <b>parent</b> folder, where this project will be created");
@@ -204,20 +206,20 @@ public final class NewProjectInfo extends HiResDialog {
         jPanel1.add(appnameT, java.awt.BorderLayout.CENTER);
 
         appnameL.setText("Name");
-        appnameL.setMaximumSize(new java.awt.Dimension(100, 16));
-        appnameL.setMinimumSize(new java.awt.Dimension(100, 16));
-        appnameL.setPreferredSize(new java.awt.Dimension(120, 16));
+        appnameL.setMaximumSize(new java.awt.Dimension(100, 30));
+        appnameL.setMinimumSize(new java.awt.Dimension(100, 30));
+        appnameL.setPreferredSize(new java.awt.Dimension(120, 30));
         jPanel1.add(appnameL, java.awt.BorderLayout.WEST);
 
         jPanel10.add(jPanel1);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 0, 20, 0));
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 0, 12, 0));
         jPanel2.setLayout(new java.awt.BorderLayout());
 
         idL.setText("Organization ID");
-        idL.setMaximumSize(new java.awt.Dimension(120, 16));
-        idL.setMinimumSize(new java.awt.Dimension(120, 16));
-        idL.setPreferredSize(new java.awt.Dimension(120, 16));
+        idL.setMaximumSize(new java.awt.Dimension(120, 30));
+        idL.setMinimumSize(new java.awt.Dimension(120, 30));
+        idL.setPreferredSize(new java.awt.Dimension(120, 30));
         jPanel2.add(idL, java.awt.BorderLayout.WEST);
 
         idT.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -238,8 +240,8 @@ public final class NewProjectInfo extends HiResDialog {
         jPanel12.setOpaque(false);
         jPanel12.setLayout(new java.awt.BorderLayout());
 
-        jLabel3.setText("Please select code template");
-        jPanel12.add(jLabel3, java.awt.BorderLayout.PAGE_START);
+        infotemplateL.setText("Please select code template");
+        jPanel12.add(infotemplateL, java.awt.BorderLayout.PAGE_START);
 
         jPanel10.add(jPanel12);
 
@@ -320,21 +322,35 @@ public final class NewProjectInfo extends HiResDialog {
 
         jPanel10.add(jPanel3);
 
-        jPanel13.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
+        jPanel13.setBorder(javax.swing.BorderFactory.createEmptyBorder(32, 0, 0, 0));
         jPanel13.setOpaque(false);
-        jPanel13.setLayout(new java.awt.BorderLayout());
+        jPanel13.setLayout(new java.awt.GridLayout(1, 2, 8, 0));
+
+        jPanel4.setOpaque(false);
+        jPanel4.setLayout(new java.awt.GridLayout(1, 0, 8, 0));
+
+        templateG.add(pluginR);
+        pluginR.setText("Plugin template");
+        pluginR.setActionCommand(PLUGIN_PROJECT.actual);
+        pluginR.setOpaque(false);
+        jPanel4.add(pluginR);
+
+        pluginL.setIcon(PLUGIN_PROJECT.icon());
+        jPanel4.add(pluginL);
+
+        jPanel13.add(jPanel4);
 
         templateG.add(emptyR);
         emptyR.setText("Project with no source files");
         emptyR.setActionCommand(EMPTY_PROJECT.actual);
         emptyR.setOpaque(false);
-        jPanel13.add(emptyR, java.awt.BorderLayout.WEST);
+        jPanel13.add(emptyR);
 
         jPanel10.add(jPanel13);
 
         BasePanel.add(jPanel10, java.awt.BorderLayout.NORTH);
 
-        jPanel6.setLayout(new java.awt.FlowLayout(2));
+        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
         createB.setText("Create");
         createB.addActionListener(new java.awt.event.ActionListener() {
@@ -387,37 +403,21 @@ public final class NewProjectInfo extends HiResDialog {
     private javax.swing.JPanel BasePanel;
     private javax.swing.JLabel appnameL;
     private javax.swing.JTextField appnameT;
-    private javax.swing.JButton browseB;
-    private javax.swing.JLabel buttonL;
     private javax.swing.JRadioButton buttonR;
-    private javax.swing.JLabel cameraL;
     private javax.swing.JRadioButton cameraR;
     private javax.swing.JButton createB;
     private javax.swing.JRadioButton emptyR;
-    private javax.swing.JLabel i18nL;
     private javax.swing.JRadioButton i18nR;
     private javax.swing.JLabel idL;
     private javax.swing.JTextField idT;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel12;
-    private javax.swing.JPanel jPanel13;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel9;
     private javax.swing.JTextField locationT;
-    private javax.swing.JLabel mapL;
     private javax.swing.JRadioButton mapR;
-    private javax.swing.JLabel nagivationL;
     private javax.swing.JRadioButton navigationR;
-    private javax.swing.JLabel singleL;
+    private javax.swing.JLabel pluginL;
+    private javax.swing.JRadioButton pluginR;
     private javax.swing.JRadioButton singleR;
-    private javax.swing.JLabel storyboardL;
     private javax.swing.JRadioButton storyboardR;
-    private javax.swing.JLabel tableL;
     private javax.swing.JRadioButton tableR;
     private javax.swing.ButtonGroup templateG;
     private javax.swing.ButtonGroup themeBG;

@@ -54,6 +54,14 @@ public class ActiveToggleButton extends HiResToggleButton {
         });
     }
 
+    public ActiveToggleButton() {
+        this(null, null, 12);
+    }
+
+    public ActiveToggleButton(int bordersize) {
+        this(null, null, bordersize);
+    }
+
     public ActiveToggleButton(String text, int borderSize) {
         this(text, null, borderSize);
     }

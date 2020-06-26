@@ -41,7 +41,7 @@ public class ProjectLoader {
             ACTIVE_PROJECTS.remove(key);
     }
 
-    public static void showProject(final ProjectInfo pinfo, final WelcomeFrame frame) {
+    public static void showProject(final ProjectInfo pinfo, final WelcomeFrame welcomeFrame) {
         {
             ProjectFrame retrievedFrame = retrieveProject(pinfo.getPath());
             if (retrievedFrame != null) {
@@ -50,8 +50,8 @@ public class ProjectLoader {
                 return;
             }
         }
-        if (frame != null)
-            frame.ProjectsL.setEnabled(false);
+        if (welcomeFrame != null)
+            welcomeFrame.ProjectsL.setEnabled(false);
         RecentsProjectManager.addProject(pinfo, true);
 
         final ProjectFrame projframe = new ProjectFrame(pinfo.getPath());
@@ -61,16 +61,16 @@ public class ProjectLoader {
                 proj.save();
                 projframe.initVisuals(proj);
                 projframe.setVisible(true);
-                if (frame != null) {
-                    frame.updateProjects(pinfo);
+                if (welcomeFrame != null) {
+                    welcomeFrame.updateProjects(pinfo);
                     projframe.setCloseCallback(selected -> {
-                        frame.updateProjects(pinfo);
-                        if (frame.isVisible() || RegisteredFrame.count() <= 1)  // if welcome frame is already visible or if the closing frame is the last one
-                            frame.setVisible(true); // bring to front
+                        welcomeFrame.updateProjects(pinfo);
+                        if (welcomeFrame.isVisible() || RegisteredFrame.count() <= 1)  // if welcome frame is already visible or if the closing frame is the last one
+                            welcomeFrame.setVisible(true); // bring to front
                     });
                     proj.setSaveCallback(selected -> {
                         pinfo.refresh(null);
-                        frame.updateProjects(pinfo);
+                        welcomeFrame.updateProjects(pinfo);
                     });
                 }
                 proj.setApplicationNameListener((dirty, name) -> {
@@ -81,8 +81,8 @@ public class ProjectLoader {
             } catch (Exception ex) {
                 Log.error("Error while loading project\n" + (ex instanceof ProjectException ? ex.getMessage() : ex.toString()), ex);
             } finally {
-                if (frame != null)
-                    frame.ProjectsL.setEnabled(true);
+                if (welcomeFrame != null)
+                    welcomeFrame.ProjectsL.setEnabled(true);
             }
         });
     }

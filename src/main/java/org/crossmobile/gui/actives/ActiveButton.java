@@ -24,7 +24,6 @@ public class ActiveButton extends HiResButton {
     {
         setUI(new BasicButtonUI());
         setOpaque(false);
-        setBorder(new HiResEmptyBorder(8, 8, 8, 8));
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -38,6 +37,18 @@ public class ActiveButton extends HiResButton {
                 repaint();
             }
         });
+    }
+
+    public ActiveButton() {
+        this(8, 8);
+    }
+
+    public ActiveButton(int border) {
+        this(border, border);
+    }
+
+    public ActiveButton(int horizBorder, int vertBorder) {
+        setBorder(new HiResEmptyBorder(vertBorder, horizBorder, vertBorder, horizBorder));
     }
 
     @Override

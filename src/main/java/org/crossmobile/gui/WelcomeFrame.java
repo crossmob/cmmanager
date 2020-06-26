@@ -16,7 +16,6 @@ import com.panayotis.jupidator.UpdatedApplication;
 import com.panayotis.jupidator.Updater;
 import org.crossmobile.gui.actives.*;
 import org.crossmobile.gui.elements.*;
-import org.crossmobile.gui.lic.LicenseDialog;
 import org.crossmobile.gui.project.ProjectInfo;
 import org.crossmobile.gui.project.ProjectListModel;
 import org.crossmobile.gui.project.ProjectLoader;
@@ -64,7 +63,6 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         updateVersion();
         ProjectsL.setCellRenderer(new CustomListRenderer());
         EnhancerManager.getDefault().updateFrameIcons(this);
-        licenseB.setVisible(Prefs.CHECK_LICENSE);
         setSize(640, 520);
         setLocationRelativeTo(null);
         ProjectsL.setTransferHandler(new DnDFileHandler(this::addProjectSilently));
@@ -75,7 +73,6 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         ProjectsL.setEnabled(enabled);
-        licenseB.setEnabled(enabled);
         newProjectB.setEnabled(enabled);
         openProjectB.setEnabled(enabled);
         settingsB.setEnabled(enabled);
@@ -171,14 +168,15 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         openM = new JMenuItem();
         jSeparator1 = new Separator();
         removeM = new JMenuItem();
+        selectionB = new ButtonGroup();
         Background = new GradientPanel();
         jPanel3 = new JPanel();
+        jLabel2 = new ActiveLabel();
         ProjectsSP = new JScrollPane();
         ProjectsL = new ActiveList();
-        jLabel2 = new ActiveLabel();
         jPanel10 = new JPanel();
-        openB = new ActiveButton();
         clearAllB = new ActiveButton();
+        openB = new ActiveButton();
         jPanel8 = new JPanel();
         jPanel4 = new JPanel();
         jPanel1 = new JPanel();
@@ -187,11 +185,9 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         versionL = new ActiveLabel();
         jLabel1 = new ActiveLabel();
         jPanel5 = new JPanel();
-        jPanel2 = new JPanel();
-        licenseB = new ActiveButton();
         jPanel7 = new JPanel();
-        newProjectB = new ActiveButton();
-        openProjectB = new ActiveButton();
+        newProjectB = new ActiveButton(20,8);
+        openProjectB = new ActiveButton(20,8);
         jPanel9 = new JPanel();
         settingsB = new ActiveButton();
         aboutB = new ActiveButton();
@@ -220,14 +216,19 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
 
         Background.setLayout(new BorderLayout());
 
-        jPanel3.setBorder(new HiResEmptyBorder(2, 2, 2, 24));
+        jPanel3.setBorder(new HiResEmptyBorder(2,2,2,24));
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new BorderLayout(0, 2));
+
+        jLabel2.setHorizontalAlignment(SwingConstants.RIGHT);
+        jLabel2.setText("Recent Projects");
+        jLabel2.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 8));
+        jPanel3.add(jLabel2, BorderLayout.NORTH);
 
         ProjectsSP.setMinimumSize(new Dimension(260, 400));
         ProjectsSP.setPreferredSize(ProjectsSP.getMinimumSize());
 
-        ProjectsL.setFont(ProjectsL.getFont().deriveFont(ProjectsL.getFont().getSize() + 1f));
+        ProjectsL.setFont(ProjectsL.getFont().deriveFont(ProjectsL.getFont().getSize()+1f));
         ProjectsL.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 ProjectsLMouseClicked(evt);
@@ -242,13 +243,17 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
 
         jPanel3.add(ProjectsSP, BorderLayout.CENTER);
 
-        jLabel2.setHorizontalAlignment(SwingConstants.RIGHT);
-        jLabel2.setText("Recent Projects  ");
-        jLabel2.setBorder(new HiResEmptyBorder(4, 0, 4, 0));
-        jPanel3.add(jLabel2, BorderLayout.NORTH);
-
         jPanel10.setOpaque(false);
         jPanel10.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
+        clearAllB.setIcon(new ActiveIcon("images/trash"));
+        clearAllB.setText("Clear all");
+        clearAllB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                clearAllBActionPerformed(evt);
+            }
+        });
+        jPanel10.add(clearAllB);
 
         openB.setIcon(new ActiveIcon("images/arrow"));
         openB.setText("Open");
@@ -260,20 +265,11 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         });
         jPanel10.add(openB);
 
-        clearAllB.setIcon(new ActiveIcon("images/trash"));
-        clearAllB.setText("Clear all");
-        clearAllB.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                clearAllBActionPerformed(evt);
-            }
-        });
-        jPanel10.add(clearAllB);
-
         jPanel3.add(jPanel10, BorderLayout.SOUTH);
 
         Background.add(jPanel3, BorderLayout.CENTER);
 
-        jPanel8.setBorder(new HiResEmptyBorder(16, 8, 8, 4));
+        jPanel8.setBorder(new HiResEmptyBorder(16,8,8,4));
         jPanel8.setOpaque(false);
         jPanel8.setLayout(new BorderLayout());
 
@@ -284,19 +280,19 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         jPanel1.setOpaque(false);
         jPanel1.setLayout(new GridLayout(0, 1));
 
-        jLabel3.setFont(jLabel3.getFont().deriveFont(jLabel3.getFont().getStyle() | Font.BOLD, jLabel3.getFont().getSize() + 15));
+        jLabel3.setFont(jLabel3.getFont().deriveFont(jLabel3.getFont().getStyle() | Font.BOLD, jLabel3.getFont().getSize()+15));
         jLabel3.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel3.setText("Welcome to");
         jPanel1.add(jLabel3);
 
-        jLabel4.setFont(jLabel4.getFont().deriveFont(jLabel4.getFont().getStyle() | Font.BOLD, jLabel4.getFont().getSize() + 15));
+        jLabel4.setFont(jLabel4.getFont().deriveFont(jLabel4.getFont().getStyle() | Font.BOLD, jLabel4.getFont().getSize()+15));
         jLabel4.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel4.setText("CrossMobile");
         jPanel1.add(jLabel4);
 
         jPanel4.add(jPanel1, BorderLayout.NORTH);
 
-        versionL.setFont(versionL.getFont().deriveFont((versionL.getFont().getStyle() | Font.ITALIC), versionL.getFont().getSize() - 1));
+        versionL.setFont(versionL.getFont().deriveFont((versionL.getFont().getStyle() | Font.ITALIC), versionL.getFont().getSize()-1));
         versionL.setHorizontalAlignment(SwingConstants.CENTER);
         versionL.setText("release");
         versionL.addMouseListener(new MouseAdapter() {
@@ -310,30 +306,17 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
 
         jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel1.setIcon(new HiResIcon("images/logo", false));
-        jLabel1.setBorder(new HiResEmptyBorder(16, 0, 30, 0));
+        jLabel1.setBorder(new HiResEmptyBorder(16,0,30,0));
         jPanel8.add(jLabel1, BorderLayout.CENTER);
 
         jPanel5.setOpaque(false);
         jPanel5.setLayout(new BoxLayout(jPanel5, BoxLayout.Y_AXIS));
 
-        jPanel2.setOpaque(false);
-
-        licenseB.setIcon(new ActiveIcon("images/license"));
-        licenseB.setText("Licenses & tools");
-        licenseB.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                licenseBActionPerformed(evt);
-            }
-        });
-        jPanel2.add(licenseB);
-
-        jPanel5.add(jPanel2);
-
         jPanel7.setOpaque(false);
         jPanel7.setLayout(new GridLayout(0, 2, 0, 8));
 
         newProjectB.setIcon(new ActiveIcon("images/new"));
-        newProjectB.setText("New Project");
+        newProjectB.setText("New ...");
         newProjectB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 newProjectBActionPerformed(evt);
@@ -342,7 +325,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         jPanel7.add(newProjectB);
 
         openProjectB.setIcon(new ActiveIcon("images/open"));
-        openProjectB.setText("Open Project");
+        openProjectB.setText("Open ...");
         openProjectB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 openProjectBActionPerformed(evt);
@@ -398,10 +381,10 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
 
     private void newProjectBActionPerformed(ActionEvent evt) {//GEN-FIRST:event_newProjectBActionPerformed
         try {
-            NewProjectInfo projectInfo = new NewProjectInfo();
-            projectInfo.setVisible(true);
-            if (projectInfo.getProjectPath() != null)
-                ProjectLoader.showProject(ProjectInfo.create(projectInfo.getProjectPath().getAbsolutePath(), projectInfo), this);
+            NewProjectInfo newProjectInfo = new NewProjectInfo();
+            newProjectInfo.setVisible(true);
+            if (newProjectInfo.getProjectPath() != null)
+                ProjectLoader.showProject(ProjectInfo.create(newProjectInfo.getProjectPath().getAbsolutePath(), newProjectInfo), this);
         } catch (ProjectException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error while opening project", JOptionPane.ERROR_MESSAGE);
         }
@@ -471,10 +454,6 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         }
     }//GEN-LAST:event_versionLMousePressed
 
-    private void licenseBActionPerformed(ActionEvent evt) {//GEN-FIRST:event_licenseBActionPerformed
-        new LicenseDialog(this).setVisible(true);
-    }//GEN-LAST:event_licenseBActionPerformed
-
     private void newVersionLMouseClicked(MouseEvent evt) {//GEN-FIRST:event_newVersionLMouseClicked
         updater.actionDisplay();
     }//GEN-LAST:event_newVersionLMouseClicked
@@ -492,7 +471,6 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
     private JLabel jLabel4;
     private JPanel jPanel1;
     private JPanel jPanel10;
-    private JPanel jPanel2;
     private JPanel jPanel3;
     private JPanel jPanel4;
     private JPanel jPanel5;
@@ -501,13 +479,13 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
     private JPanel jPanel8;
     private JPanel jPanel9;
     private Separator jSeparator1;
-    private JButton licenseB;
     private JButton newProjectB;
     private JLabel newVersionL;
     private JButton openB;
     private JMenuItem openM;
     private JButton openProjectB;
     private JMenuItem removeM;
+    private ButtonGroup selectionB;
     private JButton settingsB;
     private JLabel versionL;
     // End of variables declaration//GEN-END:variables

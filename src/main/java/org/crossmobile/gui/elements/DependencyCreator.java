@@ -11,7 +11,6 @@ import org.crossmobile.gui.actives.ActiveIcon;
 import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.actives.ActiveRadioButton;
 import org.crossmobile.utils.Dependency;
-import org.crossmobile.utils.lic.LicenseManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -236,14 +235,9 @@ public final class DependencyCreator extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBActionPerformed
-        Dependency dep;
-        if (crossSelection.isSelected()) {
-            dep = (Dependency) cmPlugin.getSelectedItem();
-            if (!isTheme && !LicenseManager.isAllowed(appId, dep.artifactId))
-                JOptionPane.showMessageDialog(this,
-                        "No matching license found for the selected plugin.\nPlease use license manager to update your curent licenses.");
-        } else
-            dep = Dependency.find(group.getText(), prefixArtifact.getText() + artifact.getText(), version.getText(), null, null);
+        Dependency dep = crossSelection.isSelected()
+                ? (Dependency) cmPlugin.getSelectedItem()
+                : Dependency.find(group.getText(), prefixArtifact.getText() + artifact.getText(), version.getText(), null, null);
         if (dep != null) {
             dependencyCallback.accept(dep);
             setVisible(false);

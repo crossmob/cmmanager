@@ -120,6 +120,12 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         this.closeCallback = callBack;
     }
 
+    private void deactivateComponent(AbstractButton button) {
+        button.setIcon(null);
+        button.setEnabled(false);
+        autoDisabled.remove(button);
+    }
+
     public void initVisuals(Project p) {
         proj = p;
         setTitle(proj.getProperty(DISPLAY_NAME));
@@ -199,6 +205,19 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 desktopT.setSelected(true);
                 break;
         }
+        if (proj.isPlugin()) {
+            openM.remove(otherS);
+            openM.remove(otherIDEs);
+            deactivateComponent(expandRB);
+            deactivateComponent(expandCB);
+            deactivateComponent(iosT);
+            deactivateComponent(androidT);
+            deactivateComponent(uwpT);
+            deactivateComponent(desktopT);
+            actionB.setActionCommand(LAUNCH_ACTION_BUILD);
+            updateLaunchVisuals();
+        }
+
         actionB.setEnabled(true);
         setProjectEnabled(true);
         validate();
@@ -546,7 +565,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         jSeparator4 = new ActiveMenuSeparator();
         intellijM = new ActiveMenuItem();
         netbeansM = new ActiveMenuItem();
-        jSeparator1 = new ActiveMenuSeparator();
+        otherS = new ActiveMenuSeparator();
         otherIDEs = new ActiveMenu();
         xcodeM = new ActiveMenuItem();
         vstudioM = new ActiveMenuItem();
@@ -577,6 +596,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         macosI = new ActiveMenuItem();
         packDEM = new ActivePopupMenu();
         genericEP = new ActiveMenuItem();
+        packPl = new ActivePopupMenu();
+        distribPP = new ActiveMenuItem();
         cleanM = new ActivePopupMenu();
         cleanAllPM = new ActiveMenuItem();
         actionsAndroidM = new ActivePopupMenu();
@@ -696,7 +717,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             }
         });
         openM.add(netbeansM);
-        openM.add(jSeparator1);
+        openM.add(otherS);
 
         otherIDEs.setText("Other IDEs...");
 
@@ -903,6 +924,14 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             }
         });
         packDEM.add(genericEP);
+
+        distribPP.setText("Create distribution package");
+        distribPP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                distribPPActionPerformed(evt);
+            }
+        });
+        packPl.add(distribPP);
 
         cleanAllPM.setIcon(CLEANPROJ_I);
         cleanAllPM.setText("Clean Project files");
@@ -1354,30 +1383,36 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }//GEN-LAST:event_androidPackage
 
     private void packBMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_packBMousePressed
-        if (packB.isEnabled()) {
-            switch (getCurrentTarget()) {
-                case "android":
-                    packAM.show(packB, 0, packB.getHeight());
-                    break;
-                case "desktop":
-                    if (Paths.getMakeAppExec().isEmpty())
-                        packDEM.show(packB, 0, packB.getHeight());
-                    else
-                        packDMM.show(packB, 0, packB.getHeight());
-                    break;
-                case "ios":
-                    packIM.show(packB, 0, packB.getHeight());
-                    break;
-                case "uwp":
-                    packWM.show(packB, 0, packB.getHeight());
-                    break;
-            }
-        }
+        if (packB.isEnabled())
+            if (proj.isPlugin())
+                packPl.show(packB, 0, packB.getHeight());
+            else
+                switch (getCurrentTarget()) {
+                    case "android":
+                        packAM.show(packB, 0, packB.getHeight());
+                        break;
+                    case "desktop":
+                        if (Paths.getMakeAppExec().isEmpty())
+                            packDEM.show(packB, 0, packB.getHeight());
+                        else
+                            packDMM.show(packB, 0, packB.getHeight());
+                        break;
+                    case "ios":
+                        packIM.show(packB, 0, packB.getHeight());
+                        break;
+                    case "uwp":
+                        packWM.show(packB, 0, packB.getHeight());
+                        break;
+                }
     }//GEN-LAST:event_packBMousePressed
 
     private void desktopInstaller(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desktopInstaller
         createDesktopPackage(evt.getActionCommand(), true);
     }//GEN-LAST:event_desktopInstaller
+
+    private void distribPPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distribPPActionPerformed
+        System.out.println("Create distribution package not supported yet");
+    }//GEN-LAST:event_distribPPActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Background;
@@ -1400,6 +1435,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JMenuItem debugP;
     private javax.swing.JMenuItem desktopM;
     private javax.swing.JToggleButton desktopT;
+    private javax.swing.JMenuItem distribPP;
     private javax.swing.JButton expandCB;
     private javax.swing.JButton expandOB;
     private javax.swing.JButton expandPB;
@@ -1415,7 +1451,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JToggleButton iosT;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPanel leftButtonPanel;
     private javax.swing.JMenuItem linuxA32I;
@@ -1433,6 +1468,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JButton openB;
     private javax.swing.JPopupMenu openM;
     private javax.swing.JMenu otherIDEs;
+    private javax.swing.JPopupMenu.Separator otherS;
     private javax.swing.JLabel outResult;
     private javax.swing.JPanel outerrorP;
     private javax.swing.JToggleButton outputB;
@@ -1443,6 +1479,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPopupMenu packDEM;
     private javax.swing.JPopupMenu packDMM;
     private javax.swing.JPopupMenu packIM;
+    private javax.swing.JPopupMenu packPl;
     private javax.swing.JPopupMenu packWM;
     private javax.swing.JPanel parameters;
     private javax.swing.JLabel pidL;
