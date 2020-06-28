@@ -9,8 +9,6 @@ package org.crossmobile.gui.parameters.impl;
 import org.crossmobile.gui.parameters.RadioParameter;
 import org.crossmobile.utils.ParamList;
 
-import static org.crossmobile.utils.ParamsCommon.DEBUG_PROFILE;
-
 public class AndroidLogParameter extends RadioParameter {
     public AndroidLogParameter(ParamList list) {
         super(list, null

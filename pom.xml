@@ -54,6 +54,18 @@
             <artifactId>junidecode</artifactId>
             <version>${version.junidecode}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.jboss.forge.roaster</groupId>
+            <artifactId>roaster-api</artifactId>
+            <version>${version.roaster}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.forge.roaster</groupId>
+            <artifactId>roaster-jdt</artifactId>
+            <version>${version.roaster}</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>

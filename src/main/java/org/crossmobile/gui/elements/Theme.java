@@ -133,7 +133,7 @@ public final class Theme {
         textBack = backCell;
         subinfo = c(primary, 0, 0.5f);
         disabled = c(primary, 0, 0.8f);
-        backCellSelected = c(primary, 0.063f, 1f);
+        backCellSelected = c(primary, 0.1f, 0.8f);
         textSelCell = text;
         infoSelCell = subinfo;
         textInfo = c(0.65f, dark ? 0.35f : 0.93f, dark ? 0f : 0.55f);

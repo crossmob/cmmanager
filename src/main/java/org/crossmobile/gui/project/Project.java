@@ -14,6 +14,7 @@ import org.crossmobile.gui.codehound.source.SourceParser;
 import org.crossmobile.gui.codehound.source.SourcePattern;
 import org.crossmobile.gui.codehound.source.SourcePatternFactory;
 import org.crossmobile.gui.parameters.DependenciesParameter;
+import org.crossmobile.gui.parameters.LibrariesParameter;
 import org.crossmobile.gui.parameters.ProjectParameter;
 import org.crossmobile.gui.parameters.ScreenScaleParameter;
 import org.crossmobile.gui.parameters.impl.*;
@@ -43,7 +44,7 @@ public class Project {
     private final File basedir;
     private final ParamList params;
     private List<PropertySheet> sheets;
-    private ImageHound imageHound;
+    private final ImageHound imageHound;
     //    private final Collection<Image> appicons;
     private final boolean asOldCrossmobile;
     private final boolean isPlugin;
@@ -220,6 +221,10 @@ public class Project {
         csheet.add(new DescriptionParameter(params));
         csheet.add(new VendorParameter(params));
         csheet.add(new URLParameter(params));
+        sheets.add(csheet);
+
+        csheet = new PropertySheet("Libraries", listener);
+        csheet.add(new LibrariesParameter(params, basedir));
         sheets.add(csheet);
     }
 

@@ -30,7 +30,7 @@ public abstract class FreeFileParameter extends ProjectParameter {
     private ActiveTextField fileData;
     private Consumer<HiResPanel> buttonPanelCallback;
     private final boolean editable;
-    private AFileChooser afc = new AFileChooser().setRememberSelection(true);
+    private final AFileChooser afc = new AFileChooser().setRememberSelection(true);
 
     public FreeFileParameter(String location) {
         this(null, null, location, false);
