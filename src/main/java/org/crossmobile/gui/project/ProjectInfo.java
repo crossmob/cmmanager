@@ -10,7 +10,6 @@ import org.crossmobile.gui.elements.NewProjectInfo;
 import org.crossmobile.gui.init.InitializationWizard;
 import org.crossmobile.gui.init.InitializationWizard.Card;
 import org.crossmobile.gui.utils.CMMvnActions;
-import org.crossmobile.gui.utils.NameConverter;
 import org.crossmobile.utils.Commander;
 import org.crossmobile.utils.FileUtils;
 import org.crossmobile.utils.Pom;
@@ -20,29 +19,21 @@ import org.crossmobile.utils.images.ImageHound;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.crossmobile.prefs.Config.*;
-import static org.crossmobile.utils.ParamsCommon.ARTIFACT_ID;
-import static org.crossmobile.utils.ParamsCommon.DISPLAY_NAME;
 
 public class ProjectInfo {
 
     public static final String MAVEN_SIGNATURE = "pom.xml";
-    public static final String OLD_ANT = "project.crossmobile";
-    public static final String OLD_XMLVM = "xmlvm.properties";
     private final static String INITIAL_VERSION = "1.0.0.0";
+
+    private final File basedir;
+    private boolean plugin;
 
     private ImageHound imageHound;
     private String name;
-    private final File basedir;
-    private boolean plugin = false;
 
     public static ProjectInfo load(String path) throws ProjectException {
         return new ProjectInfo(path, null);
@@ -65,7 +56,7 @@ public class ProjectInfo {
         if (!FileUtils.isWritable(dir))
             throw new ProjectException("Path " + dir.getPath() + " is not writable.");
 
-        if (!new File(dir, MAVEN_SIGNATURE).isFile() && !new File(dir, OLD_XMLVM).isFile() && !new File(dir, OLD_ANT).isFile())
+        if (!new File(dir, MAVEN_SIGNATURE).isFile())
             if (baseLevel && dir.getName().toLowerCase().equals(dir.getParentFile().getName().toLowerCase()))
                 dir = findProjectDir(dir.getParent(), false);
             else
@@ -73,7 +64,7 @@ public class ProjectInfo {
         return dir;
     }
 
-    private ProjectInfo(String pathname, NewProjectInfo newProjectInfo) throws ProjectException {
+    private ProjectInfo(final String pathname, NewProjectInfo newProjectInfo) throws ProjectException {
         if (pathname == null)
             throw new ProjectException("Invalid path provided");
 
@@ -114,27 +105,24 @@ public class ProjectInfo {
                 throw new ProjectException("Unable to create project");
         }
         this.basedir = findProjectDir(pathname, true);
-        refresh(newProjectInfo);
+        if (!refresh())
+            throw new ProjectException("Invalid project at location " + this.basedir.getAbsolutePath());
     }
 
-    public void refresh(NewProjectInfo newProjectInfo) {
-        Properties props = new Properties();
-        if (new File(basedir, MAVEN_SIGNATURE).exists()) {
-            Pom pom = new Pom(new File(basedir, MAVEN_SIGNATURE));
-            pom.updatePropertiesFromPom(props);
-            plugin = pom.isPlugin();
-        } else
-            try {
-                props.load(new InputStreamReader(new FileInputStream(new File(basedir, "nbproject" + File.separator + "project.properties")), StandardCharsets.UTF_8));
-            } catch (IOException ignored) {
-            }
-        props.computeIfAbsent(ARTIFACT_ID.tag().name, k -> newProjectInfo != null ? newProjectInfo.getApplicationName() : NameConverter.unicodeToAsciiID(basedir.getAbsolutePath()));
-        props.computeIfAbsent(DISPLAY_NAME.tag().name, k -> newProjectInfo != null ? newProjectInfo.getDisplayName() : basedir.getName());
-        name = props.get(DISPLAY_NAME.tag().name).toString();
-
+    public boolean refresh() {
+        Pom pom = Pom.read(new File(basedir, MAVEN_SIGNATURE));
+        if (pom == null)
+            return false;
+        plugin = pom.isPlugin();
+        name = pom.getNameFromPom();
         imageHound = new ImageHound();
         imageHound.addForegroundImages("/images/logo-" + (plugin ? "plugin" : "icon") + "@2x.png", new File(basedir, FORE_ICONS), new File(basedir, ICON_DIR));
         imageHound.addBackgroundImages("/images/empty.png", new File(basedir, BACK_ICONS));
+        return true;
+    }
+
+    public boolean exists() {
+        return new File(basedir, "pom.xml").isFile();
     }
 
     public ImageHound getImageHound() {
@@ -147,10 +135,6 @@ public class ProjectInfo {
 
     public File getPath() {
         return basedir;
-    }
-
-    public boolean isValid() {
-        return new File(basedir, OLD_ANT).isFile() || new File(basedir, OLD_XMLVM).isFile() || new Pom(new File(basedir, MAVEN_SIGNATURE)).isValid();
     }
 
     public boolean isPlugin() {
@@ -171,5 +155,4 @@ public class ProjectInfo {
         final ProjectInfo other = (ProjectInfo) obj;
         return Objects.equals(this.basedir, other.basedir);
     }
-
 }

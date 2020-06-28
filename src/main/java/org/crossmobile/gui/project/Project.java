@@ -27,15 +27,16 @@ import org.crossmobile.utils.images.ImageHound;
 
 import javax.swing.border.EmptyBorder;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.*;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static org.crossmobile.gui.project.ProjectInfo.OLD_ANT;
-import static org.crossmobile.gui.project.ProjectInfo.OLD_XMLVM;
 import static org.crossmobile.prefs.Config.MATERIALS_PATH;
-import static org.crossmobile.utils.ParamsCommon.*;
+import static org.crossmobile.utils.ParamsCommon.DEBUG_PROFILE;
+import static org.crossmobile.utils.ParamsCommon.MAIN_CLASS;
 import static org.crossmobile.utils.TemplateUtils.updateProperties;
 import static org.crossmobile.utils.func.ScopeUtils.with;
 
@@ -46,10 +47,8 @@ public class Project {
     private List<PropertySheet> sheets;
     private final ImageHound imageHound;
     //    private final Collection<Image> appicons;
-    private final boolean asOldCrossmobile;
     private final boolean isPlugin;
     ProjectPlugins plugins;
-    private boolean asOldXMLVMProject;
     private Profile profile;
     private String debugProfile = DEBUG_PROFILE.tag().deflt;
     private final GlobalParamListener listener = new GlobalParamListener();
@@ -58,19 +57,14 @@ public class Project {
     @SuppressWarnings("LeakingThisInConstructor")
     public Project(ProjectInfo projinf) throws ProjectException {
         basedir = projinf.getPath();
-        params = new ParamList();
-        params.updateFromProperties(new File(basedir, OLD_XMLVM));
-        params.updateFromProperties(new File(basedir, OLD_ANT));
-        params.updateFromProperties(new File(basedir, "nbproject/project.properties"));
-        params.updateFromProperties(new File(basedir, "ant.properties"));
-        params.updateFromProperties(new File(basedir, "local.properties"));
-        boolean correctPom = params.updateFromPom(new File(basedir, "pom.xml"));
-        ProjectUpdator.updateOldToNew(params.getProperties());    // just in case... should be last to properly support themes
+        Pom pom = Pom.read(new File(basedir, "pom.xml"));
+        if (pom == null)
+            throw new ProjectException("Unable to read project at " + basedir.getAbsolutePath());
 
-        asOldXMLVMProject = new File(basedir, OLD_XMLVM).exists();
-        asOldCrossmobile = !asOldXMLVMProject && new File(basedir, OLD_ANT).exists();
-        if (!correctPom && !asOldCrossmobile)
-            throw new ProjectException("Unable to parse POM file");
+        params = new ParamList();
+        params.updateFromPom(pom);
+        params.updateFromProperties(new File(basedir, "local.properties"));
+        ProjectUpdater.updateOldToNew(params.getProperties());    // just in case... should be last to properly support themes
 
         profile = Profile.safeValueOf(Prefs.getLaunchType(basedir.getAbsolutePath()));
         plugins = new ProjectPlugins(params);
@@ -149,14 +143,15 @@ public class Project {
                 for (PropertySheet sheet : getSheets())
                     for (ProjectParameter prop : sheet.getProperties())
                         prop.updatePropertyList();
-
-            if (asOldXMLVMProject || asOldCrossmobile) {
-                OldSourceParser.updateSources(basedir, new File(basedir, params.dereferenceProperty("src.java.dir")), asOldCrossmobile ? "CrossMobile" : "XMLVM");
-                asOldXMLVMProject = false;
-            }
-            ProjectUpdator.update(basedir, params);
+            // Should we update sources? Halt for now
+            if (false)
+                OldSourceParser.updateSources(basedir, new File(basedir, params.dereferenceProperty("src.java.dir")));
+            ProjectUpdater.update(basedir, params);
             // Update project properties
-            updatedPom = new Pom(new File(basedir, "pom.xml")).updatePomFromProperties(params.getParamset(), params.getProperties(), isPlugin);
+            updatedPom = Pom.read(new File(basedir, "pom.xml"));
+            if (updatedPom == null)
+                throw new ProjectException("Unable to update pom file");
+            updatedPom.updatePomFromProperties(params.getParamset(), params.getProperties(), isPlugin);
             updatedPom.setParentProject(Version.VERSION);
             updatedPom.saveTemp();
             if (!isPlugin)

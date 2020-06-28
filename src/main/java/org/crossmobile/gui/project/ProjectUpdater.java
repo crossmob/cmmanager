@@ -10,79 +10,28 @@ import org.crossmobile.gui.parameters.impl.GroupIdParameter;
 import org.crossmobile.utils.*;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Properties;
 
+import static java.util.Collections.singletonList;
 import static org.crossmobile.bridge.system.BaseUtils.listFiles;
-import static org.crossmobile.gui.project.ProjectInfo.OLD_ANT;
-import static org.crossmobile.gui.project.ProjectInfo.OLD_XMLVM;
 import static org.crossmobile.prefs.Config.*;
 import static org.crossmobile.utils.ParamsCommon.*;
 import static org.crossmobile.utils.TemplateUtils.copyTemplate;
 
-public class ProjectUpdator {
-
-    private static final String[] OBSOLETE_FILES = {
-            "manifest.mf",
-            "AndroidManifest.xml",
-            OLD_XMLVM,
-            OLD_ANT,
-            ".classpath",
-            ".project",
-            "nbproject/crossmobile.xml",
-            "nbproject/project.xml",
-            "nbproject/project.properties",
-            "nbproject/genfiles.properties",
-            "nbproject/build-Android.xml",
-            "nbproject/build-android.xml",
-            "nbproject/build-Swing.xml",
-            "nbproject/build-swing.xml",
-            "nbproject/build-Desktop.xml",
-            "nbproject/build-desktop.xml",
-            "nbproject/build-Xcode.xml",
-            "nbproject/build-xcode.xml",
-            "nbproject/build-Java.xml",
-            "nbproject/build-java.xml",
-            "nbproject/build-helpers.xml",
-            "nbproject/xmlvm.xml",
-            "nbproject/build-impl.xml",
-            "nbproject/configs/NetBeans.properties",
-            "nbproject/configs/Java.properties",
-            "nbproject/configs/Swing.properties",
-            "nbproject/configs/Android.properties",
-            "nbproject/configs/Xcode.properties",
-            "nbproject/configs/Android Device.properties",
-            "nbproject/configs/Swing Pad.properties",
-            "nbproject/configs/Swing Phone.properties",
-            "nbproject/configs/Swing PhoneShort.properties",
-            "nbproject/configs/Xcode Device.properties",
-            "nbproject/configs/Xcode Pad.properties",
-            "nbproject/configs/Xcode Phone.properties",
-            "nbproject/configs/Xcode PhoneShort.properties",
-            "nbproject/configs/Xcode Project.properties",
-            ".settings/org.eclipse.jdt.core.prefs",
-            "build.xml",
-            "ant.properties",
-            "build.properties",
-            "project.properties",
-            "default.properties"
-    };
+public class ProjectUpdater {
 
     public static void update(File basedir, ParamList list) throws ProjectException {
-        // Remove obsolete files
-        for (String file : OBSOLETE_FILES)
-            FileUtils.delete(new File(basedir, file), null);
-
         // Create pom
         File pom = new File(basedir, "pom.xml");
         if (!pom.isFile())
             copyTemplate("pom_xml", pom, list, null);
 
         // Move source files
-        new File(basedir, "src" + File.separator + "main" + File.separator + "java").mkdirs();
+        File javaDir = new File(basedir, "src" + File.separator + "main" + File.separator + "java");
+        javaDir.mkdirs();
         File old;
         if ((old = new File(basedir, "src" + File.separator + "java")).exists()) {
-            FileUtils.copy(old, new File(basedir, "src" + File.separator + "main" + File.separator + "java"));
+            FileUtils.copy(old, javaDir);
             FileUtils.delete(old);
         }
 
@@ -131,7 +80,7 @@ public class ProjectUpdator {
         mightUpdateProperty(props, DISPLAY_NAME.tag(), displayname);
         mightUpdateProperty(props, ARTIFACT_ID.tag(), artifact);
         mightUpdateProperty(props, GROUP_ID.tag(), group);
-        mightUpdateProperty(props, CM_PLUGINS.tag(), Pom.packDependencies(Arrays.asList(Dependency.getSystemTheme(null))));
+        mightUpdateProperty(props, CM_PLUGINS.tag(), Pom.packDependencies(singletonList(Dependency.getSystemTheme(null))));
     }
 
     private static void mightUpdateProperty(Properties props, Param tag, String newvalue) {

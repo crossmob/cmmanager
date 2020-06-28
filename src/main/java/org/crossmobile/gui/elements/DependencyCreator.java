@@ -237,7 +237,7 @@ public final class DependencyCreator extends javax.swing.JFrame {
     private void addBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBActionPerformed
         Dependency dep = crossSelection.isSelected()
                 ? (Dependency) cmPlugin.getSelectedItem()
-                : Dependency.find(group.getText(), prefixArtifact.getText() + artifact.getText(), version.getText(), null, null);
+                : Dependency.find(group.getText(), prefixArtifact.getText() + artifact.getText(), version.getText(), null, null, null);
         if (dep != null) {
             dependencyCallback.accept(dep);
             setVisible(false);
@@ -263,7 +263,7 @@ public final class DependencyCreator extends javax.swing.JFrame {
     }//GEN-LAST:event_infoActionPerformed
 
     private static Dependency getTitle(String title) {
-        return Dependency.find("*", title, "", "", "");
+        return Dependency.find("*", title, "", "", "", "");
     }
 
     private static boolean isTitle(Object o) {

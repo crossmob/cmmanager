@@ -55,7 +55,7 @@ public class RecentsProjectManager {
 
     private static void updatePrefs() {
         for (int i = PROJECTS.size() - 1; i >= 0; i--)
-            if (!PROJECTS.get(i).isValid())
+            if (!PROJECTS.get(i).exists())
                 PROJECTS.remove(i);
 
         int counter = 1;

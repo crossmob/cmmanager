@@ -104,11 +104,11 @@ public class OldSourceParser {
         }
     }
 
-    public static void updateSources(File basedir, File sourcedir, String projecttype) throws ProjectException {
-        if (!sourcedir.exists())
+    public static void updateSources(File basedir, File sourceDir) throws ProjectException {
+        if (!sourceDir.exists())
             return;
-        if (JOptionPane.showConfirmDialog(null, "The project under\n'" + basedir.getAbsolutePath() + "'\nwas recognized as an old " + projecttype + " project.\n\nIt will be required to update the source files along with the project files.\nNote that this is a one-time update and might break current code.\nMake sure you have a backup of the original source code before proceeding.\n\nDO NOT PROCEED IF YOU DO NOT HAVE A BACKUP OF THIS PROJECT!") == JOptionPane.OK_OPTION)
-            updateSourceRecursively(sourcedir);
+        if (JOptionPane.showConfirmDialog(null, "The project under\n'" + basedir.getAbsolutePath() + "'\nwas recognized as an old CrossMobile project.\n\nIt will be required to update the source files along with the project files.\nNote that this is a one-time update and might break current code.\nMake sure you have a backup of the original source code before proceeding.\n\nDO NOT PROCEED IF YOU DO NOT HAVE A BACKUP OF THIS PROJECT!") == JOptionPane.OK_OPTION)
+            updateSourceRecursively(sourceDir);
         else
             throw new ProjectException("Unable to update sources");
     }

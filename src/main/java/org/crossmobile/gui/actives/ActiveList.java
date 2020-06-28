@@ -50,7 +50,7 @@ public class ActiveList<D> extends JList<D> implements ThemeChanged {
         @Override
         public Component getListCellRendererComponent(JList list, Object item, int index, boolean isSelected, boolean cellHasFocus) {
             ActiveLabel renderer = new ActiveLabel();
-            renderer.setBorder(new EmptyBorder(2, 0, 4, 0));
+            renderer.setBorder(new EmptyBorder(2, 2, 4, 2));
             renderer.setText(item == null ? "" : item.toString());
             renderer.setEnabled(list.isEnabled());
             renderer.setForeground(isSelected ? Theme.current().textSelCell : Theme.current().text);
