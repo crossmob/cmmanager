@@ -10,7 +10,6 @@ import org.crossmobile.gui.parameters.FreeTextParameter;
 import org.crossmobile.utils.ParamList;
 
 import static org.crossmobile.utils.ParamsCommon.CM_VENDOR;
-import static org.crossmobile.utils.ParamsCommon.DISPLAY_NAME;
 
 public class VendorParameter extends FreeTextParameter {
 

@@ -12,21 +12,23 @@ import org.crossmobile.utils.ParamList;
 import org.crossmobile.utils.Pom;
 
 import java.io.File;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.crossmobile.utils.ParamsCommon.CM_PLUGINS;
 
 public class LibrariesParameter extends ProjectParameter {
 
     private final LibraryEditor editor;
+    private String value;
 
     public LibrariesParameter(ParamList list, File projectRoot) {
         super(list, CM_PLUGINS.tag());
-        List<String> libraries = Pom.unpackDependencies(list.get(CM_PLUGINS.tag())).stream()
-                .map(d -> d.groupId + ":" + d.artifactId + ":" + d.version)
-                .collect(Collectors.toList());
-        editor = new LibraryEditor(projectRoot, libraries);
+        value = list.get(CM_PLUGINS.tag());
+        editor = new LibraryEditor(projectRoot, Pom.unpackDependencies(value), v -> {
+            if (!v.equals(value)) {
+                value = v;
+                fireValueUpdated();
+            }
+        });
     }
 
     @Override
@@ -36,7 +38,7 @@ public class LibrariesParameter extends ProjectParameter {
 
     @Override
     public String getValue() {
-        return "";
+        return value;
     }
 
     @Override

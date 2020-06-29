@@ -10,7 +10,6 @@ import org.crossmobile.gui.parameters.FreeTextParameter;
 import org.crossmobile.utils.ParamList;
 
 import static org.crossmobile.utils.ParamsCommon.CM_URL;
-import static org.crossmobile.utils.ParamsCommon.CM_VENDOR;
 
 public class URLParameter extends FreeTextParameter {
 
