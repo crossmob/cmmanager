@@ -14,13 +14,9 @@ import org.crossmobile.prefs.Config;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.Commander;
 import org.crossmobile.utils.FileUtils;
-import org.crossmobile.utils.ProjectException;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +30,31 @@ import static org.crossmobile.utils.NumberUtils.safeInt;
 import static org.crossmobile.utils.NumberUtils.safeLong;
 
 public class CMMvnActions {
+    public interface MavenExecutor {
+        void launchMaven(String goal, String profiles, MavenExecInfo info, Consumer<Integer> launchCallback, String... params);
+
+        void mavenFeedback(int result);
+
+        default Consumer<Integer> onSuccess(Runnable success) {
+            return result -> {
+                if (result == 0)
+                    success.run();
+                mavenFeedback(result);
+            };
+        }
+    }
+
+    public static final class MavenExecInfo {
+        public final String consoleText;
+        public final String infoText;
+        public final String target;
+
+        public MavenExecInfo(String consoleText, String infoText, String target) {
+            this.consoleText = consoleText == null ? "" : consoleText;
+            this.infoText = infoText == null ? "" : infoText;
+            this.target = target == null ? "" : target;
+        }
+    }
 
     private static String repoLocation;
 

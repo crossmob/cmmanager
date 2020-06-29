@@ -19,6 +19,7 @@ import org.crossmobile.gui.project.ProjectLauncher;
 import org.crossmobile.gui.project.ProjectLoader;
 import org.crossmobile.gui.project.PropertySheet;
 import org.crossmobile.gui.utils.*;
+import org.crossmobile.gui.utils.CMMvnActions.MavenExecInfo;
 import org.crossmobile.gui.utils.Deguard.MagicWand;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.*;
@@ -35,7 +36,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static org.crossmobile.gui.actives.ActiveContextPanel.Context.*;
 import static org.crossmobile.gui.utils.Profile.OBFUSCATE;
@@ -44,7 +44,7 @@ import static org.crossmobile.utils.ParamsCommon.*;
 import static org.crossmobile.utils.SystemDependent.Execs.ADB;
 import static org.crossmobile.utils.TextUtils.iterableToString;
 
-public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Consumer {
+public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Consumer, CMMvnActions.MavenExecutor {
 
     private static final int KILL_RESULT = 143;
     private static final int NOT_SAVED = 144;
@@ -128,6 +128,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
     public void initVisuals(Project p) {
         proj = p;
+        p.setLaunchContext(this);
         setTitle(proj.getProperty(DISPLAY_NAME));
         getRootPane().putClientProperty("Window.documentFile", proj.getPath());
         EnhancerManager.getDefault().updateFrameIconsWithImages(this, proj.getIconHound().getDeclaredImages());
@@ -359,14 +360,17 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         return targetG.getSelection().getActionCommand();
     }
 
-    private ActiveTextPane initLaunchVisualsOut(String consoleText, String infoText, String target) {
-        setLaunchButtonStatus(null, infoText, target);
+    private ActiveTextPane getTextPane() {
+        return (ActiveTextPane) outputTxt;
+    }
+
+    private void initLaunchVisualsOut(MavenExecInfo execInfo) {
+        setLaunchButtonStatus(null, execInfo.infoText, execInfo.target);
         ActiveTextPane out = (ActiveTextPane) outputTxt;
         out.setText("");
         pidL.setText("");
-        if (!consoleText.isEmpty())
-            out.addLine("\n" + consoleText + "\n", StreamQuality.INFO);
-        return out;
+        if (!execInfo.consoleText.isEmpty())
+            out.addLine("\n" + execInfo.consoleText + "\n", StreamQuality.INFO);
     }
 
     private void buildAndRun(String target) {
@@ -383,63 +387,45 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 setLaunchButtonStatus(KILL_RESULT, null, null);
             });
         else {
-            ActiveTextPane outP = initLaunchVisualsOut("Launch " + target + " target", "Building product", target);
-            Supplier<Commander> launchSup = () -> execMavenInConsole("install",
+            initLaunchVisualsOut(new MavenExecInfo("Launch " + target + " target", "Building product", target));
+            Runnable launcher = () -> launchMaven("install",
                     target
                             + (run ? ",run" : "")
                             + (release ? ",release" : "")
                             + (proj.getProfile() == OBFUSCATE ? ",obfuscate" : "")
-                    , proj, outP, execCallback == null ? this::callResult : execCallback
+                    , null, execCallback == null ? this::mavenFeedback : execCallback
                     , "-D" + DEBUG_PROFILE.tag().name + "=" + proj.getDebugProfile());
             EventUtils.postAction(() -> {
                 if (saveProjectWithErrorMessage()) {
                     if (distClean)
-                        launch = execMavenInConsole("clean", null, proj, outP, result -> {
-                            if (result == 0) launch = launchSup.get();
+                        launchMaven("clean", null, null, result -> {
+                            if (result == 0)
+                                launcher.run();
                         }, "-Pdistclean");
                     else
-                        launch = launchSup.get();
+                        launcher.run();
                 } else
                     setLaunchButtonStatus(NOT_SAVED, "Unable to save project", null);
             });
         }
     }
 
-    private void callResult(Integer result) {
-        setLaunchButtonStatus(result, null, null);
-        launch = null;
-    }
 
     private void openTarget(String target) {
         String info = "Request to launch project in " + target;
-        ActiveTextPane outP = initLaunchVisualsOut(info, "Open project in " + target, target);
+        initLaunchVisualsOut(new MavenExecInfo(info, "Open project in " + target, target));
         String preproc = OPEN_STUDIO.equals(target) ? LAUNCH_TARGET_ANDROID : (OPEN_XCODE.equals(target) ? LAUNCH_TARGET_IOS : (OPEN_VSTUDIO.equals(target) ? LAUNCH_TARGET_UWP : null));
         if (preproc != null)
-            launch = execMavenInConsole("process-classes", preproc, proj, outP, result -> {
-                if (result == 0)
-                    postProcessCode(outP, "", target, outP);
-                else
-                    callResult(result);
-            });
+            launchMaven("process-classes", preproc, new MavenExecInfo(info, "Open project in " + target, target),
+                    onSuccess(() -> postProcessCode(getTextPane(), "", target)));
         else
-            postProcessCode(outP, info, target, outP);
+            postProcessCode(getTextPane(), info, target);
     }
 
-    public void installPrivateArtifact(String signature, String target) {
-        ActiveTextPane outP = initLaunchVisualsOut("Retrieving artifact " + signature, "Retrieve and convert AAR artifact", target);
-        launch = execMavenInConsole("org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get", null, proj,
-                outP, result -> {
-                    if (result == 0)
-                        ExternalCommands.convertAARtoJAR(signature);
-                    else
-                        callResult(result);
-                }, "-Dartifact=" + signature, "-Dtransitive=false");
-    }
-
-    private void postProcessCode(ActiveTextPane txtPane, String info, String ide, ActiveTextPane out) {
+    private void postProcessCode(ActiveTextPane out, String info, String ide) {
         if (!info.isEmpty())
-            txtPane.addLine("\n" + info + "\n", StreamQuality.INFO);
-        ExternalCommands.openCode(ide, proj, out, this::callResult);
+            out.addLine("\n" + info + "\n", StreamQuality.INFO);
+        ExternalCommands.openCode(ide, proj, out, this::mavenFeedback);
     }
 
     private void updateInfo(AtomicLong pid, AtomicInteger port) {
@@ -452,6 +438,19 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             out.append("Debug port: ").append(port.get());
         }
         pidL.setText(out.toString());
+    }
+
+    @Override
+    public void mavenFeedback(int result) {
+        setLaunchButtonStatus(result, null, null);
+        launch = null;
+    }
+
+    @Override
+    public void launchMaven(String goal, String profiles, MavenExecInfo info, Consumer<Integer> launchCallback, String... params) {
+        if (info != null)
+            initLaunchVisualsOut(info);
+        launch = execMavenInConsole(goal, profiles, proj, getTextPane(), launchCallback, params);
     }
 
     private Commander execMavenInConsole(String goal, String profiles, Project proj, ActiveTextPane outP, Consumer<Integer> launchCallback, String... params) {
@@ -509,26 +508,24 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
     private void createDesktopPackage(String os, boolean alsoInstaller) {
         buildAndRun("desktop", true, true, false, res -> Opt.of(getJarPath()).onError(Log::error).filter(File::isFile)
-                .ifMissing(() -> callResult(res))
+                .ifMissing(() -> mavenFeedback(res))
                 .ifExists(jar -> {
                     ((ActiveTextPane) outputTxt).addLine("CREATING " + os.toUpperCase() + " " + (alsoInstaller ? "INSTALLER" : "PACKAGE") + "\n------------------------------------------------------------------------", StreamQuality.INFO);
                     File destDir = new File(jar.getParent(), os + "_package");
                     if (!destDir.mkdir()) {
                         Log.error("Unable to create folder " + destDir.getAbsolutePath());
-                        callResult(-1);
+                        mavenFeedback(-1);
                         return;
                     }
                     File resDir = ResourceInstaller.createResourceDir(proj.getPath(), proj.getIconHound(), os);
                     if (resDir == null) {
                         Log.error("Unable to create resources folder");
-                        callResult(-1);
+                        mavenFeedback(-1);
                         return;
                     }
-                    ProjectLauncher.launch(proj.getPath(), (ActiveTextPane) outputTxt, pres -> {
-                                if (pres == 0)
-                                    SwingUtilities.invokeLater(() -> Opt.of(destDir).ifExists(d -> Desktop.getDesktop().open(d)));
-                                callResult(pres);
-                            }, SystemDependent.getEnvWithFixedPaths(), null,
+                    ProjectLauncher.launch(proj.getPath(), (ActiveTextPane) outputTxt,
+                            onSuccess(() -> SwingUtilities.invokeLater(() -> Opt.of(destDir).ifExists(d -> Desktop.getDesktop().open(d)))),
+                            SystemDependent.getEnvWithFixedPaths(), null,
                             Paths.getMakeAppExec(), alsoInstaller ? "create" : "java",
                             "--os", os, "--name", proj.getProperty(DISPLAY_NAME), "--version", proj.getProperty(BUNDLE_VERSION),
                             "--jar", jar.getAbsolutePath(), "--output", destDir.getAbsolutePath(),
@@ -1206,7 +1203,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
@@ -1337,7 +1334,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }//GEN-LAST:event_desktopMActionPerformed
 
     private void cleanBactOnProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cleanBactOnProject
-        launch = execMavenInConsole("clean", null, proj, initLaunchVisualsOut("Clean up project", "Cleaning project", null), this::callResult);
+        launchMaven("clean", null, new MavenExecInfo("Clean up project", "Cleaning project", null), this::mavenFeedback);
     }//GEN-LAST:event_cleanBactOnProject
 
     private void expandCBMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_expandCBMousePressed
@@ -1346,11 +1343,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }//GEN-LAST:event_expandCBMousePressed
 
     private void cleanAllPMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cleanAllPMActionPerformed
-        launch = execMavenInConsole("clean", "distclean", proj, initLaunchVisualsOut("Clean project and build files", "Clean project", null), res -> {
-            if (res == 0)
-                saveProjectWithErrorMessage();
-            callResult(res);
-        });
+        launchMaven("clean", "distclean", new MavenExecInfo("Clean project and build files", "Clean project", null),
+                onSuccess(this::saveProjectWithErrorMessage));
     }//GEN-LAST:event_cleanAllPMActionPerformed
 
     private void logMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logMActionPerformed
@@ -1367,8 +1361,9 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             case "err":
                 cmds.add("System.err:W");
         }
-        launch = ProjectLauncher.launch(null, initLaunchVisualsOut("Display Android Logs", "Android logs", "android"),
-                this::callResult, null, StreamListener.NONE, cmds.toArray(new String[0]));
+        initLaunchVisualsOut(new MavenExecInfo("Display Android Logs", "Android logs", "android"));
+        launch = ProjectLauncher.launch(null, getTextPane(), this::mavenFeedback, null,
+                StreamListener.NONE, cmds.toArray(new String[0]));
     }//GEN-LAST:event_logMActionPerformed
 
     private void desktopPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desktopPackage
@@ -1379,7 +1374,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         boolean release = "release".equals(evt.getActionCommand());
         buildAndRun("android", true, release, false, res -> Opt.of(getApkPath(true))
                 .onError(Log::error)
-                .ifExists(f -> Desktop.getDesktop().open(f.getParentFile())).always(i -> callResult(res)));
+                .ifExists(f -> Desktop.getDesktop().open(f.getParentFile())).always(i -> mavenFeedback(res)));
     }//GEN-LAST:event_androidPackage
 
     private void packBMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_packBMousePressed

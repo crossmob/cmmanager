@@ -8,6 +8,7 @@ package org.crossmobile.gui.parameters;
 
 import com.panayotis.hrgui.HiResComponent;
 import org.crossmobile.gui.elements.LibraryEditor;
+import org.crossmobile.gui.utils.CMMvnActions;
 import org.crossmobile.utils.ParamList;
 import org.crossmobile.utils.Pom;
 
@@ -20,7 +21,7 @@ public class LibrariesParameter extends ProjectParameter {
     private final LibraryEditor editor;
     private String value;
 
-    public LibrariesParameter(ParamList list, File projectRoot) {
+    public LibrariesParameter(ParamList list, File projectRoot, CMMvnActions.MavenExecutor fetchEvent) {
         super(list, CM_PLUGINS.tag());
         value = list.get(CM_PLUGINS.tag());
         editor = new LibraryEditor(projectRoot, Pom.unpackDependencies(value), v -> {
@@ -28,7 +29,7 @@ public class LibrariesParameter extends ProjectParameter {
                 value = v;
                 fireValueUpdated();
             }
-        });
+        }, fetchEvent);
     }
 
     @Override

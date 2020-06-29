@@ -16,7 +16,6 @@ import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -65,7 +64,7 @@ public class AndroidParser {
     public static List<Dependency> filterShadow(List<Dependency> dependencies) {
         return dependencies.stream()
                 .filter(d -> d.groupId.startsWith(SHADOW_ARTIFACT))
-                .map(d -> Dependency.find(d.groupId.substring(SHADOW_ARTIFACT.length()), d.artifactId, d.version, d.classifier, d.scope, d.packaging))
+                .map(d -> Dependency.find(d.groupId.substring(SHADOW_ARTIFACT.length()), d.artifactId, d.version, d.classifier, d.scope, "aar"))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }

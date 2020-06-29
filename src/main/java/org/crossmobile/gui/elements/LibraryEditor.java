@@ -6,10 +6,13 @@
 
 package org.crossmobile.gui.elements;
 
+import org.crossmobile.Version;
 import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.actives.ActiveList;
 import org.crossmobile.gui.actives.ActivePanel;
 import org.crossmobile.gui.codehound.source.AndroidParser;
+import org.crossmobile.gui.utils.CMMvnActions.MavenExecInfo;
+import org.crossmobile.gui.utils.CMMvnActions.MavenExecutor;
 import org.crossmobile.utils.Dependency;
 import org.crossmobile.utils.Pom;
 import org.robovm.objc.block.VoidBlock1;
@@ -18,17 +21,20 @@ import javax.swing.*;
 import java.io.File;
 import java.util.List;
 
+import static org.crossmobile.prefs.Config.CMPLUGIN_MAVEN_PLUGIN_SIGNATURE;
 import static org.crossmobile.utils.CollectionUtils.asList;
 
 public class LibraryEditor extends ActivePanel {
 
     private final File projectRoot;
     private final VoidBlock1<String> callback;
+    private final MavenExecutor fetchEvent;
     private List<Dependency> dependencies;
 
-    public LibraryEditor(File projectRoot, List<Dependency> libraries, VoidBlock1<String> callback) {
+    public LibraryEditor(File projectRoot, List<Dependency> libraries, VoidBlock1<String> callback, MavenExecutor executor) {
         this.projectRoot = projectRoot;
         this.callback = callback;
+        this.fetchEvent = executor;
         initComponents();
         updateModel(libraries);
     }
@@ -56,7 +62,9 @@ public class LibraryEditor extends ActivePanel {
 
         javax.swing.JPanel topP = new javax.swing.JPanel();
         javax.swing.JLabel titleL = new ActiveLabel();
-        javax.swing.JButton recalculateB = new javax.swing.JButton();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
+        fetchB = new javax.swing.JButton();
+        javax.swing.JButton calculateB = new javax.swing.JButton();
         javax.swing.JScrollPane scrollS = new javax.swing.JScrollPane();
         deplist = new ActiveList<>();
 
@@ -68,13 +76,25 @@ public class LibraryEditor extends ActivePanel {
         titleL.setText("List of shadowed dependencies");
         topP.add(titleL, java.awt.BorderLayout.WEST);
 
-        recalculateB.setText("Recalculate");
-        recalculateB.addActionListener(new java.awt.event.ActionListener() {
+        jPanel1.setOpaque(false);
+
+        fetchB.setText("Fetch");
+        fetchB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                recalculateBActionPerformed(evt);
+                fetchBActionPerformed(evt);
             }
         });
-        topP.add(recalculateB, java.awt.BorderLayout.EAST);
+        jPanel1.add(fetchB);
+
+        calculateB.setText("Calculate");
+        calculateB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                calculateBActionPerformed(evt);
+            }
+        });
+        jPanel1.add(calculateB);
+
+        topP.add(jPanel1, java.awt.BorderLayout.EAST);
 
         add(topP, java.awt.BorderLayout.NORTH);
 
@@ -86,14 +106,22 @@ public class LibraryEditor extends ActivePanel {
         add(scrollS, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void recalculateBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recalculateBActionPerformed
+    private void calculateBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculateBActionPerformed
         updateModel(dependencies = asList(AndroidParser.parseProject(projectRoot)));
         callback.invoke(Pom.packDependencies(dependencies));
+    }//GEN-LAST:event_calculateBActionPerformed
 
-    }//GEN-LAST:event_recalculateBActionPerformed
+    private void fetchBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fetchBActionPerformed
+        AndroidParser.filterShadow(dependencies).stream().
+                map(d -> d.groupId + ":" + d.artifactId + ":" + d.packaging + ":" + d.version).
+                reduce((s, s2) -> s + ";" + s2).ifPresent(art ->
+                fetchEvent.launchMaven(Pom.CROSSMOBILE_GROUP_ID + ":" + CMPLUGIN_MAVEN_PLUGIN_SIGNATURE + ":" + Version.VERSION + ":shadow",
+                        null, new MavenExecInfo(null, "Retrieve shadow plugins", "Retrieve shadow plugins"),
+                        fetchEvent::mavenFeedback, "-Dartifacts=" + art));
+    }//GEN-LAST:event_fetchBActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<String> deplist;
-
+    private javax.swing.JButton fetchB;
     // End of variables declaration//GEN-END:variables
 }

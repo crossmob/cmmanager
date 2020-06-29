@@ -8,6 +8,7 @@ package org.crossmobile.gui.project;
 
 import org.crossmobile.Version;
 import org.crossmobile.bridge.system.BaseUtils;
+import org.crossmobile.gui.ProjectFrame;
 import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.codehound.source.FileHit;
 import org.crossmobile.gui.codehound.source.SourceParser;
@@ -18,6 +19,8 @@ import org.crossmobile.gui.parameters.LibrariesParameter;
 import org.crossmobile.gui.parameters.ProjectParameter;
 import org.crossmobile.gui.parameters.ScreenScaleParameter;
 import org.crossmobile.gui.parameters.impl.*;
+import org.crossmobile.gui.utils.CMMvnActions;
+import org.crossmobile.gui.utils.CMMvnActions.MavenExecutor;
 import org.crossmobile.gui.utils.Paths;
 import org.crossmobile.gui.utils.Profile;
 import org.crossmobile.prefs.Prefs;
@@ -53,6 +56,7 @@ public class Project {
     private String debugProfile = DEBUG_PROFILE.tag().deflt;
     private final GlobalParamListener listener = new GlobalParamListener();
     private Consumer<Project> saveCallback;
+    private MavenExecutor mavenExecutor;
 
     @SuppressWarnings("LeakingThisInConstructor")
     public Project(ProjectInfo projinf) throws ProjectException {
@@ -219,7 +223,7 @@ public class Project {
         sheets.add(csheet);
 
         csheet = new PropertySheet("Libraries", listener);
-        csheet.add(new LibrariesParameter(params, basedir));
+        csheet.add(new LibrariesParameter(params, basedir, mavenExecutor));
         sheets.add(csheet);
     }
 
@@ -292,5 +296,9 @@ public class Project {
         csheet.add(new URLParameter(params));
 //        csheet.setBottomPanel(SendStackTrace.getPanel());
         sheets.add(csheet);
+    }
+
+    public void setLaunchContext(MavenExecutor mavenExecutor) {
+        this.mavenExecutor = mavenExecutor;
     }
 }
