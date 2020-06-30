@@ -13,6 +13,8 @@ import org.crossmobile.gui.actives.ActivePanel;
 import org.crossmobile.gui.codehound.source.AndroidParser;
 import org.crossmobile.gui.utils.CMMvnActions.MavenExecInfo;
 import org.crossmobile.gui.utils.CMMvnActions.MavenExecutor;
+import org.crossmobile.prefs.MvnVersions;
+import org.crossmobile.prefs.MvnVersions.Unaar;
 import org.crossmobile.utils.Dependency;
 import org.crossmobile.utils.Pom;
 import org.robovm.objc.block.VoidBlock1;
@@ -115,9 +117,9 @@ public class LibraryEditor extends ActivePanel {
         AndroidParser.filterShadow(dependencies).stream().
                 map(d -> d.groupId + ":" + d.artifactId + ":" + d.packaging + ":" + d.version).
                 reduce((s, s2) -> s + ";" + s2).ifPresent(art ->
-                fetchEvent.launchMaven(Pom.CROSSMOBILE_GROUP_ID + ":" + CMPLUGIN_MAVEN_PLUGIN_SIGNATURE + ":" + Version.VERSION + ":shadow",
+                fetchEvent.launchMaven(Unaar.GROUP + ":" + Unaar.ARTIFACT + ":" + Unaar.VERSION + ":" + Unaar.GOAL,
                         null, new MavenExecInfo(null, "Retrieve shadow plugins", "Retrieve shadow plugins"),
-                        fetchEvent::mavenFeedback, "-Dartifacts=" + art));
+                        fetchEvent::mavenFeedback, "-Dartifacts=" + art, "-DshadowGroup=" + Pom.SHADOW));
     }//GEN-LAST:event_fetchBActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
