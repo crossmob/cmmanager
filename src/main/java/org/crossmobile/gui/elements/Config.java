@@ -61,6 +61,8 @@ public class Config extends HiResDialog {
     private Config() {
         super((Dialog) null, true);
         initComponents();
+        if (!SystemDependent.getDefaultTheme().equals("auto"))
+            systemB.setVisible(false);
         switch (Prefs.getUserTheme()) {
             case "dark":
                 themeGroup.setSelected(darkB.getModel(), true);
@@ -69,7 +71,7 @@ public class Config extends HiResDialog {
                 themeGroup.setSelected(lightB.getModel(), true);
                 break;
             default:
-                themeGroup.setSelected(autoB.getModel(), true);
+                themeGroup.setSelected(systemB.getModel(), true);
         }
 
         UIUtils.syncWidth(Arrays.asList(jdkL, androidL, netbeansL, intellijL, studioL, keystoreL));
@@ -98,51 +100,51 @@ public class Config extends HiResDialog {
     private void initComponents() {
 
         themeGroup = new javax.swing.ButtonGroup();
-        jPanel4 = new GradientPanel();
-        jPanel10 = new HiResPanel();
-        jLabel3 = new ActiveLabel();
-        jPanel16 = new javax.swing.JPanel();
-        jPanel14 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel4 = new GradientPanel();
+        javax.swing.JPanel jPanel10 = new HiResPanel();
+        javax.swing.JLabel jLabel3 = new ActiveLabel();
+        javax.swing.JPanel jPanel16 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel14 = new javax.swing.JPanel();
         jdkL = new ActiveLabel();
         androidL = new ActiveLabel();
-        jPanel13 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel13 = new javax.swing.JPanel();
         jdkT = new ActiveTextField();
         androidT = new ActiveTextField();
-        jPanel12 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel12 = new javax.swing.JPanel();
         jdkB = new HiResButton();
         androidB = new HiResButton();
-        jPanel5 = new HiResPanel();
-        jLabel2 = new ActiveLabel();
-        jPanel6 = new javax.swing.JPanel();
-        eselectP = new HiResPanel();
+        javax.swing.JPanel jPanel5 = new HiResPanel();
+        javax.swing.JLabel jLabel2 = new ActiveLabel();
+        javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
+        javax.swing.JPanel eselectP = new HiResPanel();
         netbeansL = new ActiveLabel();
         intellijL = new ActiveLabel();
-        etextP = new HiResPanel();
+        javax.swing.JPanel etextP = new HiResPanel();
         netbeansT = new ActiveTextField();
         intellijT = new ActiveTextField();
-        ebuttonP = new HiResPanel();
+        javax.swing.JPanel ebuttonP = new HiResPanel();
         netbeansB = new HiResButton();
         intellijB = new HiResButton();
-        jPanel11 = new HiResPanel();
-        jLabel6 = new ActiveLabel();
-        jPanel17 = new HiResPanel();
-        jPanel15 = new HiResPanel();
+        javax.swing.JPanel jPanel11 = new HiResPanel();
+        javax.swing.JLabel jLabel6 = new ActiveLabel();
+        javax.swing.JPanel jPanel17 = new HiResPanel();
+        javax.swing.JPanel jPanel15 = new HiResPanel();
         studioL = new ActiveLabel();
         keystoreL = new ActiveLabel();
-        jPanel18 = new HiResPanel();
+        javax.swing.JPanel jPanel18 = new HiResPanel();
         studioT = new ActiveTextField();
         keyT = new ActiveTextField();
-        jPanel19 = new HiResPanel();
+        javax.swing.JPanel jPanel19 = new HiResPanel();
         studioB = new HiResButton();
         keystoreB = new HiResButton();
-        jPanel20 = new HiResPanel();
-        jLabel7 = new ActiveLabel();
-        jPanel22 = new HiResPanel();
+        javax.swing.JPanel jPanel20 = new HiResPanel();
+        javax.swing.JLabel jLabel7 = new ActiveLabel();
+        javax.swing.JPanel jPanel22 = new HiResPanel();
         lightB = new ActiveRadioButton();
         darkB = new ActiveRadioButton();
-        autoB = new ActiveRadioButton();
-        jPanel1 = new HiResPanel();
-        closeB = new HiResButton();
+        systemB = new ActiveRadioButton();
+        javax.swing.JPanel jPanel1 = new HiResPanel();
+        javax.swing.JButton closeB = new HiResButton();
 
         setTitle("CrossMobile Configuration");
         setResizable(false);
@@ -150,7 +152,7 @@ public class Config extends HiResDialog {
         jPanel4.setBorder(new HiResEmptyBorder(12, 12, 0, 12));
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
 
-        jPanel10.setBorder(new HiResEmptyBorder(8, 0, 8, 0));
+        jPanel10.setBorder(new HiResEmptyBorder(8, 0, 0, 0));
         jPanel10.setOpaque(false);
         jPanel10.setLayout(new java.awt.BorderLayout());
 
@@ -212,7 +214,7 @@ public class Config extends HiResDialog {
 
         jPanel4.add(jPanel10);
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1, 0, 0, 0, Theme.current().line), new HiResEmptyBorder(8, 0, 8, 0)));
+        jPanel5.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1, 0, 0, 0, Theme.current().line), new HiResEmptyBorder(16, 0, 8, 0)));
         jPanel5.setOpaque(false);
         jPanel5.setLayout(new java.awt.BorderLayout());
 
@@ -272,7 +274,7 @@ public class Config extends HiResDialog {
 
         jPanel4.add(jPanel5);
 
-        jPanel11.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1, 0, 1, 0, Theme.current().line), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1)));
+        jPanel11.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1, 0, 1, 0, Theme.current().line), new HiResEmptyBorder(16, 0, 8, 0)));
         jPanel11.setOpaque(false);
         jPanel11.setLayout(new java.awt.BorderLayout());
 
@@ -291,7 +293,7 @@ public class Config extends HiResDialog {
         jPanel15.add(studioL);
 
         keystoreL.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        keystoreL.setText("Default Keystore");
+        keystoreL.setText("Default Keystore  ");
         jPanel15.add(keystoreL);
 
         jPanel17.add(jPanel15, java.awt.BorderLayout.WEST);
@@ -365,16 +367,16 @@ public class Config extends HiResDialog {
         });
         jPanel22.add(darkB);
 
-        themeGroup.add(autoB);
-        autoB.setSelected(true);
-        autoB.setText("System");
-        autoB.setActionCommand("auto");
-        autoB.addActionListener(new java.awt.event.ActionListener() {
+        themeGroup.add(systemB);
+        systemB.setSelected(true);
+        systemB.setText("System");
+        systemB.setActionCommand("auto");
+        systemB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 themeActionPerformed(evt);
             }
         });
-        jPanel22.add(autoB);
+        jPanel22.add(systemB);
 
         jPanel20.add(jPanel22, java.awt.BorderLayout.CENTER);
 
@@ -491,35 +493,10 @@ public class Config extends HiResDialog {
     private javax.swing.JButton androidB;
     private javax.swing.JLabel androidL;
     private javax.swing.JTextField androidT;
-    private javax.swing.JRadioButton autoB;
-    private javax.swing.JButton closeB;
     private javax.swing.JRadioButton darkB;
-    private javax.swing.JPanel ebuttonP;
-    private javax.swing.JPanel eselectP;
-    private javax.swing.JPanel etextP;
     private javax.swing.JButton intellijB;
     private javax.swing.JLabel intellijL;
     private javax.swing.JTextField intellijT;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel11;
-    private javax.swing.JPanel jPanel12;
-    private javax.swing.JPanel jPanel13;
-    private javax.swing.JPanel jPanel14;
-    private javax.swing.JPanel jPanel15;
-    private javax.swing.JPanel jPanel16;
-    private javax.swing.JPanel jPanel17;
-    private javax.swing.JPanel jPanel18;
-    private javax.swing.JPanel jPanel19;
-    private javax.swing.JPanel jPanel20;
-    private javax.swing.JPanel jPanel22;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JButton jdkB;
     private javax.swing.JLabel jdkL;
     private javax.swing.JTextField jdkT;
@@ -533,6 +510,7 @@ public class Config extends HiResDialog {
     private javax.swing.JButton studioB;
     private javax.swing.JLabel studioL;
     private javax.swing.JTextField studioT;
+    private javax.swing.JRadioButton systemB;
     private javax.swing.ButtonGroup themeGroup;
     // End of variables declaration//GEN-END:variables
 }
