@@ -139,7 +139,6 @@ public class CrossMobile {
         else if (!isJDKconfigured() && JOptionPane.showConfirmDialog(frame, "JDK environment hasn't been properly configured.\nDo you want to configure it now?", "Configure CrossMobile", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION)
             Config.showConfig();
         frame.updateProjects(null);
-        checkJavaVersion(frame, frame::checkSelfUpdate);
     }
 
     private static void showHelp(int exitCode) {
