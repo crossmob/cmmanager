@@ -20,6 +20,8 @@
         <win64.dist/>
         <linux.dist/>
         <generic.dist/>
+        <arm32.dist/>
+        <arm64.dist/>
     </properties>
 
     <dependencies>
@@ -171,6 +173,18 @@
             </properties>
         </profile>
         <profile>
+            <id>arm32</id>
+            <properties>
+                <arm32.dist>linuxarm32</arm32.dist>
+            </properties>
+        </profile>
+        <profile>
+            <id>arm64</id>
+            <properties>
+                <arm64.dist>linuxarm64</arm64.dist>
+            </properties>
+        </profile>
+        <profile>
             <id>generic</id>
             <properties>
                 <generic.dist>generic</generic.dist>
@@ -209,7 +223,7 @@
                                         <argument>--p12file=secret/code-signing.p12</argument>
                                         <argument>--gpgdir=${user.home}/.gnupg</argument>
                                         <argument>
-                                            --os=${mac.dist},${win32.dist},${win64.dist},${linux.dist},${generic.dist}
+                                            --os=${mac.dist},${win32.dist},${win64.dist},${linux.dist},${generic.dist},${arm32.dist},${arm64.dist}
                                         </argument>
                                         <argument>--jdk=${user.home}/.sdkman/candidates/java/14.0.1.hs-adpt</argument>
                                     </arguments>
