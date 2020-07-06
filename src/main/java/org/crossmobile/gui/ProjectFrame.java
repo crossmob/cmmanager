@@ -31,7 +31,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -42,7 +43,7 @@ import static org.crossmobile.gui.utils.Profile.OBFUSCATE;
 import static org.crossmobile.prefs.Prefs.*;
 import static org.crossmobile.utils.ParamsCommon.*;
 import static org.crossmobile.utils.SystemDependent.Execs.ADB;
-import static org.crossmobile.utils.TextUtils.iterableToString;
+import static org.crossmobile.utils.SystemDependent.safeArg;
 
 public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Consumer, CMMvnActions.MavenExecutor {
 
@@ -533,8 +534,9 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                             "--descr", Opt.of(proj.getProperty(CM_DESCRIPTION)).filter(d -> !d.trim().isEmpty()).getOrElse(proj.getProperty(DISPLAY_NAME) + ": A CrossMobile application"),
                             "--id", proj.getProperty(GROUP_ID) + "." + proj.getProperty(ARTIFACT_ID),
                             "--vendor", Opt.of(proj.getProperty(CM_VENDOR)).filter(s -> !s.trim().isEmpty()).getOrElse(SystemDependent.getFullName()),
-                            "--url", proj.getProperty(CM_URL), alsoInstaller ? "--nosign" : null,
-                            "--jdk=/Users/teras/.sdkman/candidates/java/14.0.1.hs-adpt/");
+                            "--url", safeArg(proj.getProperty(CM_URL)),
+                            alsoInstaller ? "--nosign" : null
+                    );
                 }));
     }
 
@@ -922,7 +924,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         });
         packDEM.add(genericEP);
 
-        distribPP.setText("Create distribution package");
+        distribPP.setText("Distribution package not supported yet");
+        distribPP.setEnabled(false);
         distribPP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 distribPPActionPerformed(evt);
@@ -1203,7 +1206,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
