@@ -91,7 +91,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private final AtomicReference<Runnable> solutionCallbackRef = new AtomicReference<>();
     private MagicWand magicWandB;
 
-
     @SuppressWarnings("LeakingThisInConstructor")
     public ProjectFrame(File path) {
         initComponents();
@@ -110,10 +109,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         autoDisabled.add(openB);
         magicWandB = Deguard.getWandButton(this);
         actionB.setEnabled(false);
-        if (!SystemDependent.canMakeMacos()) {
-            macosP.setEnabled(false);
-            macosI.setEnabled(false);
-        }
         setProjectEnabled(false);
     }
 
@@ -534,7 +529,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                             "--descr", Opt.of(proj.getProperty(CM_DESCRIPTION)).filter(d -> !d.trim().isEmpty()).getOrElse(proj.getProperty(DISPLAY_NAME) + ": A CrossMobile application"),
                             "--id", proj.getProperty(GROUP_ID) + "." + proj.getProperty(ARTIFACT_ID),
                             "--vendor", Opt.of(proj.getProperty(CM_VENDOR)).filter(s -> !s.trim().isEmpty()).getOrElse(SystemDependent.getFullName()),
-                            "--url", safeArg(proj.getProperty(CM_URL)),
+                            "--jdk=" + Prefs.getJDKLocation(), "--url", safeArg(proj.getProperty(CM_URL)),
                             alsoInstaller ? "--nosign" : null
                     );
                 }));
@@ -1206,7 +1201,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
