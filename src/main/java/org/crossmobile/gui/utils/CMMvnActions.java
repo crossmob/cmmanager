@@ -56,27 +56,7 @@ public class CMMvnActions {
         }
     }
 
-    private static String repoLocation;
-
-    private final static Pattern INSTALL_FAILED = Pattern.compile("\\[H");
-
     private static final Pattern PID_PATTERN = Pattern.compile("PID ([0-9]*) uses (.*) port.*");
-
-    public static String resolveRepository() {
-        if (repoLocation != null)
-            return repoLocation;
-        new Commander(Paths.getMavenExec(), "help:evaluate", "-Dexpression=settings.localRepository").
-                appendEnvironmentalParameter("JAVA_HOME", Prefs.getJDKLocation()).
-                setOutListener((String data) -> {
-                    if (data.contains("repository"))
-                        repoLocation = data.trim();
-                }).
-                exec().
-                waitFor();
-        if (repoLocation == null)
-            repoLocation = "";
-        return repoLocation;
-    }
 
     public static Commander callMaven(String goal, String profiles, File projPath, ActiveTextPane outP,
                                       Consumer<Long> pidConsumer, Consumer<Integer> debugPort, Consumer<Integer> launchCallback,
@@ -152,6 +132,11 @@ public class CMMvnActions {
                 solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null,
                         line.substring(line.indexOf("[INSTALL_FAILED") + 1, line.length() - 1).replace(":", "\n"),
                         "Error installing Android APK", JOptionPane.ERROR_MESSAGE));
+            else if (line.contains("xcode-select: error: tool 'xcodebuild' requires Xcode"))
+                solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null,
+                        "XCode tools not properly installed\n\nYou probably need to install and\n" +
+                                "activate Command Line Tools,\nor use xcode-select with a command similar to:\nsudo xcode-select -s /Applications/Xcode.app/Contents/Developer",
+                        "Command Line Tools problem", JOptionPane.ERROR_MESSAGE));
 
             if (debugPort != null) {
                 if (line.startsWith("Listening for transport dt_socket at address: "))
