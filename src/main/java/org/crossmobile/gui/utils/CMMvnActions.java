@@ -134,8 +134,10 @@ public class CMMvnActions {
                         "Error installing Android APK", JOptionPane.ERROR_MESSAGE));
             else if (line.contains("xcode-select: error: tool 'xcodebuild' requires Xcode"))
                 solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null,
-                        "XCode tools not properly installed\n\nYou probably need to install and\n" +
-                                "activate Command Line Tools,\nor use xcode-select with a command similar to:\nsudo xcode-select -s /Applications/Xcode.app/Contents/Developer",
+                        "XCode tools not properly installed\n\n" +
+                                "You probably need to install andactivate Command Line Tools,\n" +
+                                "or use xcode-select with a command similar to:\n" +
+                                "sudo xcode-select -s /Applications/Xcode.app/Contents/Developer",
                         "Command Line Tools problem", JOptionPane.ERROR_MESSAGE));
 
             if (debugPort != null) {
