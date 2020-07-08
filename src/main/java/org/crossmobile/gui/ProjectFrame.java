@@ -212,6 +212,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             deactivateComponent(uwpT);
             deactivateComponent(desktopT);
             actionB.setActionCommand(LAUNCH_ACTION_BUILD);
+            packB.setVisible(false);
             updateLaunchVisuals();
         }
 
