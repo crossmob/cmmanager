@@ -135,7 +135,7 @@ public class CMMvnActions {
             else if (line.contains("xcode-select: error: tool 'xcodebuild' requires Xcode"))
                 solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null,
                         "XCode tools not properly installed\n\n" +
-                                "You probably need to install andactivate Command Line Tools,\n" +
+                                "You probably need to install and activate Command Line Tools,\n" +
                                 "or use xcode-select with a command similar to:\n" +
                                 "sudo xcode-select -s /Applications/Xcode.app/Contents/Developer",
                         "Command Line Tools problem", JOptionPane.ERROR_MESSAGE));
