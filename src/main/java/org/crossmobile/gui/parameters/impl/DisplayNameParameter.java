@@ -13,12 +13,15 @@ import static org.crossmobile.utils.ParamsCommon.DISPLAY_NAME;
 
 public class DisplayNameParameter extends FreeTextParameter {
 
-    public DisplayNameParameter(ParamList list) {
+    private final boolean isPlugin;
+
+    public DisplayNameParameter(ParamList list, boolean isPlugin) {
         super(list, DISPLAY_NAME.tag());
+        this.isPlugin = isPlugin;
     }
 
     @Override
     public String getVisualTag() {
-        return "Display name";
+        return (isPlugin ? "Descriptive" : "Display") + " name";
     }
 }

@@ -8,7 +8,6 @@ package org.crossmobile.gui.project;
 
 import org.crossmobile.Version;
 import org.crossmobile.bridge.system.BaseUtils;
-import org.crossmobile.gui.ProjectFrame;
 import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.codehound.source.FileHit;
 import org.crossmobile.gui.codehound.source.SourceParser;
@@ -19,7 +18,6 @@ import org.crossmobile.gui.parameters.LibrariesParameter;
 import org.crossmobile.gui.parameters.ProjectParameter;
 import org.crossmobile.gui.parameters.ScreenScaleParameter;
 import org.crossmobile.gui.parameters.impl.*;
-import org.crossmobile.gui.utils.CMMvnActions;
 import org.crossmobile.gui.utils.CMMvnActions.MavenExecutor;
 import org.crossmobile.gui.utils.Paths;
 import org.crossmobile.gui.utils.Profile;
@@ -210,12 +208,12 @@ public class Project {
         PropertySheet csheet;
 
         csheet = new PropertySheet("General", listener);
-        ProjectParameter projname = new DisplayNameParameter(params).addParameterListener(property -> listener.updateTitle(property.getValue()));
+        ProjectParameter projname = new DisplayNameParameter(params, isPlugin).addParameterListener(property -> listener.updateTitle(property.getValue()));
         listener.updateTitle(projname.getValue());
         csheet.add(projname);
-        csheet.add(new ArtifactIdParameter(params));
+        csheet.add(new ArtifactIdParameter(params, isPlugin));
         csheet.add(new GroupIdParameter(params));
-        csheet.add(new VersionParameter(params));
+        csheet.add(new VersionParameter(params, isPlugin));
         csheet.add(with(new ActiveLabel("Meta properties"), it -> it.setBorder(new EmptyBorder(24, 0, 0, 0))));
         csheet.add(new DescriptionParameter(params));
         csheet.add(new VendorParameter(params));
@@ -232,12 +230,12 @@ public class Project {
         PropertySheet csheet;
 
         csheet = new PropertySheet("General", listener);
-        ProjectParameter projname = new DisplayNameParameter(params).addParameterListener(property -> listener.updateTitle(property.getValue()));
+        ProjectParameter projname = new DisplayNameParameter(params, isPlugin).addParameterListener(property -> listener.updateTitle(property.getValue()));
         listener.updateTitle(projname.getValue());
         csheet.add(projname);
-        csheet.add(new ArtifactIdParameter(params));
+        csheet.add(new ArtifactIdParameter(params, isPlugin));
         csheet.add(new GroupIdParameter(params));
-        csheet.add(new VersionParameter(params));
+        csheet.add(new VersionParameter(params, isPlugin));
         csheet.add(new MainClassParameter(params));
         csheet.add(new ProfileParameter(params, profile)
                 .addParameterListener(prop -> Prefs.setLaunchType(basedir.getAbsolutePath(), (profile = Profile.safeValueOf(prop.getValue())).name().toLowerCase())));

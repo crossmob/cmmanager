@@ -14,8 +14,11 @@ import static org.crossmobile.utils.ParamsCommon.BUNDLE_VERSION;
 
 public class VersionParameter extends FreeTextParameter {
 
-    public VersionParameter(ParamList list) {
+    private final boolean isPlugin;
+
+    public VersionParameter(ParamList list, boolean isPlugin) {
         super(list, BUNDLE_VERSION.tag());
+        this.isPlugin = isPlugin;
         setValue(getValue());
         setFilter(new VersionDocumentFilter());
         setTooltip(VersionDocumentFilter.TOOLTIP);
@@ -23,7 +26,7 @@ public class VersionParameter extends FreeTextParameter {
 
     @Override
     public String getVisualTag() {
-        return "Application version";
+        return (isPlugin ? "Plugin" : "Application") + " version";
     }
 
     @Override

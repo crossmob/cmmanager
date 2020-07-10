@@ -187,21 +187,22 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         }
         actionB.setActionCommand(Prefs.getSelectedLaunchAction(proj.getPath().getAbsolutePath()));
         updateLaunchVisuals();
-        switch (Prefs.getSelectedLaunchTarget(proj.getPath().getAbsolutePath())) {
-            case LAUNCH_TARGET_ANDROID:
-                androidT.setSelected(true);
-                break;
-            case LAUNCH_TARGET_IOS:
-                iosT.setSelected(true);
-                break;
-            case LAUNCH_TARGET_UWP:
-                uwpT.setSelected(true);
-                break;
-            default:
-            case LAUNCH_TARGET_DESKTOP:
-                desktopT.setSelected(true);
-                break;
-        }
+        if (!proj.isPlugin())
+            switch (Prefs.getSelectedLaunchTarget(proj.getPath().getAbsolutePath())) {
+                case LAUNCH_TARGET_ANDROID:
+                    androidT.setSelected(true);
+                    break;
+                case LAUNCH_TARGET_IOS:
+                    iosT.setSelected(true);
+                    break;
+                case LAUNCH_TARGET_UWP:
+                    uwpT.setSelected(true);
+                    break;
+                default:
+                case LAUNCH_TARGET_DESKTOP:
+                    desktopT.setSelected(true);
+                    break;
+            }
         if (proj.isPlugin()) {
             openM.remove(otherS);
             openM.remove(otherIDEs);
@@ -354,7 +355,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }
 
     private String getCurrentTarget() {
-        return targetG.getSelection().getActionCommand();
+        return targetG.getSelection() == null ? null : targetG.getSelection().getActionCommand();
     }
 
     private ActiveTextPane getTextPane() {
@@ -384,9 +385,9 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 setLaunchButtonStatus(KILL_RESULT, null, null);
             });
         else {
-            initLaunchVisualsOut(new MavenExecInfo("Launch " + target + " target", "Building product", target));
+            initLaunchVisualsOut(new MavenExecInfo("Launch" + (target == null ? "" : " " + target) + " target", "Building product", target));
             Runnable launcher = () -> launchMaven("install",
-                    target
+                    target == null ? null : target
                             + (run ? ",run" : "")
                             + (release ? ",release" : "")
                             + (proj.getProfile() == OBFUSCATE ? ",obfuscate" : "")
