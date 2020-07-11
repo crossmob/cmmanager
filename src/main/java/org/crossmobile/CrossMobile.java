@@ -9,6 +9,7 @@ package org.crossmobile;
 import com.panayotis.appenh.Enhancer;
 import com.panayotis.appenh.EnhancerManager;
 import com.panayotis.hrgui.ScreenUtils;
+import com.panayotis.jupidator.Updater;
 import org.crossmobile.gui.WelcomeFrame;
 import org.crossmobile.gui.elements.About;
 import org.crossmobile.gui.elements.Config;
@@ -17,6 +18,7 @@ import org.crossmobile.gui.init.InitializationWizard;
 import org.crossmobile.gui.init.InitializationWizard.Card;
 import org.crossmobile.gui.project.ProjectInfo;
 import org.crossmobile.gui.project.ProjectLoader;
+import org.crossmobile.gui.utils.Paths;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.LocationRequest;
 import org.crossmobile.utils.Log;
@@ -30,6 +32,8 @@ import java.awt.event.WindowEvent;
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
+import static org.crossmobile.Version.RELEASE;
+import static org.crossmobile.Version.VERSION;
 import static org.crossmobile.gui.elements.Config.*;
 import static org.crossmobile.gui.init.ApplicationRequirements.*;
 
@@ -95,50 +99,59 @@ public class CrossMobile {
     }
 
     private static void postInit(WelcomeFrame frame) {
-        if (!Prefs.isWizardExecuted()) {
-            InitializationWizard initW = new InitializationWizard(frame);
-            initW.setMainTitle("Welcome to CrossMobile");
-            initW.setSubtitle("Before we begin, it is required to check your system for installed components");
-            initW.setWelcomeInfo("<html>When you click on \"Continue\" the wizard will try to find installations of required applications to run CrossMobile.<br/>" +
-                    "These applications are Java JDK, Android SDK, IntelliJ, Android Studio, and Netbeans.<br/>&nbsp;<br/>Please press \"Continue\" to start searching for these applications.</html>");
-            Runnable skip = () -> {
-                initW.setActive(false);
-                if (initW.isVisible())
-                    initW.setVisible(false);
-                frame.setVisible(true);
-            };
-            initW.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosed(WindowEvent e) {
-                    skip.run();
-                }
-            });
-            initW.setAction("Continue", () -> {
-                initW.gotoCard(Card.Externals);
-                initW.setAction("Cancel", skip);
-                initW.setSubtitle("Looking for installed components");
-                initW.setRunning(true);
-                Collection<LocationRequest> entries = asList(
-                        Netbeans.makeRequest(initW::foundNetbeans),
-                        JDK.makeRequest(initW::foundJDK),
-                        IntelliJ.makeRequest(initW::foundIntelliJ),
-                        Studio.makeRequest(initW::foundStudio),
-                        Android.makeRequest(initW::foundAndroid)
-                );
-                new Thread(() -> {
-                    TreeWalker.searchExecutable(entries, null, true, initW);
-                    if (initW.isVisible())
-                        initW.setTreeWalking(false);
-                }).start();
-            });
-            initW.setVisible(true);
-        } else if (!isAndroidConfigured() && !isJDKconfigured() && JOptionPane.showConfirmDialog(frame, "CrossMobile environment hasn't been properly configured.\nDo you want to configure it now?", "Configure CrossMobile", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION)
-            Config.showConfig();
-        else if (!isAndroidConfigured() && JOptionPane.showConfirmDialog(frame, "Android SDK environment hasn't been properly configured.\nDo you want to configure it now?", "Configure CrossMobile", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION)
-            Config.showConfig();
-        else if (!isJDKconfigured() && JOptionPane.showConfirmDialog(frame, "JDK environment hasn't been properly configured.\nDo you want to configure it now?", "Configure CrossMobile", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION)
-            Config.showConfig();
+        if (!Prefs.isWizardExecuted())
+            executeWizard(frame);
+        else if (!isAndroidConfigured() && !isJDKconfigured())
+            frame.setLink("Configure CrossMobile environment", () -> executeWizard(frame));
+        else if (!isAndroidConfigured())
+            frame.setLink("Configure Android SDK", Config::showConfig);
+        else if (!isJDKconfigured())
+            frame.setLink("Configure JDK", Config::showConfig);
+        new Thread(() -> {
+            Updater updater = Updater.start("https://crossmobile.org/content/repositories/crossmobile/crossmobile.xml", Paths.getApplicationPath(), RELEASE, VERSION, frame, true, false);
+            if (updater != null && updater.isUpdatable())
+                frame.setLink("New version found", updater::actionDisplay);
+        }).start();
         frame.updateProjects(null);
+    }
+
+    private static void executeWizard(WelcomeFrame frame) {
+        InitializationWizard initW = new InitializationWizard(frame);
+        initW.setMainTitle("Welcome to CrossMobile");
+        initW.setSubtitle("Before we begin, it is required to check your system for installed components");
+        initW.setWelcomeInfo("<html>When you click on \"Continue\" the wizard will try to find installations of required applications to run CrossMobile.<br/>" +
+                "These applications are Java JDK, Android SDK, IntelliJ, Android Studio, and Netbeans.<br/>&nbsp;<br/>Please press \"Continue\" to start searching for these applications.</html>");
+        Runnable skip = () -> {
+            initW.setActive(false);
+            if (initW.isVisible())
+                initW.setVisible(false);
+            frame.setVisible(true);
+        };
+        initW.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                skip.run();
+            }
+        });
+        initW.setAction("Continue", () -> {
+            initW.gotoCard(Card.Externals);
+            initW.setAction("Cancel", skip);
+            initW.setSubtitle("Looking for installed components");
+            initW.setRunning(true);
+            Collection<LocationRequest> entries = asList(
+                    Netbeans.makeRequest(initW::foundNetbeans),
+                    JDK.makeRequest(initW::foundJDK),
+                    IntelliJ.makeRequest(initW::foundIntelliJ),
+                    Studio.makeRequest(initW::foundStudio),
+                    Android.makeRequest(initW::foundAndroid)
+            );
+            new Thread(() -> {
+                TreeWalker.searchExecutable(entries, null, true, initW);
+                if (initW.isVisible())
+                    initW.setTreeWalking(false);
+            }).start();
+        });
+        initW.setVisible(true);
     }
 
     private static void showHelp(int exitCode) {

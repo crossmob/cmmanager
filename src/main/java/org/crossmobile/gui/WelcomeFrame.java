@@ -145,14 +145,10 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         ProjectLoader.showProject(ProjectInfo.load(file.getAbsolutePath()), this);
     }
 
-    public void checkSelfUpdate() {
-        new Thread(() -> {
-            updater = Updater.start("https://crossmobile.org/content/repositories/crossmobile/crossmobile.xml", Paths.getApplicationPath(), RELEASE, VERSION, this, true, false);
-            if (updater != null && updater.isUpdatable()) {
-                newVersionL.setEnabled(true);
-                newVersionL.setText("New version found");
-            }
-        }).start();
+    public void setLink(String text, Runnable action) {
+        actionL.setEnabled(text != null && !text.isEmpty());
+        actionL.setText(text);
+        ((ActiveLink) actionL).setAction(action);
     }
 
     /**
@@ -186,13 +182,13 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         jLabel1 = new ActiveLabel();
         jPanel5 = new JPanel();
         jPanel7 = new JPanel();
-        newProjectB = new ActiveButton(20,8);
-        openProjectB = new ActiveButton(20,8);
+        newProjectB = new ActiveButton(20, 8);
+        openProjectB = new ActiveButton(20, 8);
         jPanel9 = new JPanel();
         settingsB = new ActiveButton();
         aboutB = new ActiveButton();
         jPanel6 = new JPanel();
-        newVersionL = new ActiveLink();
+        actionL = new ActiveLink();
 
         openM.setText("Open project");
         openM.addActionListener(new ActionListener() {
@@ -216,7 +212,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
 
         Background.setLayout(new BorderLayout());
 
-        jPanel3.setBorder(new HiResEmptyBorder(2,2,2,24));
+        jPanel3.setBorder(new HiResEmptyBorder(2, 2, 2, 24));
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new BorderLayout(0, 2));
 
@@ -228,7 +224,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         ProjectsSP.setMinimumSize(new Dimension(260, 400));
         ProjectsSP.setPreferredSize(ProjectsSP.getMinimumSize());
 
-        ProjectsL.setFont(ProjectsL.getFont().deriveFont(ProjectsL.getFont().getSize()+1f));
+        ProjectsL.setFont(ProjectsL.getFont().deriveFont(ProjectsL.getFont().getSize() + 1f));
         ProjectsL.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 ProjectsLMouseClicked(evt);
@@ -269,7 +265,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
 
         Background.add(jPanel3, BorderLayout.CENTER);
 
-        jPanel8.setBorder(new HiResEmptyBorder(16,8,8,4));
+        jPanel8.setBorder(new HiResEmptyBorder(16, 8, 8, 4));
         jPanel8.setOpaque(false);
         jPanel8.setLayout(new BorderLayout());
 
@@ -280,19 +276,19 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         jPanel1.setOpaque(false);
         jPanel1.setLayout(new GridLayout(0, 1));
 
-        jLabel3.setFont(jLabel3.getFont().deriveFont(jLabel3.getFont().getStyle() | Font.BOLD, jLabel3.getFont().getSize()+15));
+        jLabel3.setFont(jLabel3.getFont().deriveFont(jLabel3.getFont().getStyle() | Font.BOLD, jLabel3.getFont().getSize() + 15));
         jLabel3.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel3.setText("Welcome to");
         jPanel1.add(jLabel3);
 
-        jLabel4.setFont(jLabel4.getFont().deriveFont(jLabel4.getFont().getStyle() | Font.BOLD, jLabel4.getFont().getSize()+15));
+        jLabel4.setFont(jLabel4.getFont().deriveFont(jLabel4.getFont().getStyle() | Font.BOLD, jLabel4.getFont().getSize() + 15));
         jLabel4.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel4.setText("CrossMobile");
         jPanel1.add(jLabel4);
 
         jPanel4.add(jPanel1, BorderLayout.NORTH);
 
-        versionL.setFont(versionL.getFont().deriveFont((versionL.getFont().getStyle() | Font.ITALIC), versionL.getFont().getSize()-1));
+        versionL.setFont(versionL.getFont().deriveFont((versionL.getFont().getStyle() | Font.ITALIC), versionL.getFont().getSize() - 1));
         versionL.setHorizontalAlignment(SwingConstants.CENTER);
         versionL.setText("release");
         versionL.addMouseListener(new MouseAdapter() {
@@ -306,7 +302,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
 
         jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel1.setIcon(new HiResIcon("images/logo", false));
-        jLabel1.setBorder(new HiResEmptyBorder(16,0,30,0));
+        jLabel1.setBorder(new HiResEmptyBorder(16, 0, 30, 0));
         jPanel8.add(jLabel1, BorderLayout.CENTER);
 
         jPanel5.setOpaque(false);
@@ -362,13 +358,8 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         jPanel6.setOpaque(false);
         jPanel6.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        newVersionL.setEnabled(false);
-        newVersionL.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                newVersionLMouseClicked(evt);
-            }
-        });
-        jPanel6.add(newVersionL);
+        actionL.setEnabled(false);
+        jPanel6.add(actionL);
 
         jPanel5.add(jPanel6);
 
@@ -454,15 +445,12 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         }
     }//GEN-LAST:event_versionLMousePressed
 
-    private void newVersionLMouseClicked(MouseEvent evt) {//GEN-FIRST:event_newVersionLMouseClicked
-        updater.actionDisplay();
-    }//GEN-LAST:event_newVersionLMouseClicked
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JPanel Background;
     public JList ProjectsL;
     private JScrollPane ProjectsSP;
     private JButton aboutB;
+    private JLabel actionL;
     private JButton clearAllB;
     private JPopupMenu itemPopUp;
     private JLabel jLabel1;
@@ -480,7 +468,6 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
     private JPanel jPanel9;
     private Separator jSeparator1;
     private JButton newProjectB;
-    private JLabel newVersionL;
     private JButton openB;
     private JMenuItem openM;
     private JButton openProjectB;

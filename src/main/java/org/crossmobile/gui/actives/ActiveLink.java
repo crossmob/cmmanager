@@ -7,20 +7,31 @@
 package org.crossmobile.gui.actives;
 
 import com.panayotis.hrgui.HiResIcon;
-import com.panayotis.hrgui.HiResLabel;
 import org.crossmobile.gui.elements.Theme;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.font.TextAttribute;
-import java.util.Map;
 
 public class ActiveLink extends ActiveLabel implements ThemeChanged {
 
     private String link;
+    private Runnable action;
+    private boolean multiRun = false;
 
     {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (action != null) {
+                    action.run();
+                    if (!multiRun) {
+                        action = null;
+                        setText("");
+                    }
+                }
+            }
+        });
         setOpaque(false);
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         ThemeNotifier.register(this);
@@ -52,8 +63,16 @@ public class ActiveLink extends ActiveLabel implements ThemeChanged {
 
     @Override
     public void setText(String text) {
-        link = text == null || text.isEmpty() ? "" : text;
+        link = text == null || text.trim().isEmpty() ? "" : text;
         super.setText("<HTML>&nbsp;<U>" + link + "</U></HTML>");
+    }
+
+    public void setAction(Runnable action) {
+        this.action = action;
+    }
+
+    public void setMultiRun(boolean multiRun) {
+        this.multiRun = multiRun;
     }
 
     @Override
