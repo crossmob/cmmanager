@@ -144,9 +144,10 @@
                         </goals>
                         <configuration>
                             <target>
-                                <property name="datadir" value="${project.build.outputDirectory}/META-INF/default-plugins/"/>
+                                <property name="datadir"
+                                          value="${project.build.outputDirectory}/META-INF/default-plugins/"/>
                                 <mkdir dir="${datadir}"/>
-                                <copy file="../cmioslayer/target/classes/org/crossmobile/backend/plugins.xml"
+                                <copy file="../cmioslayer/target/bundles/cmioslayer/compile/org/crossmobile/backend/plugins.xml"
                                       todir="${datadir}"/>
                                 <copy file="../cmioslayer/target/classes/org/crossmobile/backend/desktop/skins/skins.xml"
                                       todir="${datadir}"/>
