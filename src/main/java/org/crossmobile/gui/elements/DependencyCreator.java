@@ -11,6 +11,7 @@ import org.crossmobile.gui.actives.ActiveIcon;
 import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.actives.ActiveRadioButton;
 import org.crossmobile.utils.Dependency;
+import org.crossmobile.utils.PluginRegistry;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +33,7 @@ public final class DependencyCreator extends javax.swing.JFrame {
 
     public DependencyCreator(Consumer<Dependency> dependency, boolean theme, String appId) {
         List<Dependency> deplist = new ArrayList<>();
-        Map<String, Collection<Dependency>> categories = theme ? Dependency.getCategorizedSystemThemes() : Dependency.getCategorizedSystemPlugins();
+        Map<String, Collection<Dependency>> categories = theme ? PluginRegistry.getCategorizedSystemThemes() : PluginRegistry.getCategorizedSystemPlugins();
         for (String name : categories.keySet()) {
             if (categories.size() != 1)
                 deplist.add(getTitle(name));
@@ -237,7 +238,7 @@ public final class DependencyCreator extends javax.swing.JFrame {
     private void addBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBActionPerformed
         Dependency dep = crossSelection.isSelected()
                 ? (Dependency) cmPlugin.getSelectedItem()
-                : Dependency.find(group.getText(), prefixArtifact.getText() + artifact.getText(), version.getText(), null, null, null);
+                : PluginRegistry.find(group.getText(), prefixArtifact.getText() + artifact.getText(), version.getText(), null, null, null);
         if (dep != null) {
             dependencyCallback.accept(dep);
             setVisible(false);
@@ -263,7 +264,7 @@ public final class DependencyCreator extends javax.swing.JFrame {
     }//GEN-LAST:event_infoActionPerformed
 
     private static Dependency getTitle(String title) {
-        return Dependency.find("*", title, "", "", "", "");
+        return PluginRegistry.find("*", title, "", "", "", "");
     }
 
     private static boolean isTitle(Object o) {

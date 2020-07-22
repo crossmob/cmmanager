@@ -6,10 +6,7 @@
 
 package org.crossmobile.gui.codehound.source;
 
-import org.crossmobile.utils.Dependency;
-import org.crossmobile.utils.FileUtils;
-import org.crossmobile.utils.Log;
-import org.crossmobile.utils.Pom;
+import org.crossmobile.utils.*;
 import org.crossmobile.utils.func.Opt;
 import org.jboss.forge.roaster.ParserException;
 import org.jboss.forge.roaster.Roaster;
@@ -53,7 +50,7 @@ public class AndroidParser {
                             groupId = Pom.SHADOW + groupId;
                             type = "";
                         }
-                        found.add(Dependency.find(groupId, pluginName, version, null, null, type));
+                        found.add(PluginRegistry.find(groupId, pluginName, version, null, null, type));
                     }
                 });
             }
@@ -63,7 +60,7 @@ public class AndroidParser {
     public static List<Dependency> filterShadow(List<Dependency> dependencies) {
         return dependencies.stream()
                 .filter(d -> d.groupId.startsWith(Pom.SHADOW))
-                .map(d -> Dependency.find(d.groupId.substring(Pom.SHADOW.length()), d.artifactId, d.version, d.classifier, d.scope, "aar"))
+                .map(d -> PluginRegistry.find(d.groupId.substring(Pom.SHADOW.length()), d.artifactId, d.version, d.classifier, d.scope, "aar"))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }

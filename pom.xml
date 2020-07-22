@@ -136,6 +136,27 @@
                             </target>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-plugin-files</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <property name="datadir" value="${project.build.outputDirectory}/META-INF/default-plugins/"/>
+                                <mkdir dir="${datadir}"/>
+                                <copy file="../cmioslayer/target/classes/org/crossmobile/backend/plugins.xml"
+                                      todir="${datadir}"/>
+                                <copy file="../cmioslayer/target/classes/org/crossmobile/backend/desktop/skins/skins.xml"
+                                      todir="${datadir}"/>
+                                <copy file="../cmplugins/cmtheme-bright/target/classes/org/crossmobile/backend/plugins.xml"
+                                      tofile="${datadir}/cmtheme-bright.xml"/>
+                                <copy file="../cmplugins/cmtheme-styled/target/classes/org/crossmobile/backend/plugins.xml"
+                                      tofile="${datadir}/cmtheme-styled.xml"/>
+                            </target>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
@@ -230,12 +251,16 @@
                                         <argument>--vendor=CrossMobile P.C.</argument>
                                         <argument>--id=org.crossmobile.gui</argument>
                                         <argument>--url=https://crossmobile.org</argument>
-                                        <argument>--descr=Create native iOS, Android, Windows 10 and Desktop Applications from a singe code base</argument>
+                                        <argument>--descr=Create native iOS, Android, Windows 10 and Desktop
+                                            Applications from a singe code base
+                                        </argument>
                                         <argument>--extra=extra</argument>
                                         <argument>--notarize=${app.notarize}</argument>
                                         <argument>--p12file=secret/code-signing.p12</argument>
                                         <argument>--gpgdir=${user.home}/.gnupg</argument>
-                                        <argument>--os=${mac.dist},${win32.dist},${win64.dist},${linux.dist},${generic.dist},${arm32.dist},${arm64.dist}</argument>
+                                        <argument>
+                                            --os=${mac.dist},${win32.dist},${win64.dist},${linux.dist},${generic.dist},${arm32.dist},${arm64.dist}
+                                        </argument>
                                         <argument>--jdk=${user.home}/.sdkman/candidates/java/14.0.1.hs-adpt</argument>
                                     </arguments>
                                 </configuration>

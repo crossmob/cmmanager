@@ -10,6 +10,8 @@ import com.panayotis.appenh.Enhancer;
 import com.panayotis.appenh.EnhancerManager;
 import com.panayotis.hrgui.ScreenUtils;
 import com.panayotis.jupidator.Updater;
+import org.crossmobile.backend.desktop.ResourceResolver;
+import org.crossmobile.bridge.system.BaseUtils;
 import org.crossmobile.gui.WelcomeFrame;
 import org.crossmobile.gui.elements.About;
 import org.crossmobile.gui.elements.Config;
@@ -20,15 +22,13 @@ import org.crossmobile.gui.project.ProjectInfo;
 import org.crossmobile.gui.project.ProjectLoader;
 import org.crossmobile.gui.utils.Paths;
 import org.crossmobile.prefs.Prefs;
-import org.crossmobile.utils.LocationRequest;
-import org.crossmobile.utils.Log;
-import org.crossmobile.utils.ProjectException;
-import org.crossmobile.utils.TreeWalker;
+import org.crossmobile.utils.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
@@ -113,6 +113,12 @@ public class CrossMobile {
                 frame.setLink("New version found", updater::actionDisplay);
         }).start();
         frame.updateProjects(null);
+
+        ResourceResolver.getResources("META-INF/default-plugins/skins.xml", PluginRegistry::importPlugin);
+        ResourceResolver.getResources("META-INF/default-plugins/plugins.xml", PluginRegistry::importPlugin);
+        ResourceResolver.getResources("META-INF/default-plugins/cmtheme-bright.xml", PluginRegistry::importPlugin);
+        ResourceResolver.getResources("META-INF/default-plugins/cmtheme-styled.xml", PluginRegistry::importPlugin);
+        BaseUtils.listFiles(new File(SystemDependent.getPluginsDir(), "plugins")).forEach(PluginRegistry::importFilePlugin);
     }
 
     private static void executeWizard(WelcomeFrame frame) {

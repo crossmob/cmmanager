@@ -80,7 +80,7 @@ public class ProjectUpdater {
         mightUpdateProperty(props, DISPLAY_NAME.tag(), displayname);
         mightUpdateProperty(props, ARTIFACT_ID.tag(), artifact);
         mightUpdateProperty(props, GROUP_ID.tag(), group);
-        mightUpdateProperty(props, CM_PLUGINS.tag(), Pom.packDependencies(singletonList(Dependency.getSystemTheme(null))));
+        mightUpdateProperty(props, CM_PLUGINS.tag(), Pom.packDependencies(singletonList(PluginRegistry.getDefaultTheme())));
     }
 
     private static void mightUpdateProperty(Properties props, Param tag, String newvalue) {
