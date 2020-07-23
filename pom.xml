@@ -252,16 +252,12 @@
                                         <argument>--vendor=CrossMobile P.C.</argument>
                                         <argument>--id=org.crossmobile.gui</argument>
                                         <argument>--url=https://crossmobile.org</argument>
-                                        <argument>--descr=Create native iOS, Android, Windows 10 and Desktop
-                                            Applications from a singe code base
-                                        </argument>
+                                        <argument>--descr=Create native iOS, Android, Windows 10 and Desktop Applications from a singe code base</argument>
                                         <argument>--extra=extra</argument>
                                         <argument>--notarize=${app.notarize}</argument>
                                         <argument>--p12file=secret/code-signing.p12</argument>
                                         <argument>--gpgdir=${user.home}/.gnupg</argument>
-                                        <argument>
-                                            --os=${mac.dist},${win32.dist},${win64.dist},${linux.dist},${generic.dist},${arm32.dist},${arm64.dist}
-                                        </argument>
+                                        <argument>--os=${mac.dist},${win32.dist},${win64.dist},${linux.dist},${generic.dist},${arm32.dist},${arm64.dist}</argument>
                                         <argument>--jdk=${user.home}/.sdkman/candidates/java/14.0.1.hs-adpt</argument>
                                     </arguments>
                                 </configuration>
