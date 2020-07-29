@@ -120,7 +120,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <id>copy-base-jar</id>
@@ -138,23 +138,23 @@
                     </execution>
                     <execution>
                         <id>copy-plugin-files</id>
-                        <phase>process-classes</phase>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
                         <configuration>
                             <target>
                                 <property name="datadir"
-                                          value="${project.build.outputDirectory}/META-INF/default-plugins/"/>
+                                          value="src/main/resources/META-INF/default-plugins/"/>
                                 <mkdir dir="${datadir}"/>
                                 <copy file="../cmioslayer/target/bundles/cmioslayer/compile/org/crossmobile/backend/plugins.xml"
-                                      todir="${datadir}"/>
+                                      todir="${datadir}" failonerror="false"/>
                                 <copy file="../cmioslayer/target/classes/org/crossmobile/backend/desktop/skins/skins.xml"
-                                      todir="${datadir}"/>
+                                      todir="${datadir}" failonerror="false"/>
                                 <copy file="../cmplugins/cmtheme-bright/target/classes/org/crossmobile/backend/plugins.xml"
-                                      tofile="${datadir}/cmtheme-bright.xml"/>
+                                      tofile="${datadir}/cmtheme-bright.xml" failonerror="false"/>
                                 <copy file="../cmplugins/cmtheme-styled/target/classes/org/crossmobile/backend/plugins.xml"
-                                      tofile="${datadir}/cmtheme-styled.xml"/>
+                                      tofile="${datadir}/cmtheme-styled.xml" failonerror="false"/>
                             </target>
                         </configuration>
                     </execution>

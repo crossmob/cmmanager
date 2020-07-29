@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<plugins type="core">
+    <plugin>
+        <groupId>org.crossmobile</groupId>
+        <artifactId>cmplugin-cmaddressbook</artifactId>
+        <version>3.1.0</version>
+        <name>AddressBook Framework</name>
+        <description>CrossMobile© Compatibility library for AddressBook Framework</description>
+    </plugin>
+    <plugin>
+        <groupId>org.crossmobile</groupId>
+        <artifactId>cmplugin-cmgamekit</artifactId>
+        <version>3.1.0</version>
+        <name>GameKit Framework</name>
+        <description>CrossMobile© Compatibility library for GameKit Framework</description>
+    </plugin>
+    <plugin>
+        <groupId>org.crossmobile</groupId>
+        <artifactId>cmplugin-cmi18n</artifactId>
+        <version>3.1.0</version>
+        <name>I18N support for Java</name>
+        <description>CrossMobile© iOS compatible i18n support</description>
+        <param>
+            <property>lang</property>
+            <description>Forced localized language</description>
+        </param>
+    </plugin>
+    <plugin>
+        <groupId>org.crossmobile</groupId>
+        <artifactId>cmplugin-cmimage</artifactId>
+        <version>3.1.0</version>
+        <name>CoreImage Framework</name>
+        <description>CrossMobile© Compatibility library for Camera and CoreImage Framework</description>
+    </plugin>
+    <plugin>
+        <groupId>org.crossmobile</groupId>
+        <artifactId>cmplugin-cmlocation</artifactId>
+        <version>3.1.0</version>
+        <name>CoreLocation Framework</name>
+        <description>CrossMobile© Compatibility library for MapKit and CoreLocation Frameworks</description>
+        <param>
+            <property>key</property>
+            <description>Google Maps API key</description>
+            <meta>com.google.android.geo.API_KEY</meta>
+            <context>android</context>
+        </param>
+    </plugin>
+    <plugin>
+        <groupId>org.crossmobile</groupId>
+        <artifactId>cmplugin-cmmedia</artifactId>
+        <version>3.1.0</version>
+        <name>MediaPlayer Framework</name>
+        <description>CrossMobile© Compatibility library for MediaPlayer and relative Frameworks</description>
+    </plugin>
+    <plugin>
+        <groupId>org.crossmobile</groupId>
+        <artifactId>cmplugin-cmmessages</artifactId>
+        <version>3.1.0</version>
+        <name>Message Framework</name>
+        <description>CrossMobile© Compatibility library for Message Framework</description>
+    </plugin>
+    <plugin>
+        <groupId>org.crossmobile</groupId>
+        <artifactId>cmplugin-cmnotifications</artifactId>
+        <version>3.1.0</version>
+        <name>Notifications Framework</name>
+        <description>CrossMobile© Compatibility library for UserNotifications Framework</description>
+        <url>https://crossmobile.tech/usernotifications/</url>
+        <param>
+            <property>target</property>
+            <description>Client target</description>
+            <meta>com.apple.usernotifications.service</meta>
+            <context>xcodetarget</context>
+        </param>
+    </plugin>
+    <plugin>
+        <groupId>org.crossmobile</groupId>
+        <artifactId>cmplugin-cmpayment</artifactId>
+        <version>3.1.0</version>
+        <name>in App Payment Framework</name>
+        <description>CrossMobile© Compatibility library for inAppPayment Framework</description>
+        <param>
+            <property>key</property>
+            <description>Google Play inApp key</description>
+        </param>
+        <param>
+            <property>noncosumable</property>
+            <description>Non consumable products</description>
+        </param>
+        <param>
+            <property>consumable</property>
+            <description>Consumable products</description>
+        </param>
+    </plugin>
+    <plugin>
+        <groupId>org.crossmobile</groupId>
+        <artifactId>cmplugin-cmquicklook</artifactId>
+        <version>3.1.0</version>
+        <name>QuickLook Framework</name>
+        <description>CrossMobile© Compatibility library for QuickLook Framework</description>
+    </plugin>
+    <plugin>
+        <groupId>org.crossmobile</groupId>
+        <artifactId>cmplugin-cmsocial</artifactId>
+        <version>3.1.0</version>
+        <name>Social Framework</name>
+        <description>CrossMobile© Compatibility library for Social Framework</description>
+        <param>
+            <property>facebookappid</property>
+            <description>Facebook Application ID</description>
+            <meta>com.facebook.sdk.ApplicationId</meta>
+            <context>android</context>
+        </param>
+    </plugin>
+    <plugin>
+        <groupId>org.crossmobile</groupId>
+        <artifactId>cmplugin-cmtouchid</artifactId>
+        <version>3.1.0</version>
+        <name>TouchID Framework</name>
+        <description>CrossMobile© Compatibility library for TouchID Framework</description>
+    </plugin>
+</plugins>

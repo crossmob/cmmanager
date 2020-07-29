@@ -38,6 +38,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
+import static java.io.File.separator;
 import static org.crossmobile.gui.actives.ActiveContextPanel.Context.*;
 import static org.crossmobile.gui.utils.Profile.OBFUSCATE;
 import static org.crossmobile.prefs.Prefs.*;
@@ -213,7 +214,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             deactivateComponent(uwpT);
             deactivateComponent(desktopT);
             actionB.setActionCommand(LAUNCH_ACTION_BUILD);
-            packB.setVisible(false);
             updateLaunchVisuals();
         }
 
@@ -391,8 +391,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                             + (run ? ",run" : "")
                             + (release ? ",release" : "")
                             + (proj.getProfile() == OBFUSCATE ? ",obfuscate" : "")
-                    , null, execCallback == null ? this::mavenFeedback : execCallback
-                    , "-D" + DEBUG_PROFILE.tag().name + "=" + proj.getDebugProfile());
+                    , null, execCallback, "-D" + DEBUG_PROFILE.tag().name + "=" + proj.getDebugProfile());
             EventUtils.postAction(() -> {
                 if (saveProjectWithErrorMessage()) {
                     if (distClean)
@@ -407,7 +406,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             });
         }
     }
-
 
     private void openTarget(String target) {
         String info = "Request to launch project in " + target;
@@ -462,7 +460,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         }, portF -> {
             port.set(portF);
             updateInfo(pid, port);
-        }, launchCallback, solutionCallbackRef, proj.getProfile(), params);
+        }, launchCallback == null ? this::mavenFeedback : launchCallback, solutionCallbackRef, proj.getProfile(), params);
         if (profiles != null && profiles.contains("desktop")) {
             pid.set(commander.getPid());
             updateInfo(pid, port);
@@ -500,13 +498,23 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }
 
     private File getJarPath() {
-        File path = new File(proj.getPath(), "target" + File.separator + proj.getProperty(ARTIFACT_ID) + "-" + proj.getProperty(BUNDLE_VERSION) + "-desktop.jar");
+        File path = new File(proj.getPath(), "target" + separator + proj.getProperty(ARTIFACT_ID) + "-" + proj.getProperty(BUNDLE_VERSION) + "-desktop.jar");
         return path.exists() ? path : null;
+    }
+
+    private void createPluginPackage() {
+        File cmp = new File(proj.getPath(), "target" + separator + "package" + separator + proj.getProperty(ARTIFACT_ID) + "-" + proj.getProperty(BUNDLE_VERSION) + ".cmp");
+        buildAndRun("package", true, false, false, res -> Opt.of(cmp).onError(Log::error).filter(File::isFile)
+                .ifMissing(() -> mavenFeedback(res == 0 ? 1 : res))
+                .ifExists(f -> {
+                    Desktop.getDesktop().open(f.getParentFile());
+                    mavenFeedback(res);
+                }));
     }
 
     private void createDesktopPackage(String os, boolean alsoInstaller) {
         buildAndRun("desktop", true, true, false, res -> Opt.of(getJarPath()).onError(Log::error).filter(File::isFile)
-                .ifMissing(() -> mavenFeedback(res))
+                .ifMissing(() -> mavenFeedback(res == 0 ? 1 : res))
                 .ifExists(jar -> {
                     ((ActiveTextPane) outputTxt).addLine("CREATING " + os.toUpperCase() + " " + (alsoInstaller ? "INSTALLER" : "PACKAGE") + "\n------------------------------------------------------------------------", StreamQuality.INFO);
                     File destDir = new File(jar.getParent(), os + "_package");
@@ -921,8 +929,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         });
         packDEM.add(genericEP);
 
-        distribPP.setText("Distribution package not supported yet");
-        distribPP.setEnabled(false);
+        distribPP.setText("Plugin package");
         distribPP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 distribPPActionPerformed(evt);
@@ -1334,7 +1341,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }//GEN-LAST:event_desktopMActionPerformed
 
     private void cleanBactOnProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cleanBactOnProject
-        launchMaven("clean", null, new MavenExecInfo("Clean up project", "Cleaning project", null), this::mavenFeedback);
+        launchMaven("clean", null, new MavenExecInfo("Clean up project", "Cleaning project", null), null);
     }//GEN-LAST:event_cleanBactOnProject
 
     private void expandCBMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_expandCBMousePressed
@@ -1349,7 +1356,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
     private void logMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logMActionPerformed
         java.util.List<String> cmds = new ArrayList<>();
-        cmds.add(Prefs.getAndroidSDKLocation() + File.separator + "platform-tools" + File.separator + ADB.filename());
+        cmds.add(Prefs.getAndroidSDKLocation() + separator + "platform-tools" + separator + ADB.filename());
         cmds.add("logcat");
         cmds.add("-s");
         cmds.add("CrossMob:*");
@@ -1406,7 +1413,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }//GEN-LAST:event_desktopInstaller
 
     private void distribPPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distribPPActionPerformed
-        System.out.println("Create distribution package not supported yet");
+        createPluginPackage();
     }//GEN-LAST:event_distribPPActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

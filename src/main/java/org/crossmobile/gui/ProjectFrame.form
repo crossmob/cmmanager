@@ -564,8 +564,7 @@
       <SubComponents>
         <MenuItem class="javax.swing.JMenuItem" name="distribPP">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Distribution package not supported yet"/>
-            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value="Plugin package"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="distribPPActionPerformed"/>

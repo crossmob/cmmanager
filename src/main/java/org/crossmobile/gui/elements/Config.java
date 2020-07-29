@@ -21,9 +21,13 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+import org.crossmobile.gui.actives.ActiveToggleButton;
+
+import static java.util.Objects.requireNonNull;
 import static org.crossmobile.prefs.Config.*;
 import static org.crossmobile.utils.SystemDependent.Execs.*;
 
@@ -61,6 +65,17 @@ public class Config extends HiResDialog {
     private Config() {
         super((Dialog) null, true);
         initComponents();
+        pluginsP.add(new PluginConfigEntryJ("one"));
+        pluginsP.add(new PluginConfigEntryJ("one"));
+        pluginsP.add(new PluginConfigEntryJ("one"));
+        pluginsP.add(new PluginConfigEntryJ("one"));
+        pluginsP.add(new PluginConfigEntryJ("one"));
+        pluginsP.add(new PluginConfigEntryJ("one"));
+        pluginsP.add(new PluginConfigEntryJ("one"));
+        pluginsP.add(new PluginConfigEntryJ("one"));
+        pluginsP.add(new PluginConfigEntryJ("one"));
+        pluginsP.add(new PluginConfigEntryJ("one"));
+        pluginsP.add(new PluginConfigEntryJ("one"));
         if (!SystemDependent.getDefaultTheme().equals("auto"))
             systemB.setVisible(false);
         switch (Prefs.getUserTheme()) {
@@ -78,8 +93,8 @@ public class Config extends HiResDialog {
         UIUtils.syncWidth(Arrays.asList(jdkB, androidB, netbeansB, intellijB, studioB, keystoreB));
 
         try {
-            setIconImage(ImageIO.read(getClass().getClassLoader().getResourceAsStream("images/logo-small.png")));
-        } catch (IOException ex) {
+            setIconImage(ImageIO.read(requireNonNull(getClass().getClassLoader().getResourceAsStream("images/logo-small.png"))));
+        } catch (IOException ignored) {
         }
         setLocationRelativeTo(null);
     }
@@ -100,7 +115,10 @@ public class Config extends HiResDialog {
     private void initComponents() {
 
         themeGroup = new javax.swing.ButtonGroup();
-        javax.swing.JPanel jPanel4 = new GradientPanel();
+        cardGroup = new javax.swing.ButtonGroup();
+        javax.swing.JPanel backgroundP = new GradientPanel();
+        contentP = new javax.swing.JPanel();
+        javax.swing.JPanel pathconfigP = new javax.swing.JPanel();
         javax.swing.JPanel jPanel10 = new HiResPanel();
         javax.swing.JLabel jLabel3 = new ActiveLabel();
         javax.swing.JPanel jPanel16 = new javax.swing.JPanel();
@@ -143,14 +161,26 @@ public class Config extends HiResDialog {
         lightB = new ActiveRadioButton();
         darkB = new ActiveRadioButton();
         systemB = new ActiveRadioButton();
-        javax.swing.JPanel jPanel1 = new HiResPanel();
+        javax.swing.JPanel pluginsContainerP = new javax.swing.JPanel();
+        scrollP = new javax.swing.JScrollPane();
+        pluginsP = new GradientPanel();
+        javax.swing.JPanel cardSelectP = new javax.swing.JPanel();
+        javax.swing.JToggleButton pathsB = new ActiveToggleButton();
+        pluginsB = new ActiveToggleButton();
+        javax.swing.JPanel closeP = new HiResPanel();
         javax.swing.JButton closeB = new HiResButton();
 
         setTitle("CrossMobile Configuration");
         setResizable(false);
 
-        jPanel4.setBorder(new HiResEmptyBorder(12, 12, 0, 12));
-        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
+        backgroundP.setBorder(new HiResEmptyBorder(12, 12, 0, 12));
+        backgroundP.setLayout(new java.awt.BorderLayout());
+
+        contentP.setOpaque(false);
+        contentP.setLayout(new java.awt.CardLayout());
+
+        pathconfigP.setOpaque(false);
+        pathconfigP.setLayout(new javax.swing.BoxLayout(pathconfigP, javax.swing.BoxLayout.Y_AXIS));
 
         jPanel10.setBorder(new HiResEmptyBorder(8, 0, 0, 0));
         jPanel10.setOpaque(false);
@@ -212,7 +242,7 @@ public class Config extends HiResDialog {
 
         jPanel10.add(jPanel16, java.awt.BorderLayout.CENTER);
 
-        jPanel4.add(jPanel10);
+        pathconfigP.add(jPanel10);
 
         jPanel5.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1, 0, 0, 0, Theme.current().line), new HiResEmptyBorder(16, 0, 8, 0)));
         jPanel5.setOpaque(false);
@@ -272,7 +302,7 @@ public class Config extends HiResDialog {
 
         jPanel5.add(jPanel6, java.awt.BorderLayout.CENTER);
 
-        jPanel4.add(jPanel5);
+        pathconfigP.add(jPanel5);
 
         jPanel11.setBorder(javax.swing.BorderFactory.createCompoundBorder(new HiResMatteBorder(1, 0, 1, 0, Theme.current().line), new HiResEmptyBorder(16, 0, 8, 0)));
         jPanel11.setOpaque(false);
@@ -334,7 +364,7 @@ public class Config extends HiResDialog {
 
         jPanel11.add(jPanel17, java.awt.BorderLayout.CENTER);
 
-        jPanel4.add(jPanel11);
+        pathconfigP.add(jPanel11);
 
         jPanel20.setBorder(new HiResEmptyBorder(8, 0, 8, 0));
         jPanel20.setOpaque(false);
@@ -380,10 +410,51 @@ public class Config extends HiResDialog {
 
         jPanel20.add(jPanel22, java.awt.BorderLayout.CENTER);
 
-        jPanel4.add(jPanel20);
+        pathconfigP.add(jPanel20);
 
-        jPanel1.setOpaque(false);
-        jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+        contentP.add(pathconfigP, "paths");
+
+        pluginsContainerP.setOpaque(false);
+        pluginsContainerP.setLayout(new java.awt.BorderLayout());
+
+        pluginsP.setLayout(new javax.swing.BoxLayout(pluginsP, javax.swing.BoxLayout.Y_AXIS));
+        scrollP.setViewportView(pluginsP);
+
+        pluginsContainerP.add(scrollP, java.awt.BorderLayout.CENTER);
+
+        contentP.add(pluginsContainerP, "plugins");
+
+        backgroundP.add(contentP, java.awt.BorderLayout.CENTER);
+
+        cardSelectP.setBorder(new HiResMatteBorder(0, 0, 1, 0, Theme.current().line));
+        cardSelectP.setOpaque(false);
+        cardSelectP.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        cardGroup.add(pathsB);
+        pathsB.setSelected(true);
+        pathsB.setText("Paths");
+        pathsB.setActionCommand("paths");
+        pathsB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectCard(evt);
+            }
+        });
+        cardSelectP.add(pathsB);
+
+        cardGroup.add(pluginsB);
+        pluginsB.setText("Plugins");
+        pluginsB.setActionCommand("plugins");
+        pluginsB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectCard(evt);
+            }
+        });
+        cardSelectP.add(pluginsB);
+
+        backgroundP.add(cardSelectP, java.awt.BorderLayout.PAGE_START);
+
+        closeP.setOpaque(false);
+        closeP.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
         closeB.setText("Close");
         closeB.addActionListener(new java.awt.event.ActionListener() {
@@ -391,11 +462,11 @@ public class Config extends HiResDialog {
                 closeBActionPerformed(evt);
             }
         });
-        jPanel1.add(closeB);
+        closeP.add(closeB);
 
-        jPanel4.add(jPanel1);
+        backgroundP.add(closeP, java.awt.BorderLayout.SOUTH);
 
-        getContentPane().add(jPanel4, java.awt.BorderLayout.CENTER);
+        getContentPane().add(backgroundP, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -489,10 +560,16 @@ public class Config extends HiResDialog {
         }
     }//GEN-LAST:event_themeActionPerformed
 
+    private void selectCard(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectCard
+        ((CardLayout) contentP.getLayout()).show(contentP, evt.getActionCommand());
+    }//GEN-LAST:event_selectCard
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton androidB;
     private javax.swing.JLabel androidL;
     private javax.swing.JTextField androidT;
+    private javax.swing.ButtonGroup cardGroup;
+    private javax.swing.JPanel contentP;
     private javax.swing.JRadioButton darkB;
     private javax.swing.JButton intellijB;
     private javax.swing.JLabel intellijL;
@@ -507,6 +584,9 @@ public class Config extends HiResDialog {
     private javax.swing.JButton netbeansB;
     private javax.swing.JLabel netbeansL;
     private javax.swing.JTextField netbeansT;
+    private javax.swing.JToggleButton pluginsB;
+    private javax.swing.JPanel pluginsP;
+    private javax.swing.JScrollPane scrollP;
     private javax.swing.JButton studioB;
     private javax.swing.JLabel studioL;
     private javax.swing.JTextField studioT;
