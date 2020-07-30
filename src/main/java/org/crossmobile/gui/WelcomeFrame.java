@@ -14,6 +14,7 @@ import com.panayotis.hrgui.HiResMatteBorder;
 import com.panayotis.hrgui.ScreenUtils;
 import com.panayotis.jupidator.UpdatedApplication;
 import com.panayotis.jupidator.Updater;
+import org.crossmobile.bridge.system.BaseUtils;
 import org.crossmobile.gui.actives.*;
 import org.crossmobile.gui.elements.*;
 import org.crossmobile.gui.project.ProjectInfo;
@@ -22,6 +23,7 @@ import org.crossmobile.gui.project.ProjectLoader;
 import org.crossmobile.gui.project.RecentsProjectManager;
 import org.crossmobile.gui.utils.Paths;
 import org.crossmobile.gui.utils.Paths.HomeReference;
+import org.crossmobile.gui.utils.PluginInstaller;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.Log;
 import org.crossmobile.utils.ProjectException;
@@ -44,6 +46,7 @@ import static com.panayotis.appenh.AFileChooser.FileSelectionMode.FilesAndDirect
 import static com.panayotis.hrgui.ScreenUtils.isHiDPI;
 import static org.crossmobile.Version.RELEASE;
 import static org.crossmobile.Version.VERSION;
+import static org.crossmobile.gui.utils.PluginInstaller.isPlugin;
 
 public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication {
 
@@ -65,7 +68,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         EnhancerManager.getDefault().updateFrameIcons(this);
         setSize(640, 520);
         setLocationRelativeTo(null);
-        ProjectsL.setTransferHandler(new DnDFileHandler(this::addProjectSilently));
+        ProjectsL.setTransferHandler(new DnDFileHandler(file -> addProject(file, false)));
         setEnabled(false);
     }
 
@@ -126,19 +129,18 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         versionL.setText(textualVersion ? "version " + VERSION + " " : "release " + RELEASE + " ");
     }
 
-    private void addProjectSilently(File file) {
+    private boolean addProject(File file, boolean alsoInformUser) {
         try {
-            addProject(file);
-        } catch (ProjectException ignored) {
-        }
-    }
-
-    private void addProjectWithMessage(File file) {
-        try {
-            addProject(file);
+            if (isPlugin.test(file) || BaseUtils.listFiles(file).stream().anyMatch(isPlugin))
+                PluginInstaller.installPlugin(this, file);
+            else
+                addProject(file);
+            return true;
         } catch (ProjectException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error while opening project", JOptionPane.ERROR_MESSAGE);
+            if (alsoInformUser)
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error while opening project", JOptionPane.ERROR_MESSAGE);
         }
+        return false;
     }
 
     private void addProject(File file) throws ProjectException {
@@ -388,7 +390,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
     private void openProjectBActionPerformed(ActionEvent evt) {//GEN-FIRST:event_openProjectBActionPerformed
         Collection<File> result = afc.setDirectory(Prefs.getCurrentDir()).openMulti();
         for (File selected : result) {
-            addProjectWithMessage(selected);
+            addProject(selected, true);
             Prefs.setCurrentDir(selected.getParentFile());
         }
     }//GEN-LAST:event_openProjectBActionPerformed

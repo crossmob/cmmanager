@@ -56,6 +56,17 @@ public class CMMvnActions {
         }
     }
 
+    public enum Clean {
+        NOCLEAN(false, null), CLEAN(true, null), DISTCLEAN(true, "-Pdistclean");
+        public final boolean shouldClean;
+        public final String cleanTarget;
+
+        Clean(boolean shouldClean, String cleanTarget) {
+            this.shouldClean = shouldClean;
+            this.cleanTarget = cleanTarget;
+        }
+    }
+
     private static final Pattern PID_PATTERN = Pattern.compile("PID ([0-9]*) uses (.*) port.*");
 
     public static Commander callMaven(String goal, String profiles, File projPath, ActiveTextPane outP,
@@ -161,7 +172,7 @@ public class CMMvnActions {
      * @param version    version of the project to be
      * @param projectDir root directory o the project to be
      * @param name       Display name
-     * @return
+     * @return The produced Commander
      */
     public static Commander createProject(String archetype, String name, String artifactId, String groupId, String version, File projectDir) {
         Commander cprojCmd = new Commander(Paths.getMavenExec(),
@@ -176,6 +187,23 @@ public class CMMvnActions {
                 "-Dname=" + name,
                 "-DarchetypeRepository=https://mvn.crossmobile.org/content/repositories/crossmobile/");
         cprojCmd.setCurrentDir(projectDir.getParentFile());
+        cprojCmd.appendEnvironmentalParameter("JAVA_HOME", Prefs.getJDKLocation());
+        return cprojCmd;
+    }
+
+    /**
+     * @param jarFile the artifact file to be installed
+     * @param pomFile the pom file of this artifact
+     * @return The produced Commander
+     */
+    public static Commander installArtifact(File jarFile, File pomFile, File sourcesFile) {
+        Commander cprojCmd = new Commander(Paths.getMavenExec(),
+                "org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file",
+                "-B",
+                "-Dfile=" + jarFile.getAbsolutePath(),
+                "-DpomFile=" + pomFile.getAbsolutePath(),
+                sourcesFile == null ? null : "-Dsources=" + sourcesFile.getAbsolutePath());
+        cprojCmd.setCurrentDir(jarFile.getParentFile());
         cprojCmd.appendEnvironmentalParameter("JAVA_HOME", Prefs.getJDKLocation());
         return cprojCmd;
     }

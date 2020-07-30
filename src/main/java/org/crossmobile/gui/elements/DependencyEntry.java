@@ -31,11 +31,14 @@ public class DependencyEntry extends JPanel implements Comparable<DependencyEntr
         this.dependency = dep;
     }
 
+    DependencyEntry init() {
+        initComponents();
+        return this;
+    }
+
     void init(ParamList list) {
         initComponents();
         visualParams = new ArrayList<>();
-        nameL.setText(dependency.getDisplayName());
-        nameL.setToolTipText(dependency.getInformation());
         for (DependencyParam param : dependency.getConfigParams()) {
             FreeTextParameter pparam = new FreeTextParameter(list, param.param) {
                 @Override
@@ -51,8 +54,9 @@ public class DependencyEntry extends JPanel implements Comparable<DependencyEntr
         }
     }
 
-    public void setDeleteCallback(Runnable deleteCallback) {
+    public DependencyEntry setDeleteCallback(Runnable deleteCallback) {
         this.deleteCallback = deleteCallback;
+        return this;
     }
 
     public Collection<Component> getIndentVisuals() {
@@ -93,6 +97,9 @@ public class DependencyEntry extends JPanel implements Comparable<DependencyEntr
             }
         });
         jPanel1.add(documentationB);
+
+        nameL.setText(dependency.getDisplayName());
+        nameL.setToolTipText(dependency.getInformation());
         jPanel1.add(nameL);
 
         headerP.add(jPanel1, java.awt.BorderLayout.CENTER);

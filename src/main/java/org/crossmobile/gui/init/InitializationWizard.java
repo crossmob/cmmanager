@@ -88,7 +88,6 @@ public class InitializationWizard extends HiResDialog implements Active {
 
     public void setRunning(boolean isWorking) {
         waiting.setRunning(isWorking);
-        scrollLockB.setVisible(false);
     }
 
     public StreamManager getStreamManager() {
@@ -254,10 +253,7 @@ public class InitializationWizard extends HiResDialog implements Active {
         detailsB = new HiResButton();
         detailS = new javax.swing.JScrollPane();
         detailT = new ActiveTextPane();
-        jPanel7 = new javax.swing.JPanel();
-        scrollLockP = new javax.swing.JPanel();
-        scrollLockB = new ActiveCheckBox();
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
         actionB = new HiResButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -456,24 +452,7 @@ public class InitializationWizard extends HiResDialog implements Active {
         jPanel4.add(mainP, java.awt.BorderLayout.CENTER);
 
         jPanel7.setOpaque(false);
-        jPanel7.setLayout(new java.awt.BorderLayout());
-
-        scrollLockP.setOpaque(false);
-
-        scrollLockB.setText("Pause scrolling");
-        scrollLockB.setVisible(false);
-        scrollLockB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                scrollLockBActionPerformed(evt);
-            }
-        });
-        scrollLockP.add(scrollLockB);
-
-        jPanel7.add(scrollLockP, java.awt.BorderLayout.WEST);
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 0, 12, 8));
-        jPanel1.setOpaque(false);
-        jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
         actionB.setText("Cancel");
         actionB.addActionListener(new java.awt.event.ActionListener() {
@@ -481,9 +460,7 @@ public class InitializationWizard extends HiResDialog implements Active {
                 actionBActionPerformed(evt);
             }
         });
-        jPanel1.add(actionB);
-
-        jPanel7.add(jPanel1, java.awt.BorderLayout.EAST);
+        jPanel7.add(actionB);
 
         jPanel4.add(jPanel7, java.awt.BorderLayout.SOUTH);
 
@@ -494,7 +471,6 @@ public class InitializationWizard extends HiResDialog implements Active {
 
     private void detailsBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_detailsBActionPerformed
         gotoCard(Card.Details);
-        scrollLockB.setVisible(true);
     }//GEN-LAST:event_detailsBActionPerformed
 
     private void actionBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionBActionPerformed
@@ -522,10 +498,6 @@ public class InitializationWizard extends HiResDialog implements Active {
         popupDisplay(studioB, selectedStudio, listStudio);
     }//GEN-LAST:event_studioBActionPerformed
 
-    private void scrollLockBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scrollLockBActionPerformed
-        ((ActiveTextPane) detailT).setShouldMoveToBottom(!scrollLockB.isSelected());
-    }//GEN-LAST:event_scrollLockBActionPerformed
-
     public enum Card {
         Welcome,
         Externals,
@@ -550,7 +522,6 @@ public class InitializationWizard extends HiResDialog implements Active {
     private javax.swing.JLabel intellijL;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
@@ -562,7 +533,6 @@ public class InitializationWizard extends HiResDialog implements Active {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JButton jdkB;
@@ -570,8 +540,6 @@ public class InitializationWizard extends HiResDialog implements Active {
     private javax.swing.JPanel mainP;
     private javax.swing.JButton netbeansB;
     private javax.swing.JLabel netbeansL;
-    private javax.swing.JCheckBox scrollLockB;
-    private javax.swing.JPanel scrollLockP;
     private javax.swing.JButton studioB;
     private javax.swing.JLabel studioL;
     private javax.swing.JPanel subP;

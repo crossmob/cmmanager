@@ -12,6 +12,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -35,12 +37,14 @@ public class DnDFileHandler extends TransferHandler {
 
     @Override
     public boolean importData(JComponent comp, Transferable t) {
+        Collection<File> files = new ArrayList<>();
         try {
             Object data = t.getTransferData(DataFlavor.javaFileListFlavor);
-            if (data != null && data instanceof List)
-                for (Object item : (List) data)
+            if (data instanceof List<?>)
+                for (Object item : (List<?>) data)
                     if (item != null && item instanceof File)
-                        addedFiles.accept((File) item);
+                        files.add((File) item);
+            SwingUtilities.invokeLater(() -> files.forEach(addedFiles));
             return true;
         } catch (UnsupportedFlavorException | IOException ex) {
             return false;

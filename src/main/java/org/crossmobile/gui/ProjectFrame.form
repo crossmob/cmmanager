@@ -562,12 +562,25 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="javax.swing.JMenuItem" name="distribPP">
+        <MenuItem class="javax.swing.JMenuItem" name="installPP">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Plugin package"/>
+            <Property name="text" type="java.lang.String" value="Install plugin"/>
+            <Property name="actionCommand" type="java.lang.String" value="install"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="distribPPActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pluginPActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
+          </AuxValues>
+        </MenuItem>
+        <MenuItem class="javax.swing.JMenuItem" name="distribPP">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Create distribution package"/>
+            <Property name="actionCommand" type="java.lang.String" value="package"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pluginPActionPerformed"/>
           </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>

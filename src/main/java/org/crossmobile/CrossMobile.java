@@ -118,7 +118,7 @@ public class CrossMobile {
         ResourceResolver.getResources("META-INF/default-plugins/plugins.xml", PluginRegistry::importPlugin);
         ResourceResolver.getResources("META-INF/default-plugins/cmtheme-bright.xml", PluginRegistry::importPlugin);
         ResourceResolver.getResources("META-INF/default-plugins/cmtheme-styled.xml", PluginRegistry::importPlugin);
-        BaseUtils.listFiles(new File(SystemDependent.getPluginsDir(), "plugins")).forEach(PluginRegistry::importFilePlugin);
+        BaseUtils.listFiles(new File(SystemDependent.getMetaPluginsDir())).forEach(PluginRegistry::importFilePlugin);
     }
 
     private static void executeWizard(WelcomeFrame frame) {

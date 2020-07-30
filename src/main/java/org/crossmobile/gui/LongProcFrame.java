@@ -29,18 +29,23 @@ public class LongProcFrame extends JDialog implements VoidBlock1<String> {
         initComponents();
         setTitle(title);
         progressBar.setVisible(false);
-        toggleC.setText(optionText);
+        if (optionText == null)
+            toggleC.setVisible(false);
+        else
+            toggleC.setText(optionText);
         updateText(welcomeText);
         setSize(380, 200);
         setLocationRelativeTo(null);
     }
 
-    public void setExecuteCallback(Consumer<Boolean> executeCallback) {
+    public LongProcFrame setExecuteCallback(Consumer<Boolean> executeCallback) {
         this.executeCallback = executeCallback;
+        return this;
     }
 
-    public void setCancelCallback(Runnable cancelCallback) {
+    public LongProcFrame setCancelCallback(Runnable cancelCallback) {
         this.cancelCallback = cancelCallback;
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -62,11 +67,11 @@ public class LongProcFrame extends JDialog implements VoidBlock1<String> {
 
         backgroundP.setLayout(new java.awt.BorderLayout());
 
-        mainP.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(12,12,8,12));
+        mainP.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(12, 12, 8, 12));
         mainP.setOpaque(false);
         mainP.setLayout(new java.awt.BorderLayout());
 
-        feedbackL.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(0,0,8,0));
+        feedbackL.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(0, 0, 8, 0));
         mainP.add(feedbackL, java.awt.BorderLayout.CENTER);
 
         jPanel1.setOpaque(false);

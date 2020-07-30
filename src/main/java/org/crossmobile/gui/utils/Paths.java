@@ -113,7 +113,7 @@ public final class Paths {
     }
 
     public static String getXRayPath() {
-        File cmxray = new File(SystemDependent.getPluginsDir(), "cmxray.jar");
+        File cmxray = new File(SystemDependent.getManagerPluginsDir(), "cmxray.jar");
         return cmxray.exists() ? cmxray.getAbsolutePath() : null;
     }
 

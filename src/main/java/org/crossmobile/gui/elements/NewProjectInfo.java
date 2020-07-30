@@ -7,7 +7,6 @@
 package org.crossmobile.gui.elements;
 
 import com.panayotis.appenh.AFileChooser;
-import com.panayotis.appenh.Enhancer;
 import com.panayotis.hrgui.HiResButton;
 import com.panayotis.hrgui.HiResDialog;
 import org.crossmobile.gui.actives.ActiveLabel;

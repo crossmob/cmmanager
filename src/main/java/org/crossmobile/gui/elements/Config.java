@@ -11,10 +11,7 @@ import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.actives.ActiveRadioButton;
 import org.crossmobile.gui.actives.ActiveTextField;
 import org.crossmobile.prefs.Prefs;
-import org.crossmobile.utils.Commander;
-import org.crossmobile.utils.LocationTarget;
-import org.crossmobile.utils.SystemDependent;
-import org.crossmobile.utils.UIUtils;
+import org.crossmobile.utils.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -65,17 +62,7 @@ public class Config extends HiResDialog {
     private Config() {
         super((Dialog) null, true);
         initComponents();
-        pluginsP.add(new PluginConfigEntryJ("one"));
-        pluginsP.add(new PluginConfigEntryJ("one"));
-        pluginsP.add(new PluginConfigEntryJ("one"));
-        pluginsP.add(new PluginConfigEntryJ("one"));
-        pluginsP.add(new PluginConfigEntryJ("one"));
-        pluginsP.add(new PluginConfigEntryJ("one"));
-        pluginsP.add(new PluginConfigEntryJ("one"));
-        pluginsP.add(new PluginConfigEntryJ("one"));
-        pluginsP.add(new PluginConfigEntryJ("one"));
-        pluginsP.add(new PluginConfigEntryJ("one"));
-        pluginsP.add(new PluginConfigEntryJ("one"));
+
         if (!SystemDependent.getDefaultTheme().equals("auto"))
             systemB.setVisible(false);
         switch (Prefs.getUserTheme()) {
@@ -99,15 +86,30 @@ public class Config extends HiResDialog {
         setLocationRelativeTo(null);
     }
 
+    private void refreshPlugins() {
+        boxedP.removeAll();
+        for (Dependency dep : PluginRegistry.getExternalPlugins())
+            boxedP.add(new DependencyEntry(dep)
+                    .init()
+                    .setDeleteCallback(() -> {
+                        PluginRegistry.removeExternalPlugin(dep);
+                        refreshPlugins();
+                    }));
+        boxedP.revalidate();
+    }
+
     @Override
-    public void setVisible(boolean b) {
-        netbeansT.setText(Prefs.getNetbeansLocation());
-        intellijT.setText(Prefs.getIntelliJLocation());
-        jdkT.setText(Prefs.getJDKLocation());
-        androidT.setText(Prefs.getAndroidSDKLocation());
-        studioT.setText(Prefs.getAndroidStudioLocation());
-        keyT.setText(Prefs.getAndroidKeyLocation());
-        super.setVisible(b);
+    public void setVisible(boolean visible) {
+        if (visible) {
+            netbeansT.setText(Prefs.getNetbeansLocation());
+            intellijT.setText(Prefs.getIntelliJLocation());
+            jdkT.setText(Prefs.getJDKLocation());
+            androidT.setText(Prefs.getAndroidSDKLocation());
+            studioT.setText(Prefs.getAndroidStudioLocation());
+            keyT.setText(Prefs.getAndroidKeyLocation());
+            refreshPlugins();
+        }
+        super.setVisible(visible);
     }
 
     @SuppressWarnings("unchecked")
@@ -163,7 +165,8 @@ public class Config extends HiResDialog {
         systemB = new ActiveRadioButton();
         javax.swing.JPanel pluginsContainerP = new javax.swing.JPanel();
         scrollP = new javax.swing.JScrollPane();
-        pluginsP = new GradientPanel();
+        topP = new GradientPanel();
+        boxedP = new javax.swing.JPanel();
         javax.swing.JPanel cardSelectP = new javax.swing.JPanel();
         javax.swing.JToggleButton pathsB = new ActiveToggleButton();
         pluginsB = new ActiveToggleButton();
@@ -417,8 +420,13 @@ public class Config extends HiResDialog {
         pluginsContainerP.setOpaque(false);
         pluginsContainerP.setLayout(new java.awt.BorderLayout());
 
-        pluginsP.setLayout(new javax.swing.BoxLayout(pluginsP, javax.swing.BoxLayout.Y_AXIS));
-        scrollP.setViewportView(pluginsP);
+        topP.setLayout(new java.awt.BorderLayout());
+
+        boxedP.setOpaque(false);
+        boxedP.setLayout(new javax.swing.BoxLayout(boxedP, javax.swing.BoxLayout.Y_AXIS));
+        topP.add(boxedP, java.awt.BorderLayout.NORTH);
+
+        scrollP.setViewportView(topP);
 
         pluginsContainerP.add(scrollP, java.awt.BorderLayout.CENTER);
 
@@ -568,6 +576,7 @@ public class Config extends HiResDialog {
     private javax.swing.JButton androidB;
     private javax.swing.JLabel androidL;
     private javax.swing.JTextField androidT;
+    private javax.swing.JPanel boxedP;
     private javax.swing.ButtonGroup cardGroup;
     private javax.swing.JPanel contentP;
     private javax.swing.JRadioButton darkB;
@@ -585,12 +594,12 @@ public class Config extends HiResDialog {
     private javax.swing.JLabel netbeansL;
     private javax.swing.JTextField netbeansT;
     private javax.swing.JToggleButton pluginsB;
-    private javax.swing.JPanel pluginsP;
     private javax.swing.JScrollPane scrollP;
     private javax.swing.JButton studioB;
     private javax.swing.JLabel studioL;
     private javax.swing.JTextField studioT;
     private javax.swing.JRadioButton systemB;
     private javax.swing.ButtonGroup themeGroup;
+    private javax.swing.JPanel topP;
     // End of variables declaration//GEN-END:variables
 }

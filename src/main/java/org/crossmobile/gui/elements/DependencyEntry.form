@@ -66,6 +66,14 @@
               </AuxValues>
             </Component>
             <Component class="javax.swing.JLabel" name="nameL">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="dependency.getDisplayName()" type="code"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="dependency.getInformation()" type="code"/>
+                </Property>
+              </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveLabel()"/>
               </AuxValues>

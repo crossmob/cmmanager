@@ -15,7 +15,7 @@ import static org.crossmobile.utils.ParamsCommon.CM_DESKTOP_SKIN;
 public class SkinListParameter extends SelectionListParameter {
 
     public SkinListParameter(ParamList plist) {
-        super(plist, CM_DESKTOP_SKIN.tag(), PluginRegistry.getSystemSkins());
+        super(plist, CM_DESKTOP_SKIN.tag(), PluginRegistry.getSkins());
     }
 
     @Override

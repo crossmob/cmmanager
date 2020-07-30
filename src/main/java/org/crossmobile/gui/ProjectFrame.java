@@ -40,6 +40,7 @@ import java.util.function.Consumer;
 
 import static java.io.File.separator;
 import static org.crossmobile.gui.actives.ActiveContextPanel.Context.*;
+import static org.crossmobile.gui.utils.CMMvnActions.Clean.*;
 import static org.crossmobile.gui.utils.Profile.OBFUSCATE;
 import static org.crossmobile.prefs.Prefs.*;
 import static org.crossmobile.utils.ParamsCommon.*;
@@ -372,13 +373,13 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }
 
     private void buildAndRun(String target) {
-        buildAndRun(target, false,
+        buildAndRun(target, NOCLEAN,
                 proj.getProfile().isRelease(),
                 !LAUNCH_ACTION_BUILD.equals(actionB.getActionCommand()),
                 null);
     }
 
-    private void buildAndRun(String target, boolean distClean, boolean release, boolean run, Consumer<Integer> execCallback) {
+    private void buildAndRun(String target, CMMvnActions.Clean clean, boolean release, boolean run, Consumer<Integer> execCallback) {
         if (taskName != null)
             EventUtils.postAction(() -> {
                 Opt.of(launch).ifExists(Commander::kill);
@@ -394,11 +395,11 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                     , null, execCallback, "-D" + DEBUG_PROFILE.tag().name + "=" + proj.getDebugProfile());
             EventUtils.postAction(() -> {
                 if (saveProjectWithErrorMessage()) {
-                    if (distClean)
+                    if (clean.shouldClean)
                         launchMaven("clean", null, null, result -> {
                             if (result == 0)
                                 launcher.run();
-                        }, "-Pdistclean");
+                        }, clean.cleanTarget);
                     else
                         launcher.run();
                 } else
@@ -502,18 +503,23 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         return path.exists() ? path : null;
     }
 
-    private void createPluginPackage() {
+    private void createPluginPackage(boolean installOnly) {
         File cmp = new File(proj.getPath(), "target" + separator + "package" + separator + proj.getProperty(ARTIFACT_ID) + "-" + proj.getProperty(BUNDLE_VERSION) + ".cmp");
-        buildAndRun("package", true, false, false, res -> Opt.of(cmp).onError(Log::error).filter(File::isFile)
+        buildAndRun("package", CLEAN, false, false, res -> Opt.of(cmp).onError(Log::error).filter(File::isFile)
                 .ifMissing(() -> mavenFeedback(res == 0 ? 1 : res))
                 .ifExists(f -> {
-                    Desktop.getDesktop().open(f.getParentFile());
+                    if (installOnly)
+                        Opt.of(PluginInstaller
+                                .installPluginMetaInfo(new File(proj.getPath(), "target" + separator + "artifacts" + separator + "cmplugin-" + proj.getProperty(ARTIFACT_ID) + "-" + proj.getProperty(BUNDLE_VERSION) + ".jar")))
+                                .ifExists(Log::error);
+                    else
+                        Desktop.getDesktop().open(f.getParentFile());
                     mavenFeedback(res);
                 }));
     }
 
     private void createDesktopPackage(String os, boolean alsoInstaller) {
-        buildAndRun("desktop", true, true, false, res -> Opt.of(getJarPath()).onError(Log::error).filter(File::isFile)
+        buildAndRun("desktop", DISTCLEAN, true, false, res -> Opt.of(getJarPath()).onError(Log::error).filter(File::isFile)
                 .ifMissing(() -> mavenFeedback(res == 0 ? 1 : res))
                 .ifExists(jar -> {
                     ((ActiveTextPane) outputTxt).addLine("CREATING " + os.toUpperCase() + " " + (alsoInstaller ? "INSTALLER" : "PACKAGE") + "\n------------------------------------------------------------------------", StreamQuality.INFO);
@@ -601,6 +607,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         packDEM = new ActivePopupMenu();
         genericEP = new ActiveMenuItem();
         packPl = new ActivePopupMenu();
+        installPP = new ActiveMenuItem();
         distribPP = new ActiveMenuItem();
         cleanM = new ActivePopupMenu();
         cleanAllPM = new ActiveMenuItem();
@@ -929,10 +936,20 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         });
         packDEM.add(genericEP);
 
-        distribPP.setText("Plugin package");
+        installPP.setText("Install plugin");
+        installPP.setActionCommand("install");
+        installPP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pluginPActionPerformed(evt);
+            }
+        });
+        packPl.add(installPP);
+
+        distribPP.setText("Create distribution package");
+        distribPP.setActionCommand("package");
         distribPP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                distribPPActionPerformed(evt);
+                pluginPActionPerformed(evt);
             }
         });
         packPl.add(distribPP);
@@ -1210,7 +1227,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
@@ -1379,7 +1396,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
     private void androidPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_androidPackage
         boolean release = "release".equals(evt.getActionCommand());
-        buildAndRun("android", true, release, false, res -> Opt.of(getApkPath(true))
+        buildAndRun("android", DISTCLEAN, release, false, res -> Opt.of(getApkPath(true))
                 .onError(Log::error)
                 .ifExists(f -> Desktop.getDesktop().open(f.getParentFile())).always(i -> mavenFeedback(res)));
     }//GEN-LAST:event_androidPackage
@@ -1412,9 +1429,9 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         createDesktopPackage(evt.getActionCommand(), true);
     }//GEN-LAST:event_desktopInstaller
 
-    private void distribPPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distribPPActionPerformed
-        createPluginPackage();
-    }//GEN-LAST:event_distribPPActionPerformed
+    private void pluginPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pluginPActionPerformed
+        createPluginPackage("install".equals(evt.getActionCommand()));
+    }//GEN-LAST:event_pluginPActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Background;
@@ -1449,6 +1466,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JMenuItem genericP;
     private javax.swing.JPanel idInfoP;
     private javax.swing.JPanel infoP;
+    private javax.swing.JMenuItem installPP;
     private javax.swing.JMenuItem intellijM;
     private javax.swing.JToggleButton iosT;
     private javax.swing.JPanel jPanel1;

@@ -6,13 +6,6 @@
 
 package org.crossmobile.gui.init;
 
-import org.crossmobile.utils.SystemDependent;
-
-import javax.swing.*;
-import java.awt.*;
-
-import static org.crossmobile.prefs.Config.JAVA_RANGE;
-import static org.crossmobile.prefs.Config.MIN_JAVA_VERSION_FULL;
 import static org.crossmobile.prefs.Prefs.getAndroidSDKLocation;
 import static org.crossmobile.prefs.Prefs.getJDKLocation;
 
