@@ -268,6 +268,7 @@ public class Project {
         csheet.add(new HideIncludesParameter(params));
         csheet.add(new FileSharingParameter(params));
         csheet.add(new SafeMembersParameter(params));
+        csheet.add(new DeploymentTargetParameter(params));
         sheets.add(csheet);
 
         csheet = new PropertySheet("Android", listener);
