@@ -14,7 +14,7 @@ import static org.crossmobile.utils.ParamsCommon.VIEWCONTROLLED_STATUSBAR;
 public class ViewControlledStatusBarParameter extends BooleanParameter {
 
     public ViewControlledStatusBarParameter(ParamList list) {
-        super(list, VIEWCONTROLLED_STATUSBAR.tag(), false);
+        super(list, VIEWCONTROLLED_STATUSBAR.tag(), true);
     }
 
     @Override

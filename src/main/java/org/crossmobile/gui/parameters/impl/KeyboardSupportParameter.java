@@ -24,7 +24,7 @@ public class KeyboardSupportParameter extends MultiCheckboxParameter {
 
     @Override
     public String getVisualTag() {
-        return "Keyboard support for Simulator behaviour:";
+        return "Keyboard support for Simulator behavior:";
     }
 
     private static String getValue(String value) {
