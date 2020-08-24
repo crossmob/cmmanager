@@ -258,8 +258,6 @@ public class Project {
         csheet.add(supp_orientation = new SupportedOrientationsParameter(params));
         supp_orientation.addParameterListener(p -> init_orientation.check(supp_orientation.getValue()));
         init_orientation.addParameterListener(p -> supp_orientation.setOrientation(p.getValue()));
-        csheet.add(new StatusBarHiddenParameter(params));
-        csheet.add(new ViewControlledStatusBarParameter(params));
         csheet.add(new SplashDelayParameter(params));
         sheets.add(csheet);
 
