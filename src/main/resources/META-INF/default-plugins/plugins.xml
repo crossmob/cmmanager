@@ -119,4 +119,11 @@
         <name>TouchID Framework</name>
         <description>CrossMobile© Compatibility library for TouchID Framework</description>
     </plugin>
+    <plugin>
+        <groupId>org.crossmobile</groupId>
+        <artifactId>cmplugin-cmwebkit</artifactId>
+        <version>3.2.0</version>
+        <name>WebKit Framework</name>
+        <description>CrossMobile© Compatibility library for WebKit Framework</description>
+    </plugin>
 </plugins>
