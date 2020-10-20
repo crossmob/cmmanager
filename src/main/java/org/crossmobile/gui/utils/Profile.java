@@ -8,7 +8,7 @@ package org.crossmobile.gui.utils;
 
 public enum Profile {
     DEBUG, XRAY(Paths.getXRayPath() != null), RELEASE, OBFUSCATE;
-    private boolean valid;
+    private final boolean valid;
 
     Profile() {
         this(true);
