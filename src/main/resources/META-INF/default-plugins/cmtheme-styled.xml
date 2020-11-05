@@ -3,7 +3,7 @@
     <plugin>
         <groupId>org.crossmobile</groupId>
         <artifactId>cmtheme-styled</artifactId>
-        <version>3.3.0</version>
+        <version>3.4.0</version>
         <name>Styled theme</name>
         <description>A theme with styled graphics, based on older versions of the original platform</description>
     </plugin>
