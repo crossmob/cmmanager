@@ -35,15 +35,16 @@ import static java.util.Arrays.asList;
 import static org.crossmobile.Version.RELEASE;
 import static org.crossmobile.Version.VERSION;
 import static org.crossmobile.gui.elements.Config.*;
-import static org.crossmobile.gui.init.ApplicationRequirements.*;
+import static org.crossmobile.gui.init.ApplicationRequirements.isAndroidConfigured;
+import static org.crossmobile.gui.init.ApplicationRequirements.isJDKconfigured;
 
 public class CrossMobile {
 
     public static void main(final String[] args) {
+        initEnhancer();
         java.awt.EventQueue.invokeLater(() -> {
             try {
                 if (args == null || args.length == 0 || args[0].startsWith("-psn_")) {
-                    initEnhancer();
                     Log.register(new Log.Default() {
                         @Override
                         public void info(String message) {
@@ -88,6 +89,7 @@ public class CrossMobile {
 
     private static void initEnhancer() {
         Enhancer enhancer = EnhancerManager.getDefault();
+        enhancer.fixDPI();
         enhancer.setSafeLookAndFeel();
         enhancer.registerPreferences(Config::showConfig);
         enhancer.registerAbout(About::showAbout);
