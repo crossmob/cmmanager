@@ -213,6 +213,38 @@
             </properties>
         </profile>
         <profile>
+            <id>build-under-windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <makeapp.exec>extra/windows/bin/makeapp.exe</makeapp.exec>
+            </properties>
+        </profile>
+        <profile>
+            <id>build-under-linux</id>
+            <activation>
+                <os>
+                    <family>linux</family>
+                </os>
+            </activation>
+            <properties>
+                <makeapp.exec>extra/linux64/bin/makeapp</makeapp.exec>
+            </properties>
+        </profile>
+        <profile>
+            <id>build-under-macos</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <makeapp.exec>extra/macos/bin/makeapp</makeapp.exec>
+            </properties>
+        </profile>        <profile>
             <id>all</id>
             <properties>
                 <mac.dist>macos</mac.dist>
@@ -237,7 +269,7 @@
                             <execution>
                                 <id>create</id>
                                 <configuration>
-                                    <executable>extra/macos/bin/makeapp</executable>
+                                    <executable>${makeapp.exec}</executable>
                                     <arguments>
                                         <argument>create</argument>
                                         <argument>--name=CrossMobile</argument>
