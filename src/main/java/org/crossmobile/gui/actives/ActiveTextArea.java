@@ -11,6 +11,8 @@ import org.crossmobile.gui.elements.Theme;
 
 import javax.swing.*;
 import javax.swing.text.Document;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import static org.crossmobile.gui.actives.ActiveTextField.updateTheme;
 
@@ -20,7 +22,6 @@ public class ActiveTextArea extends HiResTextArea implements ThemeChanged {
     private boolean inactiveColorFollowsActive = false;
 
     {
-        setOpaque(true);
         setTabSize(4);
         ThemeNotifier.register(this);
         themeChanged(Theme.current() == Theme.dark());
@@ -70,5 +71,12 @@ public class ActiveTextArea extends HiResTextArea implements ThemeChanged {
         updateTheme(this, dark);
         if (inactiveColorFollowsActive)
             setDisabledTextColor(getForeground());
+    }
+
+    public void removeMouseListeners() {
+        for (MouseListener listener : getListeners(MouseListener.class))
+            removeMouseListener(listener);
+        for (MouseMotionListener listener : getListeners(MouseMotionListener.class))
+            removeMouseMotionListener(listener);
     }
 }

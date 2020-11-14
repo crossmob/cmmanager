@@ -45,8 +45,10 @@ public class JWizard extends JDialog {
         this.name = name;
         initComponents();
         resolveTypeP.setVisible(false);
+        // Extra WelcomeText configuration which is not inherited (?)
         ((ActiveTextArea) WelcomeText).setInactiveColorFollowsActive(true);
-        WelcomeText.setBorder(null);
+        ((ActiveTextArea) WelcomeText).removeMouseListeners();
+
         setLocationRelativeTo(null);
     }
 
@@ -160,6 +162,7 @@ public class JWizard extends JDialog {
 
         WelcomeP.setLayout(new java.awt.BorderLayout());
 
+        jPanel2.setOpaque(false);
         jPanel2.setLayout(new java.awt.BorderLayout());
 
         WelcomeTitle.setFont(WelcomeTitle.getFont().deriveFont(WelcomeTitle.getFont().getStyle() | java.awt.Font.BOLD, WelcomeTitle.getFont().getSize() + 2));
@@ -170,6 +173,7 @@ public class JWizard extends JDialog {
         jPanel2.add(WelcomeTitle, java.awt.BorderLayout.NORTH);
 
         resolveTypeP.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 2, 0, 0));
+        resolveTypeP.setOpaque(false);
         resolveTypeP.setLayout(new java.awt.BorderLayout());
 
         AutoSelL.setFont(AutoSelL.getFont().deriveFont(AutoSelL.getFont().getStyle() | java.awt.Font.BOLD));
@@ -227,8 +231,6 @@ public class JWizard extends JDialog {
         WelcomeText.setRows(3);
         WelcomeText.setText("CrossMobile needs " + name + "\nto continue with the requested action.");
         WelcomeText.setBorder(null);
-        WelcomeText.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        WelcomeText.setEnabled(false);
         WelcomeText.setOpaque(false);
         jPanel2.add(WelcomeText, java.awt.BorderLayout.CENTER);
 

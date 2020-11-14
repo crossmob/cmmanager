@@ -11,7 +11,9 @@ import com.panayotis.hrgui.HiResTextField;
 import org.crossmobile.gui.elements.Theme;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 
 public class ActiveTextField extends HiResTextField implements ThemeChanged {
@@ -45,9 +47,15 @@ public class ActiveTextField extends HiResTextField implements ThemeChanged {
     }
 
     static void updateTheme(HiResTextComponent comp, boolean dark) {
-        comp.comp().setBackground(Theme.current().textBack);
-        comp.comp().setForeground(dark ? Color.white : Color.black);
-        comp.comp().setBorder(new MatteBorder(1, 1, 1, 1, Theme.current().textBorder));
-        comp.comp().setCaretColor(dark ? Color.white : Color.black);
+        JTextComponent jComp = comp.comp();
+        Border border = jComp.getBorder();
+        if (border != null)
+            jComp.setBorder(new MatteBorder(1, 1, 1, 1, Theme.current().textBorder));
+        Color background = jComp.getBackground();
+        if (background != null && background.getAlpha() > 1)
+            jComp.setBackground(Theme.current().textBack);
+
+        jComp.setForeground(dark ? Color.white : Color.black);
+        jComp.setCaretColor(dark ? Color.white : Color.black);
     }
 }
