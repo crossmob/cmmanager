@@ -9,7 +9,6 @@ package org.crossmobile.gui.init;
 import com.panayotis.hrgui.HiResButton;
 import com.panayotis.hrgui.HiResDialog;
 import com.panayotis.hrgui.HiResIcon;
-import org.crossmobile.gui.actives.ActiveCheckBox;
 import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.actives.ActiveTextPane;
 import org.crossmobile.gui.elements.GradientPanel;
@@ -25,6 +24,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
+
 import static org.crossmobile.prefs.Config.JAVA_RANGE;
 
 public class InitializationWizard extends HiResDialog implements Active {
@@ -37,11 +37,13 @@ public class InitializationWizard extends HiResDialog implements Active {
     private final Collection<File> listJDK = new TreeSet<>();
     private final Collection<File> listNetbeans = new TreeSet<>();
     private final Collection<File> listIntelliJ = new TreeSet<>();
+    private final Collection<File> listVSCode = new TreeSet<>();
     private final Collection<File> listStudio = new TreeSet<>();
     private final Collection<File> listAndroid = new TreeSet<>();
     private final AtomicReference<File> selectedJDK = new AtomicReference<>();
     private final AtomicReference<File> selectedNetbeans = new AtomicReference<>();
     private final AtomicReference<File> selectedIntelliJ = new AtomicReference<>();
+    private final AtomicReference<File> selectedVSCode = new AtomicReference<>();
     private final AtomicReference<File> selectedStudio = new AtomicReference<>();
     private final AtomicReference<File> selectedAndroid = new AtomicReference<>();
 
@@ -121,6 +123,10 @@ public class InitializationWizard extends HiResDialog implements Active {
         updateVisualsIfFound(intellijL, null, null, listIntelliJ, found);
     }
 
+    public void foundVSCode(File found) {
+        updateVisualsIfFound(vscodeL, null, null, listVSCode, found);
+    }
+
     public void foundStudio(File found) {
         updateVisualsIfFound(studioL, null, null, listStudio, found);
     }
@@ -147,12 +153,14 @@ public class InitializationWizard extends HiResDialog implements Active {
         boolean allAppsAreSelected = isAppSelected(selectedJDK, listJDK)
                 & isAppSelected(selectedNetbeans, listNetbeans)
                 & isAppSelected(selectedIntelliJ, listIntelliJ)
+                & isAppSelected(selectedVSCode, listVSCode)
                 & isAppSelected(selectedStudio, listStudio)
                 & isAppSelected(selectedAndroid, listAndroid);
 
         boolean allAppsAreResolved = updateVisualsIfFound(jdkL, jdkB, selectedJDK, listJDK, null)
                 & updateVisualsIfFound(netbeansL, netbeansB, selectedNetbeans, listNetbeans, null)
                 & updateVisualsIfFound(intellijL, intellijB, selectedIntelliJ, listIntelliJ, null)
+                & updateVisualsIfFound(vscodeL, vscodeB, selectedVSCode, listVSCode, null)
                 & updateVisualsIfFound(studioL, studioB, selectedStudio, listStudio, null)
                 & updateVisualsIfFound(androidL, androidB, selectedAndroid, listAndroid, null);
 
@@ -163,6 +171,7 @@ public class InitializationWizard extends HiResDialog implements Active {
                 Prefs.setAndroidSDKLocation(resolveUnique(selectedAndroid, listAndroid));
                 Prefs.setNetbeansLocation(resolveUnique(selectedNetbeans, listNetbeans));
                 Prefs.setIntelliJLocation(resolveUnique(selectedIntelliJ, listIntelliJ));
+                Prefs.setVSCodeLocation(resolveUnique(selectedVSCode, listVSCode));
                 Prefs.setStudioLocation(resolveUnique(selectedStudio, listStudio));
                 Prefs.setWizardExecuted(true);
                 setVisible(false);
@@ -240,6 +249,10 @@ public class InitializationWizard extends HiResDialog implements Active {
         intellijL = new ActiveLabel();
         jPanel12 = new javax.swing.JPanel();
         intellijB = new HiResButton();
+        jPanel16 = new javax.swing.JPanel();
+        vscodeL = new ActiveLabel();
+        jPanel17 = new javax.swing.JPanel();
+        vscodeB = new HiResButton();
         jPanel3 = new javax.swing.JPanel();
         netbeansL = new ActiveLabel();
         jPanel11 = new javax.swing.JPanel();
@@ -262,7 +275,7 @@ public class InitializationWizard extends HiResDialog implements Active {
 
         jPanel4.setLayout(new java.awt.BorderLayout());
 
-        titleL.setFont(titleL.getFont().deriveFont((float)20));
+        titleL.setFont(titleL.getFont().deriveFont((float) 20));
         titleL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         titleL.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 0, 16, 0));
         jPanel4.add(titleL, java.awt.BorderLayout.NORTH);
@@ -377,6 +390,28 @@ public class InitializationWizard extends HiResDialog implements Active {
         jPanel5.add(jPanel12, java.awt.BorderLayout.EAST);
 
         externalsP.add(jPanel5);
+
+        jPanel16.setOpaque(false);
+        jPanel16.setLayout(new java.awt.BorderLayout());
+
+        vscodeL.setText("Visual Studio Code");
+        vscodeL.setIconTextGap(8);
+        jPanel16.add(vscodeL, java.awt.BorderLayout.WEST);
+
+        jPanel17.setOpaque(false);
+        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
+
+        vscodeB.setText("Choose");
+        vscodeB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                vscodeBActionPerformed(evt);
+            }
+        });
+        jPanel17.add(vscodeB);
+
+        jPanel16.add(jPanel17, java.awt.BorderLayout.EAST);
+
+        externalsP.add(jPanel16);
 
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.BorderLayout());
@@ -498,6 +533,10 @@ public class InitializationWizard extends HiResDialog implements Active {
         popupDisplay(studioB, selectedStudio, listStudio);
     }//GEN-LAST:event_studioBActionPerformed
 
+    private void vscodeBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vscodeBActionPerformed
+        popupDisplay(vscodeB, selectedVSCode, listVSCode);
+    }//GEN-LAST:event_vscodeBActionPerformed
+
     public enum Card {
         Welcome,
         Externals,
@@ -528,6 +567,8 @@ public class InitializationWizard extends HiResDialog implements Active {
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -545,6 +586,8 @@ public class InitializationWizard extends HiResDialog implements Active {
     private javax.swing.JPanel subP;
     private javax.swing.JLabel subtitleL;
     private javax.swing.JLabel titleL;
+    private javax.swing.JButton vscodeB;
+    private javax.swing.JLabel vscodeL;
     private javax.swing.JPanel welcomeP;
     // End of variables declaration//GEN-END:variables
 

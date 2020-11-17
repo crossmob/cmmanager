@@ -10,6 +10,7 @@ import com.panayotis.hrgui.*;
 import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.actives.ActiveRadioButton;
 import org.crossmobile.gui.actives.ActiveTextField;
+import org.crossmobile.gui.actives.ActiveToggleButton;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.*;
 
@@ -18,14 +19,11 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-import org.crossmobile.gui.actives.ActiveToggleButton;
-
 import static java.util.Objects.requireNonNull;
-import static org.crossmobile.prefs.Config.*;
+import static org.crossmobile.prefs.Config.JAVA_RANGE;
 import static org.crossmobile.utils.SystemDependent.Execs.*;
 
 public class Config extends HiResDialog {
@@ -33,6 +31,7 @@ public class Config extends HiResDialog {
     public static final LocationTarget Netbeans = new LocationTarget(NETBEANS, NETBEANS.filename());
     public static final LocationTarget Studio = new LocationTarget(STUDIO, STUDIO.filename(), STUDIO64.filename());
     public static final LocationTarget IntelliJ = new LocationTarget(IDEA, IDEA.filename());
+    public static final LocationTarget VSCode = new LocationTarget(CODE, CODE.filename(), CODIUM.filename());
     public static final LocationTarget Android = new LocationTarget("tools/bin/sdkmanager.bat", "tools/bin/sdkmanager", "platform-tools/adb", "platform-tools/adb.exe");
     public static final LocationTarget JDK = new LocationTarget(f -> {
         File javac = new File(f, "bin/" + JAVAC.filename());
@@ -137,14 +136,17 @@ public class Config extends HiResDialog {
         javax.swing.JLabel jLabel2 = new ActiveLabel();
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         javax.swing.JPanel eselectP = new HiResPanel();
-        netbeansL = new ActiveLabel();
         intellijL = new ActiveLabel();
+        netbeansL = new ActiveLabel();
+        vscodeL = new ActiveLabel();
         javax.swing.JPanel etextP = new HiResPanel();
-        netbeansT = new ActiveTextField();
         intellijT = new ActiveTextField();
+        netbeansT = new ActiveTextField();
+        vscodeT = new ActiveTextField();
         javax.swing.JPanel ebuttonP = new HiResPanel();
-        netbeansB = new HiResButton();
         intellijB = new HiResButton();
+        netbeansB = new HiResButton();
+        vscodeB = new HiResButton();
         javax.swing.JPanel jPanel11 = new HiResPanel();
         javax.swing.JLabel jLabel6 = new ActiveLabel();
         javax.swing.JPanel jPanel17 = new HiResPanel();
@@ -261,29 +263,44 @@ public class Config extends HiResDialog {
         eselectP.setOpaque(false);
         eselectP.setLayout(new java.awt.GridLayout(0, 1));
 
+        intellijL.setText("IntelliJ IDEA");
+        eselectP.add(intellijL);
+
         netbeansL.setText("Netbeans");
         eselectP.add(netbeansL);
 
-        intellijL.setText("IntelliJ IDEA");
-        eselectP.add(intellijL);
+        vscodeL.setText("VS Code");
+        eselectP.add(vscodeL);
 
         jPanel6.add(eselectP, java.awt.BorderLayout.WEST);
 
         etextP.setOpaque(false);
         etextP.setLayout(new java.awt.GridLayout(0, 1));
 
+        intellijT.setEditable(false);
+        intellijT.setColumns(28);
+        etextP.add(intellijT);
+
         netbeansT.setEditable(false);
         netbeansT.setColumns(28);
         etextP.add(netbeansT);
 
-        intellijT.setEditable(false);
-        intellijT.setColumns(28);
-        etextP.add(intellijT);
+        vscodeT.setEditable(false);
+        vscodeT.setColumns(28);
+        etextP.add(vscodeT);
 
         jPanel6.add(etextP, java.awt.BorderLayout.CENTER);
 
         ebuttonP.setOpaque(false);
         ebuttonP.setLayout(new java.awt.GridLayout(0, 1));
+
+        intellijB.setText("Locate");
+        intellijB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                intellijBActionPerformed(evt);
+            }
+        });
+        ebuttonP.add(intellijB);
 
         netbeansB.setText("Locate");
         netbeansB.addActionListener(new java.awt.event.ActionListener() {
@@ -293,13 +310,13 @@ public class Config extends HiResDialog {
         });
         ebuttonP.add(netbeansB);
 
-        intellijB.setText("Locate");
-        intellijB.addActionListener(new java.awt.event.ActionListener() {
+        vscodeB.setText("Locate");
+        vscodeB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                intellijBActionPerformed(evt);
+                vscodeBActionPerformed(evt);
             }
         });
-        ebuttonP.add(intellijB);
+        ebuttonP.add(vscodeB);
 
         jPanel6.add(ebuttonP, java.awt.BorderLayout.EAST);
 
@@ -572,6 +589,17 @@ public class Config extends HiResDialog {
         ((CardLayout) contentP.getLayout()).show(contentP, evt.getActionCommand());
     }//GEN-LAST:event_selectCard
 
+    private void vscodeBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vscodeBActionPerformed
+        JWizard wiz = new JWizard("Visual Studio Code");
+        wiz.setCallback((String fname) -> {
+            if (fname != null) {
+                Prefs.setVSCodeLocation(fname);
+                vscodeT.setText(fname);
+            }
+        });
+        wiz.fire(VSCode, Prefs.getVSCodeLocation());
+    }//GEN-LAST:event_vscodeBActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton androidB;
     private javax.swing.JLabel androidL;
@@ -601,5 +629,8 @@ public class Config extends HiResDialog {
     private javax.swing.JRadioButton systemB;
     private javax.swing.ButtonGroup themeGroup;
     private javax.swing.JPanel topP;
+    private javax.swing.JButton vscodeB;
+    private javax.swing.JLabel vscodeL;
+    private javax.swing.JTextField vscodeT;
     // End of variables declaration//GEN-END:variables
 }

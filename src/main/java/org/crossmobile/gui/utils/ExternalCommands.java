@@ -10,7 +10,6 @@ import org.crossmobile.gui.actives.ActiveTextPane;
 import org.crossmobile.gui.project.Project;
 import org.crossmobile.gui.project.ProjectLauncher;
 import org.crossmobile.prefs.Prefs;
-import org.crossmobile.utils.ParamsCommon;
 
 import java.io.File;
 import java.util.function.Consumer;
@@ -31,6 +30,10 @@ public class ExternalCommands {
             case OPEN_INTELLIJ:
                 args = new String[]{Prefs.getIntelliJLocation(),
                         proj.getPom().getAbsolutePath()};
+                break;
+            case OPEN_VSCODE:
+                args = new String[]{Prefs.getVSCodeLocation(),
+                        proj.getPath().getAbsolutePath()};
                 break;
             case OPEN_STUDIO:
                 args = new String[]{Prefs.getAndroidStudioLocation(),

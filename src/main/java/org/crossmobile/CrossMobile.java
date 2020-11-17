@@ -150,6 +150,7 @@ public class CrossMobile {
                     Netbeans.makeRequest(initW::foundNetbeans),
                     JDK.makeRequest(initW::foundJDK),
                     IntelliJ.makeRequest(initW::foundIntelliJ),
+                    VSCode.makeRequest(initW::foundVSCode),
                     Studio.makeRequest(initW::foundStudio),
                     Android.makeRequest(initW::foundAndroid)
             );

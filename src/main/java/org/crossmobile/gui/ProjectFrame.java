@@ -75,6 +75,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private static final HiResIcon XCODE_D = XCODE_I.getDisabledIcon();
     private static final HiResIcon VSTUDIO_I = new ActiveIcon("images/vstudio");
     private static final HiResIcon VSTUDIO_D = VSTUDIO_I.getDisabledIcon();
+    private static final HiResIcon VSCODE_I = new ActiveIcon("images/vscodeExter");
+    private static final HiResIcon VSCODE_D = VSTUDIO_I.getDisabledIcon();
     private static final HiResIcon JAR_I = new ActiveIcon("images/jar");
     private static final HiResIcon APK_I = new ActiveIcon("images/apk");
     private static final HiResIcon PROJECT_I = new ActiveIcon("images/project");
@@ -132,7 +134,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         EnhancerManager.getDefault().updateFrameIconsWithImages(this, proj.getIconHound().getDeclaredImages());
         if (!SystemDependent.canMakeUwp())
             vstudioM.setVisible(false);
-        if (!SystemDependent.canMakeIos())
+        if (!SystemDependent.hasXcode())
             xcodeM.setVisible(false);
         rightPanel.add(leftButtonPanel, BorderLayout.NORTH);
         ButtonGroup group = new ButtonGroup();
@@ -579,6 +581,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         otherIDEs = new ActiveMenu();
         xcodeM = new ActiveMenuItem();
         vstudioM = new ActiveMenuItem();
+        vscodeM = new ActiveMenuItem();
         studioM = new ActiveMenuItem();
         packIM = new ActivePopupMenu();
         nosupportedIP = new ActiveMenuItem();
@@ -753,6 +756,17 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             }
         });
         otherIDEs.add(vstudioM);
+
+        vscodeM.setIcon(VSCODE_I);
+        vscodeM.setText("VS Code");
+        vscodeM.setActionCommand(OPEN_VSCODE);
+        vscodeM.setDisabledIcon(VSCODE_D);
+        vscodeM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openCommand(evt);
+            }
+        });
+        otherIDEs.add(vscodeM);
 
         studioM.setIcon(STUDIO_I);
         studioM.setText(" Android Studio");
@@ -1227,7 +1241,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
@@ -1311,7 +1325,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             intellijM.setEnabled(!Prefs.getIntelliJLocation().isEmpty());
             studioM.setEnabled(isProjectEnabled && !Prefs.getAndroidStudioLocation().isEmpty());
             vstudioM.setEnabled(isProjectEnabled && !Prefs.getVisualStudioLocation().isEmpty());
-            xcodeM.setEnabled(isProjectEnabled && SystemDependent.canMakeIos());
+            xcodeM.setEnabled(isProjectEnabled && SystemDependent.hasXcode());
             openM.show(openB, 0, openB.getHeight());
         }
     }//GEN-LAST:event_openBMousePressed
@@ -1518,6 +1532,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.ButtonGroup targetG;
     private javax.swing.JPanel targetP;
     private javax.swing.JToggleButton uwpT;
+    private javax.swing.JMenuItem vscodeM;
     private javax.swing.JMenuItem vstudioM;
     private javax.swing.JMenuItem win32I;
     private javax.swing.JMenuItem win32P;
