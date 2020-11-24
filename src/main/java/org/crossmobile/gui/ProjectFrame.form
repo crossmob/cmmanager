@@ -212,26 +212,6 @@
                 <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
               </AuxValues>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="vstudioM">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="VSTUDIO_I" type="code"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value=" Visual Studio"/>
-                <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="OPEN_VSTUDIO" type="code"/>
-                </Property>
-                <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="VSTUDIO_D" type="code"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="openCommand"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
-              </AuxValues>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="vscodeM">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
@@ -243,6 +223,26 @@
                 </Property>
                 <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="VSCODE_D" type="code"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="openCommand"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
+              </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="vstudioM">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="VSTUDIO_I" type="code"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value=" Visual Studio"/>
+                <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="OPEN_VSTUDIO" type="code"/>
+                </Property>
+                <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="VSTUDIO_D" type="code"/>
                 </Property>
               </Properties>
               <Events>
