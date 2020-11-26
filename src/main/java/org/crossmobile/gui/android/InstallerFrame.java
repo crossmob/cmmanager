@@ -15,6 +15,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public final class InstallerFrame extends JDialog {
+    private static final String Java11MissingModuleSignature = "java.lang.ClassNotFoundException: javax.xml.bind.annotation.XmlSchema";
+    private static boolean showReminder = true;
 
     private boolean cancelHasBeenPressed = false;
     private boolean stillRunning = true;
@@ -96,12 +98,15 @@ public final class InstallerFrame extends JDialog {
 
     private void cancelBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBActionPerformed
         if (stillRunning) {
+            showReminder = false;
             cancelHasBeenPressed = true;
             if (installer != null)
                 installer.sendCancel();
-        } else
-            SwingUtilities.invokeLater(() ->
-                    JOptionPane.showMessageDialog(null, "Please remember to rerun the build procedure", "Android License Agreement", JOptionPane.WARNING_MESSAGE));
+        }
+        SwingUtilities.invokeLater(() -> {
+            if (showReminder)
+                JOptionPane.showMessageDialog(null, "Please remember to rerun the build procedure", "Android License Agreement", JOptionPane.WARNING_MESSAGE);
+        });
         setVisible(false);
     }//GEN-LAST:event_cancelBActionPerformed
 
@@ -137,15 +142,25 @@ public final class InstallerFrame extends JDialog {
     }
 
     void addChar(Character c) {
-        ((ActiveTextPane) areaT).addChar(c, StreamQuality.BASIC);
+        if (stillRunning) {
+            ((ActiveTextPane) areaT).addChar(c, StreamQuality.BASIC);
+            if (areaT.getText().startsWith("Exception in thread") && areaT.getText().contains(Java11MissingModuleSignature)) {
+                finish();
+                cancelB.setText("Cancel");
+                showReminder = false;
+                areaT.setText("Current SDK Manager tool for the Android platform requires Java version 8.\n\nTo use JDK versions 9 and later, you need to upgrade to latest Android Tools. Otherwise you need to select JDK version 8 for accepting the license.\n\nAfter accepting the license it is possible to upgrade the JDK version again.\n");
+            }
+        }
     }
 
     public void finish() {
-        stillRunning = false;
-        cancelB.setText("Finish");
-        cancelB.setEnabled(true);
-        installer = null;
-        yesB.setVisible(false);
+        if (stillRunning) {
+            stillRunning = false;
+            cancelB.setText("Finish");
+            cancelB.setEnabled(true);
+            installer = null;
+            yesB.setVisible(false);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

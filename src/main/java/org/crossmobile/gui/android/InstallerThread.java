@@ -9,47 +9,45 @@ package org.crossmobile.gui.android;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.Commander;
 
+import java.util.Collection;
+import java.util.function.Consumer;
+
 public class InstallerThread extends Thread {
 
     private static final String[] yesSignatures = {"N/y", "y/N"};
 
-    private final int yesIndices[] = new int[yesSignatures.length];
+    private final int[] yesIndices = new int[yesSignatures.length];
     private final InstallerFrame installer;
-
-    private Commander cmdAll;
-    private Commander current;
+    private Commander cmd;
 
     public InstallerThread(InstallerFrame installer) {
         super("Android SDK License Agreement thread");
         this.installer = installer;
-        cmdAll = new Commander(Prefs.getAndroidSDKManagerLocation(), "--sdk_root=" + Prefs.getAndroidSDKLocation(), "--licenses");
-        cmdAll.appendEnvironmentalParameter("JAVA_HOME", Prefs.getJDKLocation());
     }
 
     @Override
     public void run() {
-        runCmd(current = cmdAll);
+        Commander cmd = this.cmd = new Commander(Prefs.getAndroidSDKManagerLocation(), "--sdk_root=" + Prefs.getAndroidSDKLocation(), "--licenses");
+        cmd.appendEnvironmentalParameter("JAVA_HOME", Prefs.getJDKLocation());
+        cmd.setCharOutListener(this::incomingOutChar);
+        cmd.setCharErrListener(this::incomingErrChar);
+        cmd.exec();
+        cmd.waitFor();
         if (!installer.isCancelled())
             installer.finish();
     }
 
-    private void runCmd(Commander cmd) {
-        if (cmd != null) {
-            cmd.setCharOutListener(this::incomingOutChar);
-            cmd.setCharErrListener(this::incomingErrChar);
-            cmd.exec();
-            cmd.waitFor();
-        }
-    }
-
     public void sendYes() {
-        current.sendLine("y");
+        Commander cmd = this.cmd;
+        if (cmd != null)
+            cmd.sendLine("y");
     }
 
     public void sendCancel() {
-        cmdAll = null;
-        if (current != null)
-            current.kill();
+        Commander cmd = this.cmd;
+        if (cmd != null)
+            cmd.kill();
+        this.cmd = null;
     }
 
     private void incomingOutChar(Character c) {
