@@ -15,10 +15,9 @@ public class ActivePopupMenu extends JPopupMenu {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
+        super.paintComponent(g);
         g2d.setColor(Theme.current().areaPrimary);
         g2d.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
     }
-
 }

@@ -21,7 +21,7 @@ public class PermissionsAction {
 
     public static Collection<Permissions> findPermissions(final Project proj) {
         final LongProcFrame frame = new LongProcFrame("Recalculating dependencies",
-                "This procedure will need to <b>clean</b> the current project and rebuild it using a java-only target. If you want to go on press the <i>Continue</i> button.",
+                "This procedure will need to clean the current project and rebuild it using a java-only target. If you want to go on press the Continue button.",
                 "Calculate dependencies for plugins also", "Please wait while compiling project...");
         Collection<Permissions> permissions = new TreeSet<>();
 

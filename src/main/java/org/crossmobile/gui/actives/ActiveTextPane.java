@@ -59,7 +59,7 @@ public class ActiveTextPane extends HiResTextPane implements StreamListener, The
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public ActiveTextPane() {
         setOpaque(true);
-        ThemeNotifier.register(this);
+        ThemeManager.register(this);
         themeChanged(Theme.current() == Theme.dark());
     }
 
@@ -78,6 +78,11 @@ public class ActiveTextPane extends HiResTextPane implements StreamListener, The
             sman.addListener(this);
         }
         return sman;
+    }
+
+    @Override
+    public void setFont(Font font) {
+        super.setFont(font);
     }
 
     public void setText(CharSequence text, StreamQuality quality) {

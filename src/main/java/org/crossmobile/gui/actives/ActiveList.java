@@ -16,7 +16,7 @@ import java.util.Vector;
 public class ActiveList<D> extends JList<D> implements ThemeChanged {
     {
         setCellRenderer(new ActiveListCellRenderer());
-        ThemeNotifier.register(this);
+        ThemeManager.register(this);
         themeChanged(Theme.current() == Theme.dark());
     }
 

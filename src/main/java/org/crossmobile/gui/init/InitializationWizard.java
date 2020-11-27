@@ -84,8 +84,11 @@ public class InitializationWizard extends HiResDialog implements Active {
         subtitleL.setText(subtitle);
     }
 
-    public void setWelcomeInfo(String info) {
-        infoL.setText(info);
+    public void setWelcomeInfo(String info1, String info2, String info3, String info4) {
+        infoL1.setText(info1);
+        infoL2.setText(info2);
+        infoL3.setText(info3);
+        infoL4.setText(info4);
     }
 
     public void setRunning(boolean isWorking) {
@@ -231,7 +234,13 @@ public class InitializationWizard extends HiResDialog implements Active {
         subtitleL = new ActiveLabel();
         cards = new javax.swing.JPanel();
         welcomeP = new javax.swing.JPanel();
-        infoL = new ActiveLabel();
+        jPanel1 = new javax.swing.JPanel();
+        infoL1 = new ActiveLabel();
+        infoL2 = new ActiveLabel();
+        infoLSpace1 = new ActiveLabel();
+        infoL3 = new ActiveLabel();
+        infoLSpace2 = new ActiveLabel();
+        infoL4 = new ActiveLabel();
         externalsP = new javax.swing.JPanel();
         jPanel14 = new javax.swing.JPanel();
         jLabel1 = new ActiveLabel();
@@ -275,7 +284,7 @@ public class InitializationWizard extends HiResDialog implements Active {
 
         jPanel4.setLayout(new java.awt.BorderLayout());
 
-        titleL.setFont(titleL.getFont().deriveFont((float) 20));
+        titleL.setFont(titleL.getFont().deriveFont((float)20));
         titleL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         titleL.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 0, 16, 0));
         jPanel4.add(titleL, java.awt.BorderLayout.NORTH);
@@ -296,8 +305,30 @@ public class InitializationWizard extends HiResDialog implements Active {
         welcomeP.setOpaque(false);
         welcomeP.setLayout(new java.awt.BorderLayout());
 
-        infoL.setFont(infoL.getFont().deriveFont((infoL.getFont().getStyle() | java.awt.Font.ITALIC)));
-        welcomeP.add(infoL, java.awt.BorderLayout.NORTH);
+        jPanel1.setOpaque(false);
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
+
+        infoL1.setFont(infoL1.getFont().deriveFont((infoL1.getFont().getStyle() | java.awt.Font.ITALIC)));
+        jPanel1.add(infoL1);
+
+        infoL2.setFont(infoL2.getFont().deriveFont((infoL2.getFont().getStyle() | java.awt.Font.ITALIC)));
+        jPanel1.add(infoL2);
+
+        infoLSpace1.setFont(infoLSpace1.getFont().deriveFont((infoLSpace1.getFont().getStyle() | java.awt.Font.ITALIC)));
+        infoLSpace1.setText(" ");
+        jPanel1.add(infoLSpace1);
+
+        infoL3.setFont(infoL3.getFont().deriveFont((infoL3.getFont().getStyle() | java.awt.Font.ITALIC)));
+        jPanel1.add(infoL3);
+
+        infoLSpace2.setFont(infoLSpace2.getFont().deriveFont((infoLSpace2.getFont().getStyle() | java.awt.Font.ITALIC)));
+        infoLSpace2.setText(" ");
+        jPanel1.add(infoLSpace2);
+
+        infoL4.setFont(infoL4.getFont().deriveFont((infoL4.getFont().getStyle() | java.awt.Font.ITALIC)));
+        jPanel1.add(infoL4);
+
+        welcomeP.add(jPanel1, java.awt.BorderLayout.NORTH);
 
         cards.add(welcomeP, "Welcome");
 
@@ -555,12 +586,18 @@ public class InitializationWizard extends HiResDialog implements Active {
     private javax.swing.JPanel detailsButtonP;
     private javax.swing.JPopupMenu execsM;
     private javax.swing.JPanel externalsP;
-    private javax.swing.JLabel infoL;
+    private javax.swing.JLabel infoL1;
+    private javax.swing.JLabel infoL2;
+    private javax.swing.JLabel infoL3;
+    private javax.swing.JLabel infoL4;
+    private javax.swing.JLabel infoLSpace1;
+    private javax.swing.JLabel infoLSpace2;
     private javax.swing.JPanel infoP;
     private javax.swing.JButton intellijB;
     private javax.swing.JLabel intellijL;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;

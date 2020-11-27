@@ -6,6 +6,7 @@
 
 package org.crossmobile.gui.parameters.impl;
 
+import com.panayotis.hrgui.HiResFont;
 import org.crossmobile.gui.parameters.FreeTextParameter;
 import org.crossmobile.utils.ParamList;
 
@@ -20,8 +21,8 @@ public class InjectedInfoParameter extends FreeTextParameter {
     }
 
     @Override
-    protected Font getTextFont(Font font) {
-        return new Font("monospaced", Font.PLAIN, font.getSize());
+    protected HiResFont getTextFont(Font font) {
+        return new HiResFont("monospaced", Font.PLAIN, font.getSize());
     }
 
     @Override

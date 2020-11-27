@@ -8,10 +8,7 @@ package org.crossmobile.gui;
 
 import com.panayotis.appenh.AFileChooser;
 import com.panayotis.appenh.EnhancerManager;
-import com.panayotis.hrgui.HiResEmptyBorder;
-import com.panayotis.hrgui.HiResIcon;
-import com.panayotis.hrgui.HiResMatteBorder;
-import com.panayotis.hrgui.ScreenUtils;
+import com.panayotis.hrgui.*;
 import com.panayotis.jupidator.UpdatedApplication;
 import com.panayotis.jupidator.Updater;
 import org.crossmobile.bridge.system.BaseUtils;
@@ -138,7 +135,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
             return true;
         } catch (ProjectException ex) {
             if (alsoInformUser)
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error while opening project", JOptionPane.ERROR_MESSAGE);
+                new HiResOptions().parent(this).message(ex.getMessage()).title("Error while opening project").error().show();
         }
         return false;
     }
@@ -379,7 +376,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
             if (newProjectInfo.getProjectPath() != null)
                 ProjectLoader.showProject(ProjectInfo.create(newProjectInfo.getProjectPath().getAbsolutePath(), newProjectInfo), this);
         } catch (ProjectException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error while opening project", JOptionPane.ERROR_MESSAGE);
+            new HiResOptions().parent(this).message(ex.getMessage()).title("Error while opening project").error().show();
         }
     }//GEN-LAST:event_newProjectBActionPerformed
 
@@ -413,8 +410,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
     }//GEN-LAST:event_ProjectsLMouseClicked
 
     private void clearAllBActionPerformed(ActionEvent evt) {//GEN-FIRST:event_clearAllBActionPerformed
-        if (JOptionPane.showConfirmDialog(this, "Do you really want to clear all recent projects?", "Clear projects", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE)
-                == JOptionPane.OK_OPTION) {
+        if (new HiResOptions().parent(this).message("Do you really want to clear all recent projects?").title("Clear projects").buttons("Yes", "No").warning().show() == 0) {
             RecentsProjectManager.clearProjects();
             updateProjects(null);
         }

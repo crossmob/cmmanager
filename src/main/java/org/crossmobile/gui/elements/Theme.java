@@ -6,7 +6,8 @@
 
 package org.crossmobile.gui.elements;
 
-import org.crossmobile.gui.actives.ThemeNotifier;
+import com.panayotis.appenh.EnhancerManager;
+import org.crossmobile.gui.actives.ThemeManager;
 import org.crossmobile.prefs.Prefs;
 
 import java.awt.*;
@@ -106,7 +107,7 @@ public final class Theme {
     }
 
     private static void updateWindows() {
-        ThemeNotifier.notifyListeners(current().isDark);
+        ThemeManager.notifyListeners(current().isDark);
         Window[] windows = Window.getWindows();
         if (windows != null && windows.length > 0)
             for (Window w : windows)

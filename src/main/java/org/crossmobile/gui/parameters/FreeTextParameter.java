@@ -103,14 +103,14 @@ public abstract class FreeTextParameter extends ProjectParameter {
                 ActiveToggleButton visible = new ActiveToggleButton("", new ActiveIcon("images/show"));
                 int delta = (int) (6 * ScreenUtils.getGraphicsScale());
                 visible.setBorder(new EmptyBorder(delta, delta * 2 / 3, delta, delta * 2 / 3));
-                char c = ((ActivePasswordField) text.comp()).getEchoChar();
+                char c = ((ActivePasswordField) text).getEchoChar();
                 visible.addActionListener(evt -> ((HiResPasswordField) text.comp()).setEchoChar(visible.isSelected() ? '\0' : c));
                 ((ActivePanel) data).add(text.comp(), BorderLayout.CENTER);
                 ((ActivePanel) data).add(visible.comp(), BorderLayout.EAST);
                 break;
             case TEXTFIELD:
             default:
-                ((HiResPasswordField) text.comp()).setEchoChar('\0');
+                ((HiResPasswordField) text).setEchoChar('\0');
                 text.comp().setPreferredSize(new Dimension(10, (int) (28 * ScreenUtils.getGraphicsScale())));
                 break;
         }
@@ -129,12 +129,12 @@ public abstract class FreeTextParameter extends ProjectParameter {
             });
         text.comp().setEditable(editable);
         text.comp().setToolTipText(tooltip);
-        text.comp().setFont(getTextFont(text.comp().getFont()));
+        text.setFont(getTextFont(text.getFont()));
         return data;
     }
 
-    protected Font getTextFont(Font font) {
-        return font;
+    protected HiResFont getTextFont(Font font) {
+        return font instanceof HiResFont? (HiResFont) font :new HiResFont(font);
     }
 
     public enum Type {

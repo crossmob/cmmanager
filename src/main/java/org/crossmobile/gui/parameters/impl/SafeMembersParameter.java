@@ -24,9 +24,9 @@ public class SafeMembersParameter extends BooleanParameter {
 
     @Override
     protected String tooltipForStatus(Boolean status) {
-        return "<html>When enabled, full java inheritance on member variables is supported.<br/>" +
-                "If safe references are disabled, then the generated iOS code is faster,<br/>" +
-                "but inherited objects could not have members with the same name as<br/>" +
+        return "When enabled, full java inheritance on member variables is supported.\n" +
+                "If safe references are disabled, then the generated iOS code is faster,\n" +
+                "but inherited objects could not have members with the same name as\n" +
                 "in parent objects. ";
     }
 }

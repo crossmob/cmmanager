@@ -6,6 +6,7 @@
 
 package org.crossmobile.gui.actives;
 
+import com.panayotis.hrgui.HiResIcon;
 import com.panayotis.hrgui.HiResRadioButton;
 import org.crossmobile.gui.elements.Theme;
 
@@ -22,7 +23,7 @@ public class ActiveRadioButton extends HiResRadioButton {
     public ActiveRadioButton() {
     }
 
-    public ActiveRadioButton(Icon icon) {
+    public ActiveRadioButton(HiResIcon icon) {
         super(icon);
     }
 
@@ -30,7 +31,7 @@ public class ActiveRadioButton extends HiResRadioButton {
         super(a);
     }
 
-    public ActiveRadioButton(Icon icon, boolean selected) {
+    public ActiveRadioButton(HiResIcon icon, boolean selected) {
         super(icon, selected);
     }
 
@@ -42,11 +43,11 @@ public class ActiveRadioButton extends HiResRadioButton {
         super(text, selected);
     }
 
-    public ActiveRadioButton(String text, Icon icon) {
+    public ActiveRadioButton(String text, HiResIcon icon) {
         super(text, icon);
     }
 
-    public ActiveRadioButton(String text, Icon icon, boolean selected) {
+    public ActiveRadioButton(String text, HiResIcon icon, boolean selected) {
         super(text, icon, selected);
     }
 
@@ -63,5 +64,4 @@ public class ActiveRadioButton extends HiResRadioButton {
     public Color getForeground() {
         return Theme.current().text;
     }
-
 }

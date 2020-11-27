@@ -349,10 +349,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             try (Writer writer = new OutputStreamWriter(new FileOutputStream(outfile), SystemDependent.getEncoding())) {
                 writer.write(outputTxt.getText());
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this,
-                        "Something went terribly wrong. :(  \n",
-                        "Save Error",
-                        JOptionPane.ERROR_MESSAGE);
+                new HiResOptions().message("Something went terribly wrong. :(  \n").title("Save Error").error().show();
             }
         }
     }
@@ -1242,7 +1239,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
@@ -1273,13 +1270,11 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             try {
                 name = proj.getProperty(DISPLAY_NAME);
                 if (proj != null) {
-                    if (!proj.isSaved() && JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, "Project " + name + " is not saved.\nDo you want to save it before proceeding?",
-                            name + " Project",
-                            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE))
+                    if (!proj.isSaved() && new HiResOptions().parent(this).message("Project " + name + " is not saved.\nDo you want to save it before proceeding?").buttons("Yes", "No").title(name + " Project").show() == 0)
                         try {
                             proj.save();
                         } catch (ProjectException ex) {
-                            JOptionPane.showMessageDialog(this, ex.getMessage(), "Project " + name + " error", JOptionPane.ERROR_MESSAGE);
+                            new HiResOptions().parent(this).message(ex.getMessage()).title("Project " + name + " error").error().show();
                         }
                     Opt.of(launch).ifExists(Commander::kill);
                     Opt.of(closeCallback).ifExists(c -> c.accept(proj));

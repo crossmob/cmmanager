@@ -17,7 +17,7 @@ public class ActiveIcon extends HiResIcon implements ThemeChanged {
     private final Image dark;
 
     {
-        ThemeNotifier.register(this);
+        ThemeManager.register(this);
     }
 
     public ActiveIcon(String resourceName) {

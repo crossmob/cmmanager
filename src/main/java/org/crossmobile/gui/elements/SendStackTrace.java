@@ -6,11 +6,9 @@
 
 package org.crossmobile.gui.elements;
 
+import com.panayotis.hrgui.HiResButton;
 import org.crossmobile.gui.ProjectFrame;
-import org.crossmobile.gui.actives.ActiveButton;
-import org.crossmobile.gui.actives.ActiveCheckBox;
-import org.crossmobile.gui.actives.ActivePanel;
-import org.crossmobile.gui.actives.ActiveTextArea;
+import org.crossmobile.gui.actives.*;
 
 public class SendStackTrace extends javax.swing.JDialog {
 
@@ -43,18 +41,18 @@ public class SendStackTrace extends javax.swing.JDialog {
 
         backgroundP = new GradientPanel();
         actionP = new ActivePanel();
-        sendB = new javax.swing.JButton();
+        sendB = new HiResButton();
         componentP = new ActivePanel();
         sendInfoB = new ActiveCheckBox();
         outerrorP = new ActivePanel();
         outP = new ActivePanel();
-        jLabel1 = new javax.swing.JLabel();
+        jLabel1 = new ActiveLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         outA = new ActiveTextArea();
         userP = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        jLabel3 = new ActiveLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        userinfoA = new javax.swing.JTextArea();
+        userinfoA = new ActiveTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Send stack trace");

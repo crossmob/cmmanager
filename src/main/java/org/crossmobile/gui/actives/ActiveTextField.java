@@ -28,7 +28,7 @@ public class ActiveTextField extends HiResTextField implements ThemeChanged {
     public ActiveTextField(String text) {
         super(text);
         setOpaque(true);
-        ThemeNotifier.register(this);
+        ThemeManager.register(this);
         themeChanged(Theme.current() == Theme.dark());
     }
 

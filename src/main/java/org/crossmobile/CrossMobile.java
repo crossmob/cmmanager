@@ -8,7 +8,7 @@ package org.crossmobile;
 
 import com.panayotis.appenh.Enhancer;
 import com.panayotis.appenh.EnhancerManager;
-import com.panayotis.hrgui.ScreenUtils;
+import com.panayotis.hrgui.HiResOptions;
 import com.panayotis.jupidator.Updater;
 import org.crossmobile.backend.desktop.ResourceResolver;
 import org.crossmobile.bridge.system.BaseUtils;
@@ -48,12 +48,12 @@ public class CrossMobile {
                     Log.register(new Log.Default() {
                         @Override
                         public void info(String message) {
-                            JOptionPane.showMessageDialog(null, message, "CrossMobile", JOptionPane.INFORMATION_MESSAGE);
+                            new HiResOptions().message(message).title("CrossMobile").show();
                         }
 
                         @Override
                         public void warning(String message) {
-                            JOptionPane.showMessageDialog(null, message, "CrossMobile", JOptionPane.WARNING_MESSAGE);
+                            new HiResOptions().message(message).title("CrossMobile").warning().show();
                         }
 
                         @Override
@@ -66,7 +66,7 @@ public class CrossMobile {
                                     if (message == null)
                                         message = th.toString();
                                 }
-                                JOptionPane.showMessageDialog(null, message, "CrossMobile", JOptionPane.ERROR_MESSAGE);
+                                new HiResOptions().message(message).title("CrossMobile").error().show();
                             }
                         }
                     });
@@ -81,7 +81,7 @@ public class CrossMobile {
                 else
                     showError(args);
             } catch (IllegalStateException | ProjectException ex) {
-                JOptionPane.showConfirmDialog(null, ex.getMessage(), "Initialization error", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+                new HiResOptions().message(ex.getMessage()).title("Initialization error").buttons("OK", "Cancel").error().show();
                 System.exit(-1);
             }
         });
@@ -89,7 +89,6 @@ public class CrossMobile {
 
     private static void initEnhancer() {
         Enhancer enhancer = EnhancerManager.getDefault();
-        enhancer.fixDPI();
         enhancer.setSafeLookAndFeel();
         enhancer.registerPreferences(Config::showConfig);
         enhancer.registerAbout(About::showAbout);
@@ -97,11 +96,10 @@ public class CrossMobile {
         enhancer.registerApplication("CrossMobile", "create native iOS, Android, Windows 10 and Desktop Applications from a singe code base", "Development", "Building", "IDE", "Java");
         Theme.setSystemTheme(enhancer.getThemeName());
         enhancer.registerThemeChanged(name -> SwingUtilities.invokeLater(() -> Theme.setSystemTheme(name)));
-        ScreenUtils.setShouldAdjust(false);
     }
 
     private static void postInit(WelcomeFrame frame) {
-        if (!Prefs.isWizardExecuted())
+        if (Prefs.isWizardExecuted())
             executeWizard(frame);
         else if (!isAndroidConfigured() && !isJDKconfigured())
             frame.setLink("Configure CrossMobile environment", () -> executeWizard(frame));
@@ -127,8 +125,10 @@ public class CrossMobile {
         InitializationWizard initW = new InitializationWizard(frame);
         initW.setMainTitle("Welcome to CrossMobile");
         initW.setSubtitle("Before we begin, it is required to check your system for installed components");
-        initW.setWelcomeInfo("<html>When you click on \"Continue\" the wizard will try to find installations of required applications to run CrossMobile.<br/>" +
-                "These applications are Java JDK, Android SDK, IntelliJ, Android Studio, and Netbeans.<br/>&nbsp;<br/>Please press \"Continue\" to start searching for these applications.</html>");
+        initW.setWelcomeInfo("When you click on \"Continue\" the wizard will try to find installations of",
+                "required applications to run CrossMobile",
+                "These applications are Java JDK, Android SDK, IntelliJ, Android Studio, and Netbeans.",
+                "Please press \"Continue\" to start searching for these applications.");
         Runnable skip = () -> {
             initW.setActive(false);
             if (initW.isVisible())

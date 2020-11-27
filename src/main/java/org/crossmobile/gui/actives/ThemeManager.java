@@ -10,7 +10,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class ThemeNotifier {
+public class ThemeManager {
 
     private static final HashSet<WeakReference<ThemeChanged>> listeners = new HashSet<>();
 

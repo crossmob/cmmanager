@@ -8,6 +8,7 @@ package org.crossmobile.gui.elements;
 
 import com.panayotis.appenh.AFileChooser;
 import com.panayotis.appenh.Enhancer;
+import com.panayotis.hrgui.HiResOptions;
 import org.crossmobile.prefs.Prefs;
 
 import javax.swing.*;
@@ -33,7 +34,7 @@ public class KeystoreManager {
 
     public static boolean isKeystoreFile(File file) {
         if (getKeystore(file) == null) {
-            JOptionPane.showMessageDialog(null, "File " + file.getAbsolutePath() + " is not a valid Java Keystore", "Error while parsing keystore file", JOptionPane.ERROR_MESSAGE);
+            new HiResOptions().message("File " + file.getAbsolutePath() + " is not a valid Java Keystore").title( "Error while parsing keystore file").error().show();
             return false;
         } else
             return true;

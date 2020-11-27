@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class VersionDocumentFilter extends DocumentFilter {
 
     private static final int MAX_PARTS = 4;
-    public static final String TOOLTIP = "<html>The version format is m[.n[.n[.n]]] where 0=&lt;m&lt;=127 and 0=&lt;n&lt;=255<br/>Note that in a 3-part or 4-part version, the last part will be used as the release number.</html>";
+    public static final String TOOLTIP = "The version format is m[.n[.n[.n]]] where 0=<m<=127 and 0=<n<=255\nNote that in a 3-part or 4-part version, the last part will be used as the release number.";
     public static final Pattern PATTERN = Pattern.compile("[0-9]?[.0-9]*");
 
     @Override

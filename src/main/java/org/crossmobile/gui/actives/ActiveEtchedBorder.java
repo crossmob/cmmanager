@@ -14,7 +14,7 @@ import java.awt.*;
 public class ActiveEtchedBorder extends EtchedBorder implements ThemeChanged {
 
     {
-        ThemeNotifier.register(this);
+        ThemeManager.register(this);
         themeChanged(Theme.current() == Theme.dark());
     }
 

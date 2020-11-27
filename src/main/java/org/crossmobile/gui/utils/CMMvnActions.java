@@ -6,6 +6,7 @@
 
 package org.crossmobile.gui.utils;
 
+import com.panayotis.hrgui.HiResOptions;
 import org.crossmobile.Version;
 import org.crossmobile.gui.actives.ActiveTextPane;
 import org.crossmobile.gui.android.InstallerFrame;
@@ -100,56 +101,54 @@ public class CMMvnActions {
             if (line.contains("platforms;android-"))
                 foundOldVersion.set(true);
             if (line.contains("sun.security.provider.certpath.SunCertPathBuilderException"))
-                solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null, "A Certification exception was found\n\n"
-                                + "You might need to upgrade your JDK 8 version beyond " + Config.MIN_JAVA_VERSION_FULL + ",\n"
-                                + "or else Maven resolving issues will occur.",
-                        "Error while executing Java target", JOptionPane.ERROR_MESSAGE));
+                solutionCallbackRef.set(() -> new HiResOptions().message("A Certification exception was found\n\n"
+                        + "You might need to upgrade your JDK 8 version beyond " + Config.MIN_JAVA_VERSION_FULL + ",\n"
+                        + "or else Maven resolving issues will occur.").
+                        title("Error while executing Java target").error().show());
             else if (line.contains("accept the SDK license agreements"))
                 solutionCallbackRef.set(() -> {
                     if (foundOldVersion.get() && Prefs.isAndroidLicenseLocationValid()) {
-                        JOptionPane.showMessageDialog(null, "The Android License seems to be accepted,\nbut build tools refer to older versions.\n" +
-                                "\nIt might help to \"Clean Project files\" and try again.");
+                        new HiResOptions().message("The Android License seems to be accepted,\nbut build tools refer to older versions.\n" +
+                                "\nIt might help to \"Clean Project files\" and try again.").show();
                     } else {
                         String BaseText = "Android SDK license not accepted yet\n\n"
                                 + "In order to build Android projects, the Android SDK license\n"
                                 + "should be accepted.\n";
                         String Title = "Error while building Android project";
                         if (!FileUtils.isWritable(new File(Prefs.getAndroidSDKLocation()))) {
-                            JOptionPane.showMessageDialog(null, BaseText + "\nThe provided SDK location at:\n"
-                                            + Prefs.getAndroidSDKLocation() + "\nis not writable.\n\nPlease accept the license agreement and relaunch "
-                                            + "the build procedure.",
-                                    Title, JOptionPane.ERROR_MESSAGE);
+                            new HiResOptions().message(BaseText + "\nThe provided SDK location at:\n"
+                                    + Prefs.getAndroidSDKLocation() + "\nis not writable.\n\nPlease accept the license agreement and relaunch "
+                                    + "the build procedure.").
+                                    title(Title).error().show();
                         } else if (Prefs.getAndroidSDKManagerLocation().isEmpty()) {
-                            JOptionPane.showMessageDialog(null, BaseText + "\nUnable to locate the sdkmanager tool.\n\n" +
-                                            "Please use the Android Studio to accept the license agreement\nand then relauch the build procedure.",
-                                    Title, JOptionPane.ERROR_MESSAGE);
-                        } else if (JOptionPane.showConfirmDialog(null, BaseText
-                                        + "Do you want to accept the Android license now?\n\n"
-                                        + "Note that after accepting, you will need to relaunch\n"
-                                        + "the build procedure.",
-                                Title, JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE) == JOptionPane.YES_OPTION)
+                            new HiResOptions().message(BaseText + "\nUnable to locate the sdkmanager tool.\n\n" +
+                                    "Please use the Android Studio to accept the license agreement\nand then relauch the build procedure.").
+                                    title(Title).error().show();
+                        } else if (new HiResOptions().message(BaseText
+                                + "Do you want to accept the Android license now?\n\n"
+                                + "Note that after accepting, you will need to relaunch\n"
+                                + "the build procedure.").
+                                title(Title).buttons("Yes", "No").warning().show() == 0)
                             new InstallerFrame().launch();
                     }
                 });
             else if (line.contains("SDK location not found"))
-                solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null, "Android SDK location is required\n\n"
-                                + "Please rerun the initialization wizard first\nand define the Android SDK location.",
-                        "Error while locating Android SDK", JOptionPane.ERROR_MESSAGE));
+                solutionCallbackRef.set(() -> new HiResOptions().message("Android SDK location is required\n\n"
+                        + "Please rerun the initialization wizard first\nand define the Android SDK location.").
+                        title("Error while locating Android SDK").error().show());
             else if (line.contains("No value has been specified for property 'signingConfig"))
-                solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null, "No keystore passwords found\n\n"
-                                + "Please provide the Keystore/Alias password to sign the APK\nunder the Android preferences",
-                        "Error signing Android APK", JOptionPane.ERROR_MESSAGE));
+                solutionCallbackRef.set(() -> new HiResOptions().message("No keystore passwords found\n\n"
+                        + "Please provide the Keystore/Alias password to sign the APK\nunder the Android preferences").
+                        title("Error signing Android APK").error().show());
             else if (line.contains("[INSTALL_FAILED"))
-                solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null,
-                        line.substring(line.indexOf("[INSTALL_FAILED") + 1, line.length() - 1).replace(":", "\n"),
-                        "Error installing Android APK", JOptionPane.ERROR_MESSAGE));
+                solutionCallbackRef.set(() -> new HiResOptions().message(line.substring(line.indexOf("[INSTALL_FAILED") + 1, line.length() - 1).replace(":", "\n")).
+                        title("Error installing Android APK").error().show());
             else if (line.contains("xcode-select: error: tool 'xcodebuild' requires Xcode"))
-                solutionCallbackRef.set(() -> JOptionPane.showMessageDialog(null,
-                        "XCode tools not properly installed\n\n" +
-                                "You probably need to install and activate Command Line Tools,\n" +
-                                "or use xcode-select with a command similar to:\n" +
-                                "sudo xcode-select -s /Applications/Xcode.app/Contents/Developer",
-                        "Command Line Tools problem", JOptionPane.ERROR_MESSAGE));
+                solutionCallbackRef.set(() -> new HiResOptions().message("XCode tools not properly installed\n\n" +
+                        "You probably need to install and activate Command Line Tools,\n" +
+                        "or use xcode-select with a command similar to:\n" +
+                        "sudo xcode-select -s /Applications/Xcode.app/Contents/Developer").
+                        title("Command Line Tools problem").error().show());
 
             if (debugPort != null) {
                 if (line.startsWith("Listening for transport dt_socket at address: "))

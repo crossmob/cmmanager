@@ -6,14 +6,13 @@
 
 package org.crossmobile.gui.elements;
 
-import org.crossmobile.Version;
+import com.panayotis.hrgui.HiResButton;
 import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.actives.ActiveList;
 import org.crossmobile.gui.actives.ActivePanel;
 import org.crossmobile.gui.codehound.source.AndroidParser;
 import org.crossmobile.gui.utils.CMMvnActions.MavenExecInfo;
 import org.crossmobile.gui.utils.CMMvnActions.MavenExecutor;
-import org.crossmobile.prefs.MvnVersions;
 import org.crossmobile.prefs.MvnVersions.Unaar;
 import org.crossmobile.utils.Dependency;
 import org.crossmobile.utils.Pom;
@@ -23,7 +22,6 @@ import javax.swing.*;
 import java.io.File;
 import java.util.List;
 
-import static org.crossmobile.prefs.Config.CMPLUGIN_MAVEN_PLUGIN_SIGNATURE;
 import static org.crossmobile.utils.CollectionUtils.asList;
 
 public class LibraryEditor extends ActivePanel {
@@ -65,8 +63,8 @@ public class LibraryEditor extends ActivePanel {
         javax.swing.JPanel topP = new javax.swing.JPanel();
         javax.swing.JLabel titleL = new ActiveLabel();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
-        fetchB = new javax.swing.JButton();
-        javax.swing.JButton calculateB = new javax.swing.JButton();
+        fetchB = new HiResButton();
+        javax.swing.JButton calculateB = new HiResButton();
         javax.swing.JScrollPane scrollS = new javax.swing.JScrollPane();
         deplist = new ActiveList<>();
 

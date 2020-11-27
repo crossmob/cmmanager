@@ -6,6 +6,7 @@
 
 package org.crossmobile.gui;
 
+import com.panayotis.hrgui.HiResButton;
 import org.crossmobile.gui.actives.ActiveCheckBox;
 import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.elements.GradientPanel;
@@ -59,19 +60,19 @@ public class LongProcFrame extends JDialog implements VoidBlock1<String> {
         progressBar = new javax.swing.JProgressBar();
         toggleC = new ActiveCheckBox();
         buttonP = new javax.swing.JPanel();
-        cancelB = new javax.swing.JButton();
-        actionB = new javax.swing.JButton();
+        cancelB = new HiResButton();
+        actionB = new HiResButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setResizable(false);
 
         backgroundP.setLayout(new java.awt.BorderLayout());
 
-        mainP.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(12, 12, 8, 12));
+        mainP.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(12,12,8,12));
         mainP.setOpaque(false);
         mainP.setLayout(new java.awt.BorderLayout());
 
-        feedbackL.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(0, 0, 8, 0));
+        feedbackL.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(0,0,8,0));
         mainP.add(feedbackL, java.awt.BorderLayout.CENTER);
 
         jPanel1.setOpaque(false);
@@ -142,7 +143,7 @@ public class LongProcFrame extends JDialog implements VoidBlock1<String> {
     }
 
     private void updateText(String message) {
-        feedbackL.setText("<html>" + message + "</html>");
+        feedbackL.setText(message);
     }
 
     @Override

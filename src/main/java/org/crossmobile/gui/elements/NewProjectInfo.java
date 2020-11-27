@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.panayotis.appenh.AFileChooser.FileSelectionMode.DirectoriesOnly;
+import com.panayotis.hrgui.HiResLabel;
 import static org.crossmobile.gui.project.TemplateType.*;
 
 public final class NewProjectInfo extends HiResDialog {
@@ -136,25 +137,25 @@ public final class NewProjectInfo extends HiResDialog {
         javax.swing.JLabel infotemplateL = new ActiveLabel();
         javax.swing.JPanel jPanel3 = new ActivePanel();
         buttonR = new ActiveRadioButton();
-        javax.swing.JLabel buttonL = new javax.swing.JLabel();
+        javax.swing.JLabel buttonL = new ActiveLabel();
         singleR = new ActiveRadioButton();
-        javax.swing.JLabel singleL = new javax.swing.JLabel();
+        javax.swing.JLabel singleL = new ActiveLabel();
         navigationR = new ActiveRadioButton();
-        javax.swing.JLabel nagivationL = new javax.swing.JLabel();
+        javax.swing.JLabel nagivationL = new ActiveLabel();
         tableR = new ActiveRadioButton();
-        javax.swing.JLabel tableL = new javax.swing.JLabel();
+        javax.swing.JLabel tableL = new ActiveLabel();
         cameraR = new ActiveRadioButton();
-        javax.swing.JLabel cameraL = new javax.swing.JLabel();
+        javax.swing.JLabel cameraL = new ActiveLabel();
         mapR = new ActiveRadioButton();
-        javax.swing.JLabel mapL = new javax.swing.JLabel();
+        javax.swing.JLabel mapL = new ActiveLabel();
         i18nR = new ActiveRadioButton();
-        javax.swing.JLabel i18nL = new javax.swing.JLabel();
+        javax.swing.JLabel i18nL = new ActiveLabel();
         storyboardR = new ActiveRadioButton();
-        javax.swing.JLabel storyboardL = new javax.swing.JLabel();
+        javax.swing.JLabel storyboardL = new ActiveLabel();
         javax.swing.JPanel jPanel13 = new javax.swing.JPanel();
         javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
         pluginR = new ActiveRadioButton();
-        pluginL = new javax.swing.JLabel();
+        pluginL = new ActiveLabel();
         emptyR = new ActiveRadioButton();
         javax.swing.JPanel jPanel6 = new ActivePanel();
         createB = new HiResButton();
@@ -172,7 +173,7 @@ public final class NewProjectInfo extends HiResDialog {
         jPanel9.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 4, 0));
         jPanel9.setLayout(new java.awt.BorderLayout());
 
-        jLabel1.setText("<html>The location of the <b>parent</b> folder, where this project will be created");
+        jLabel1.setText("The location of the Parent folder, where this project will be created");
         jPanel9.add(jLabel1, java.awt.BorderLayout.NORTH);
 
         locationT.setEditable(false);

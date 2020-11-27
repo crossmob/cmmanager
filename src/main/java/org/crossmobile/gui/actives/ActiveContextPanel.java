@@ -41,7 +41,7 @@ public class ActiveContextPanel extends ActivePanel implements ThemeChanged {
     private Context ctx = Context.RUNNING;
 
     {
-        ThemeNotifier.register(this);
+        ThemeManager.register(this);
         themeChanged(Theme.current() == Theme.dark());
         setOpaque(true);
     }

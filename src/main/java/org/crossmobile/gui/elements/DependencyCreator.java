@@ -3,9 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
 package org.crossmobile.gui.elements;
 
+import com.panayotis.hrgui.HiResButton;
+import com.panayotis.hrgui.HiResComboBox;
+import com.panayotis.hrgui.HiResOptions;
 import org.crossmobile.gui.actives.ActiveButton;
 import org.crossmobile.gui.actives.ActiveIcon;
 import org.crossmobile.gui.actives.ActiveLabel;
@@ -22,6 +24,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import org.crossmobile.gui.actives.ActiveComboBox;
+import org.crossmobile.gui.actives.ActiveTextField;
 
 public final class DependencyCreator extends javax.swing.JFrame {
 
@@ -35,16 +39,18 @@ public final class DependencyCreator extends javax.swing.JFrame {
         List<Dependency> deplist = new ArrayList<>();
         Map<String, Collection<Dependency>> categories = theme ? PluginRegistry.getCategorizedSystemThemes() : PluginRegistry.getCategorizedSystemPlugins();
         for (String name : categories.keySet()) {
-            if (categories.size() != 1)
+            if (categories.size() != 1) {
                 deplist.add(getTitle(name));
+            }
             deplist.addAll(categories.get(name));
         }
 
         dependecyModel = new DefaultComboBoxModel<Dependency>(deplist.toArray(new Dependency[]{})) {
             @Override
             public void setSelectedItem(Object item) {
-                if (isTitle(item))
+                if (isTitle(item)) {
                     return;
+                }
                 super.setSelectedItem(item);
             }
         };
@@ -54,8 +60,9 @@ public final class DependencyCreator extends javax.swing.JFrame {
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 boolean isTitle = isTitle(value);
                 Component comp = super.getListCellRendererComponent(list, isTitle ? "    " + ((Dependency) value).artifactId : value, index, !isTitle && isSelected, !isTitle && cellHasFocus);
-                if (isTitle(value))
+                if (isTitle(value)) {
                     comp.setForeground(Color.gray);
+                }
                 return comp;
             }
         });
@@ -63,8 +70,9 @@ public final class DependencyCreator extends javax.swing.JFrame {
 
         this.dependencyCallback = dependency;
         enableGroup(true);
-        if (theme)
+        if (theme) {
             addB.setText("Set");
+        }
         typename = theme ? "Theme" : "Plugin";
         crossSelection.setText(crossSelection.getText() + typename);
         customSelection.setText(customSelection.getText() + typename);
@@ -105,19 +113,19 @@ public final class DependencyCreator extends javax.swing.JFrame {
         artifactL = new ActiveLabel();
         versionL = new ActiveLabel();
         customRightP = new javax.swing.JPanel();
-        group = new javax.swing.JTextField();
+        group = new ActiveTextField();
         jPanel1 = new javax.swing.JPanel();
         prefixArtifact = new ActiveLabel();
-        artifact = new javax.swing.JTextField();
-        version = new javax.swing.JTextField();
+        artifact = new ActiveTextField();
+        version = new ActiveTextField();
         crossGP = new javax.swing.JPanel();
         crossSelection = new ActiveRadioButton();
         crossP = new javax.swing.JPanel();
-        cmPlugin = new javax.swing.JComboBox<>(dependecyModel);
+        cmPlugin = new ActiveComboBox<>(dependecyModel);
         info = new ActiveButton();
         commandsP = new javax.swing.JPanel();
-        addB = new javax.swing.JButton();
-        cancelB = new javax.swing.JButton();
+        addB = new HiResButton();
+        cancelB = new HiResButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -243,7 +251,7 @@ public final class DependencyCreator extends javax.swing.JFrame {
             dependencyCallback.accept(dep);
             setVisible(false);
         } else
-            JOptionPane.showMessageDialog(this, "The provided plugin is not valid", "Error while adding plugin", JOptionPane.ERROR_MESSAGE);
+            new HiResOptions().parent(this).message("The provided plugin is not valid").title("Error while adding plugin").error().show();
     }//GEN-LAST:event_addBActionPerformed
 
     private void cancelBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBActionPerformed
@@ -275,14 +283,15 @@ public final class DependencyCreator extends javax.swing.JFrame {
         URI uri = url == null ? null : URI.create(url);
         if (uri != null) {
             String msg = description + "\n\nPlease click on `More info` for more information about usage and configuration of this plugin";
-            if (JOptionPane.YES_NO_OPTION == JOptionPane.showOptionDialog(parent, msg, type + " information", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"More info", "OK"}, "OK")) {
+            if (new HiResOptions().parent(parent).message(msg).title(type + " information").buttons("More info", "OK").show() == 0) {
                 try {
                     Desktop.getDesktop().browse(uri);
                 } catch (IOException ignore) {
                 }
             }
-        } else
-            JOptionPane.showMessageDialog(parent, description, type + " information", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            new HiResOptions().parent(parent).message(description).title(type + " information").show();
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

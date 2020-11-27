@@ -11,6 +11,7 @@ import org.crossmobile.gui.elements.Theme;
 
 import javax.swing.*;
 import javax.swing.text.Document;
+import java.awt.*;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
@@ -23,7 +24,7 @@ public class ActiveTextArea extends HiResTextArea implements ThemeChanged {
 
     {
         setTabSize(4);
-        ThemeNotifier.register(this);
+        ThemeManager.register(this);
         themeChanged(Theme.current() == Theme.dark());
     }
 

@@ -6,13 +6,14 @@
 
 package org.crossmobile.gui.actives;
 
+import com.panayotis.hrgui.HiResMenuItem;
 import org.crossmobile.gui.elements.Theme;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import java.awt.*;
 
-public class ActiveMenuItem extends JMenuItem {
+public class ActiveMenuItem extends HiResMenuItem {
 
     static final int DELTA = System.getProperty("os.name").toLowerCase().contains("mac") ? 0 : 10;
 

@@ -19,7 +19,31 @@ import java.util.Set;
 
 public abstract class ProjectParameter {
 
-    private static final HiResComponent NOT_INITIALIZED = () -> null;
+    private static final HiResComponent NOT_INITIALIZED = new HiResComponent() {
+        @Override
+        public Component comp() {
+            return null;
+        }
+
+        @Override
+        public void setFont(Font font) {
+        }
+
+        @Override
+        public Font getFont() {
+            return null;
+        }
+
+        @Override
+        public void setFontSuper(Font font) {
+
+        }
+
+        @Override
+        public Font getFontSuper() {
+            return null;
+        }
+    };
 
     protected final ParamList properties;
     private Set<ParameterListener> listeners;

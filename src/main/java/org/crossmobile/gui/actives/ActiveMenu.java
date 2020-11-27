@@ -6,6 +6,7 @@
 
 package org.crossmobile.gui.actives;
 
+import com.panayotis.hrgui.HiResMenu;
 import org.crossmobile.gui.elements.Theme;
 
 import javax.swing.*;
@@ -13,7 +14,7 @@ import javax.swing.border.CompoundBorder;
 import java.awt.*;
 import java.lang.reflect.Field;
 
-public class ActiveMenu extends JMenu {
+public class ActiveMenu extends HiResMenu {
 
     static final int DELTA = System.getProperty("os.name").toLowerCase().contains("mac") ? 0 : 10;
 

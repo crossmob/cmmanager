@@ -27,5 +27,4 @@ public class ActiveMenuSeparator extends JPopupMenu.Separator {
             g.drawLine(0, 1, getWidth(), 1);
         }
     }
-
 }

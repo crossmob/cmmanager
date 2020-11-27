@@ -33,11 +33,6 @@
         </dependency>
         <dependency>
             <groupId>com.panayotis</groupId>
-            <artifactId>appenh</artifactId>
-            <version>${version.appenh}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.panayotis</groupId>
             <artifactId>hrgui</artifactId>
             <version>${version.hrgui}</version>
         </dependency>

@@ -6,6 +6,8 @@
 
 package org.crossmobile.gui.android;
 
+import com.panayotis.hrgui.HiResButton;
+import com.panayotis.hrgui.HiResOptions;
 import org.crossmobile.gui.actives.ActiveTextPane;
 import org.crossmobile.gui.elements.GradientPanel;
 import org.crossmobile.gui.utils.StreamManager;
@@ -39,9 +41,9 @@ public final class InstallerFrame extends JDialog {
         areaT = new ActiveTextPane();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        yesB = new javax.swing.JButton();
+        yesB = new HiResButton();
         jPanel4 = new javax.swing.JPanel();
-        cancelB = new javax.swing.JButton();
+        cancelB = new HiResButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Android License Agreement");
@@ -55,7 +57,7 @@ public final class InstallerFrame extends JDialog {
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         areaT.setEditable(false);
-        areaT.setFont(areaT.getFont().deriveFont((float) 12));
+        areaT.setFont(areaT.getFont().deriveFont((float)12));
         jScrollPane1.setViewportView(areaT);
 
         jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -105,7 +107,7 @@ public final class InstallerFrame extends JDialog {
         }
         SwingUtilities.invokeLater(() -> {
             if (showReminder)
-                JOptionPane.showMessageDialog(null, "Please remember to rerun the build procedure", "Android License Agreement", JOptionPane.WARNING_MESSAGE);
+                new HiResOptions().message("Please remember to rerun the build procedure").title( "Android License Agreement").warning().show();
         });
         setVisible(false);
     }//GEN-LAST:event_cancelBActionPerformed

@@ -11,6 +11,8 @@ import org.crossmobile.gui.elements.Theme;
 
 import javax.swing.*;
 
+import java.awt.*;
+
 import static org.crossmobile.gui.actives.ActiveTextField.updateTheme;
 
 public class ActivePasswordField extends HiResPasswordField implements ThemeChanged {
@@ -25,7 +27,7 @@ public class ActivePasswordField extends HiResPasswordField implements ThemeChan
     public ActivePasswordField(String text) {
         super(text);
         setOpaque(true);
-        ThemeNotifier.register(this);
+        ThemeManager.register(this);
         themeChanged(Theme.current() == Theme.dark());
     }
 

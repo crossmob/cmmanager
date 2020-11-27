@@ -13,9 +13,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class ActiveLink extends ActiveLabel implements ThemeChanged {
+public class ActiveLink extends ActiveLabel {
 
-    private String link;
     private Runnable action;
     private boolean multiRun = false;
 
@@ -34,7 +33,6 @@ public class ActiveLink extends ActiveLabel implements ThemeChanged {
         });
         setOpaque(false);
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        ThemeNotifier.register(this);
         setText("");
     }
 
@@ -61,12 +59,6 @@ public class ActiveLink extends ActiveLabel implements ThemeChanged {
     public ActiveLink() {
     }
 
-    @Override
-    public void setText(String text) {
-        link = text == null || text.trim().isEmpty() ? "" : text;
-        super.setText("<HTML>&nbsp;<U>" + link + "</U></HTML>");
-    }
-
     public void setAction(Runnable action) {
         this.action = action;
     }
@@ -78,12 +70,5 @@ public class ActiveLink extends ActiveLabel implements ThemeChanged {
     @Override
     public Color getForeground() {
         return Theme.current().text;
-    }
-
-    @Override
-    public void themeChanged(boolean dark) {
-        String old = link;
-        setText("");
-        setText(old);
     }
 }

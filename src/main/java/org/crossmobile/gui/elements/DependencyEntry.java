@@ -47,7 +47,7 @@ public class DependencyEntry extends JPanel implements Comparable<DependencyEntr
                 }
             };
             if (param.context == XcodeTarget)
-                pparam.setTooltip("<html>In case a target is required, please provide the target name here.<br/>Otherwise no target will be created.");
+                pparam.setTooltip("In case a target is required, please provide the target name here.\nOtherwise no target will be created.");
             paramP.add(pparam.getVisuals().comp());
             visualParams.add(pparam.getIndentedComponent().comp());
             parammap.put(param, pparam);
