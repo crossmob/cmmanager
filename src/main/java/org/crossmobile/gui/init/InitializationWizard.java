@@ -58,10 +58,12 @@ public class InitializationWizard extends HiResDialog implements Active {
         netbeansL.setIcon(new HiResIcon("images/wait", false));
         androidL.setIcon(new HiResIcon("images/wait", false));
         studioL.setIcon(new HiResIcon("images/wait", false));
+        vscodeL.setIcon(new HiResIcon("images/wait", false));
         intellijL.setIcon(new HiResIcon("images/wait", false));
         jdkB.setVisible(false);
         androidB.setVisible(false);
         netbeansB.setVisible(false);
+        vscodeB.setVisible(false);
         intellijB.setVisible(false);
         studioB.setVisible(false);
         ((ActiveLabel) titleL).setIcon("images/logo-small", false);
@@ -84,11 +86,12 @@ public class InitializationWizard extends HiResDialog implements Active {
         subtitleL.setText(subtitle);
     }
 
-    public void setWelcomeInfo(String info1, String info2, String info3, String info4) {
+    public void setWelcomeInfo(String info1, String info2, String info3, String info4, String info5) {
         infoL1.setText(info1);
         infoL2.setText(info2);
         infoL3.setText(info3);
         infoL4.setText(info4);
+        infoL5.setText(info5);
     }
 
     public void setRunning(boolean isWorking) {
@@ -239,8 +242,9 @@ public class InitializationWizard extends HiResDialog implements Active {
         infoL2 = new ActiveLabel();
         infoLSpace1 = new ActiveLabel();
         infoL3 = new ActiveLabel();
-        infoLSpace2 = new ActiveLabel();
         infoL4 = new ActiveLabel();
+        infoLSpace2 = new ActiveLabel();
+        infoL5 = new ActiveLabel();
         externalsP = new javax.swing.JPanel();
         jPanel14 = new javax.swing.JPanel();
         jLabel1 = new ActiveLabel();
@@ -321,12 +325,15 @@ public class InitializationWizard extends HiResDialog implements Active {
         infoL3.setFont(infoL3.getFont().deriveFont((infoL3.getFont().getStyle() | java.awt.Font.ITALIC)));
         jPanel1.add(infoL3);
 
+        infoL4.setFont(infoL4.getFont().deriveFont((infoL4.getFont().getStyle() | java.awt.Font.ITALIC)));
+        jPanel1.add(infoL4);
+
         infoLSpace2.setFont(infoLSpace2.getFont().deriveFont((infoLSpace2.getFont().getStyle() | java.awt.Font.ITALIC)));
         infoLSpace2.setText(" ");
         jPanel1.add(infoLSpace2);
 
-        infoL4.setFont(infoL4.getFont().deriveFont((infoL4.getFont().getStyle() | java.awt.Font.ITALIC)));
-        jPanel1.add(infoL4);
+        infoL5.setFont(infoL5.getFont().deriveFont((infoL5.getFont().getStyle() | java.awt.Font.ITALIC)));
+        jPanel1.add(infoL5);
 
         welcomeP.add(jPanel1, java.awt.BorderLayout.NORTH);
 
@@ -590,6 +597,7 @@ public class InitializationWizard extends HiResDialog implements Active {
     private javax.swing.JLabel infoL2;
     private javax.swing.JLabel infoL3;
     private javax.swing.JLabel infoL4;
+    private javax.swing.JLabel infoL5;
     private javax.swing.JLabel infoLSpace1;
     private javax.swing.JLabel infoLSpace2;
     private javax.swing.JPanel infoP;

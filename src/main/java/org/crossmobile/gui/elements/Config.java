@@ -106,6 +106,7 @@ public class Config extends HiResDialog {
             androidT.setText(Prefs.getAndroidSDKLocation());
             studioT.setText(Prefs.getAndroidStudioLocation());
             keyT.setText(Prefs.getAndroidKeyLocation());
+            vscodeT.setText(Prefs.getVSCodeLocation());
             refreshPlugins();
         }
         super.setVisible(visible);

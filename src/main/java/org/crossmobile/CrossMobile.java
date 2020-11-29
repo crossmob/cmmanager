@@ -42,6 +42,8 @@ public class CrossMobile {
 
     public static void main(final String[] args) {
         initEnhancer();
+        System.setProperty("awt.useSystemAAFontSettings","on");
+
         java.awt.EventQueue.invokeLater(() -> {
             try {
                 if (args == null || args.length == 0 || args[0].startsWith("-psn_")) {
@@ -125,10 +127,11 @@ public class CrossMobile {
         InitializationWizard initW = new InitializationWizard(frame);
         initW.setMainTitle("Welcome to CrossMobile");
         initW.setSubtitle("Before we begin, it is required to check your system for installed components");
-        initW.setWelcomeInfo("When you click on \"Continue\" the wizard will try to find installations of",
-                "required applications to run CrossMobile",
-                "These applications are Java JDK, Android SDK, IntelliJ, Android Studio, and Netbeans.",
-                "Please press \"Continue\" to start searching for these applications.");
+        initW.setWelcomeInfo("When you click on \"Continue\" the wizard will try to find installations of ",
+                "required applications to run CrossMobile ",
+                "These applications are Java JDK, Android SDK, IntelliJ IDEA, VS Code, ",
+                "Netbeans and Android Studio. ",
+                "Please press \"Continue\" to start searching for these applications. ");
         Runnable skip = () -> {
             initW.setActive(false);
             if (initW.isVisible())
