@@ -53,7 +53,7 @@ public final class Theme {
     static {
         bright = new Theme(0.49f, 0.57f, false);
         dark = new Theme(0.49f, 0.57f, true);
-        SystemDependent.initNiceFont();
+        SystemDependent.setUiFont("/fonts/DroidSans.ttf");
         switch (Prefs.getUserTheme()) {
             case "dark":
                 current = dark;
