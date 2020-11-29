@@ -65,11 +65,8 @@ public class ActiveTextPane extends HiResTextPane implements StreamListener, The
 
     @Override
     public void setToolTipText(String text) {
-        ttm.setToolTipText(text);
-    }
-
-    public void setToolTip(JToolTip toolTip) {
-        ttm.setToolTip(toolTip);
+        if (ttm != null)
+            ttm.setToolTipText(text);
     }
 
     public StreamManager getStreamManager() {

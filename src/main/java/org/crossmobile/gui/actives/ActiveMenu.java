@@ -15,6 +15,7 @@ import java.awt.*;
 import java.lang.reflect.Field;
 
 public class ActiveMenu extends HiResMenu {
+    private final TooltipManager ttm = new TooltipManager(this);
 
     static final int DELTA = System.getProperty("os.name").toLowerCase().contains("mac") ? 0 : 10;
 
@@ -43,5 +44,11 @@ public class ActiveMenu extends HiResMenu {
     @Override
     public Color getBackground() {
         return Theme.current().areaPrimary;
+    }
+
+    @Override
+    public void setToolTipText(String text) {
+        if (ttm != null)
+            ttm.setToolTipText(text);
     }
 }

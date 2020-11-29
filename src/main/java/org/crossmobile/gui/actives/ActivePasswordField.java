@@ -9,10 +9,6 @@ package org.crossmobile.gui.actives;
 import com.panayotis.hrgui.HiResPasswordField;
 import org.crossmobile.gui.elements.Theme;
 
-import javax.swing.*;
-
-import java.awt.*;
-
 import static org.crossmobile.gui.actives.ActiveTextField.updateTheme;
 
 public class ActivePasswordField extends HiResPasswordField implements ThemeChanged {
@@ -33,11 +29,8 @@ public class ActivePasswordField extends HiResPasswordField implements ThemeChan
 
     @Override
     public void setToolTipText(String text) {
-        ttm.setToolTipText(text);
-    }
-
-    public void setToolTip(JToolTip toolTip) {
-        ttm.setToolTip(toolTip);
+        if (ttm != null)
+            ttm.setToolTipText(text);
     }
 
     @Override

@@ -9,7 +9,10 @@ package org.crossmobile.gui.init;
 import com.panayotis.hrgui.HiResButton;
 import com.panayotis.hrgui.HiResDialog;
 import com.panayotis.hrgui.HiResIcon;
+import com.panayotis.hrgui.HiResMenuItem;
 import org.crossmobile.gui.actives.ActiveLabel;
+import org.crossmobile.gui.actives.ActiveMenuItem;
+import org.crossmobile.gui.actives.ActivePopupMenu;
 import org.crossmobile.gui.actives.ActiveTextPane;
 import org.crossmobile.gui.elements.GradientPanel;
 import org.crossmobile.gui.elements.JWait;
@@ -190,7 +193,7 @@ public class InitializationWizard extends HiResDialog implements Active {
     private void popupDisplay(JButton parent, AtomicReference<File> fixedRef, Collection<File> execs) {
         execsM.removeAll();
         for (File f : execs) {
-            JMenuItem m = new JMenuItem(f.getAbsolutePath());
+            JMenuItem m = new ActiveMenuItem(f.getAbsolutePath());
             m.setActionCommand(f.getAbsolutePath());
             m.addActionListener(e -> {
                 fixedRef.set(f);
@@ -229,7 +232,7 @@ public class InitializationWizard extends HiResDialog implements Active {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        execsM = new javax.swing.JPopupMenu();
+        execsM = new ActivePopupMenu();
         jPanel4 = new GradientPanel();
         titleL = new ActiveLabel();
         mainP = new javax.swing.JPanel();

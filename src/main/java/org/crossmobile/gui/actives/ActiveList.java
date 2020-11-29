@@ -14,6 +14,8 @@ import java.awt.*;
 import java.util.Vector;
 
 public class ActiveList<D> extends JList<D> implements ThemeChanged {
+    private final TooltipManager ttm = new TooltipManager(this);
+
     {
         setCellRenderer(new ActiveListCellRenderer());
         ThemeManager.register(this);
@@ -59,5 +61,11 @@ public class ActiveList<D> extends JList<D> implements ThemeChanged {
             renderer.setOpaque(true);
             return renderer;
         }
+    }
+
+    @Override
+    public void setToolTipText(String text) {
+        if (ttm != null)
+            ttm.setToolTipText(text);
     }
 }

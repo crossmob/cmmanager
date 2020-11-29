@@ -11,6 +11,8 @@ import com.panayotis.hrgui.HiResProgressBar;
 import javax.swing.*;
 
 public class ActiveProgressBar extends HiResProgressBar {
+    private final TooltipManager ttm = new TooltipManager(this);
+
     public ActiveProgressBar() {
     }
 
@@ -28,5 +30,11 @@ public class ActiveProgressBar extends HiResProgressBar {
 
     public ActiveProgressBar(BoundedRangeModel newModel) {
         super(newModel);
+    }
+
+    @Override
+    public void setToolTipText(String text) {
+        if (ttm != null)
+            ttm.setToolTipText(text);
     }
 }

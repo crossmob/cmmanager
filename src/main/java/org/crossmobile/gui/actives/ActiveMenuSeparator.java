@@ -13,7 +13,7 @@ import java.awt.*;
 
 public class ActiveMenuSeparator extends JPopupMenu.Separator {
 
-    private static boolean shouldDraw = System.getProperty("os.name").toLowerCase().contains("mac");
+    private static final boolean shouldDraw = System.getProperty("os.name").toLowerCase().contains("mac");
 
     {
         setPreferredSize(new Dimension(10, 2));

@@ -159,10 +159,10 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        itemPopUp = new JPopupMenu();
-        openM = new JMenuItem();
-        jSeparator1 = new Separator();
-        removeM = new JMenuItem();
+        itemPopUp = new ActivePopupMenu();
+        openM = new ActiveMenuItem();
+        jSeparator1 = new ActiveMenuSeparator();
+        removeM = new ActiveMenuItem();
         selectionB = new ButtonGroup();
         Background = new GradientPanel();
         jPanel3 = new JPanel();
@@ -181,8 +181,8 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         jLabel1 = new ActiveLabel();
         jPanel5 = new JPanel();
         jPanel7 = new JPanel();
-        newProjectB = new ActiveButton(20, 8);
-        openProjectB = new ActiveButton(20, 8);
+        newProjectB = new ActiveButton(20,8);
+        openProjectB = new ActiveButton(20,8);
         jPanel9 = new JPanel();
         settingsB = new ActiveButton();
         aboutB = new ActiveButton();
@@ -211,7 +211,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
 
         Background.setLayout(new BorderLayout());
 
-        jPanel3.setBorder(new HiResEmptyBorder(2, 2, 2, 24));
+        jPanel3.setBorder(new HiResEmptyBorder(2,2,2,24));
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new BorderLayout(0, 2));
 
@@ -223,7 +223,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         ProjectsSP.setMinimumSize(new Dimension(260, 400));
         ProjectsSP.setPreferredSize(ProjectsSP.getMinimumSize());
 
-        ProjectsL.setFont(ProjectsL.getFont().deriveFont(ProjectsL.getFont().getSize() + 1f));
+        ProjectsL.setFont(ProjectsL.getFont().deriveFont(ProjectsL.getFont().getSize()+1f));
         ProjectsL.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 ProjectsLMouseClicked(evt);
@@ -264,7 +264,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
 
         Background.add(jPanel3, BorderLayout.CENTER);
 
-        jPanel8.setBorder(new HiResEmptyBorder(16, 8, 8, 4));
+        jPanel8.setBorder(new HiResEmptyBorder(16,8,8,4));
         jPanel8.setOpaque(false);
         jPanel8.setLayout(new BorderLayout());
 
@@ -275,19 +275,19 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         jPanel1.setOpaque(false);
         jPanel1.setLayout(new GridLayout(0, 1));
 
-        jLabel3.setFont(jLabel3.getFont().deriveFont(jLabel3.getFont().getStyle() | Font.BOLD, jLabel3.getFont().getSize() + 15));
+        jLabel3.setFont(jLabel3.getFont().deriveFont(jLabel3.getFont().getStyle() | Font.BOLD, jLabel3.getFont().getSize()+15));
         jLabel3.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel3.setText("Welcome to");
         jPanel1.add(jLabel3);
 
-        jLabel4.setFont(jLabel4.getFont().deriveFont(jLabel4.getFont().getStyle() | Font.BOLD, jLabel4.getFont().getSize() + 15));
+        jLabel4.setFont(jLabel4.getFont().deriveFont(jLabel4.getFont().getStyle() | Font.BOLD, jLabel4.getFont().getSize()+15));
         jLabel4.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel4.setText("CrossMobile");
         jPanel1.add(jLabel4);
 
         jPanel4.add(jPanel1, BorderLayout.NORTH);
 
-        versionL.setFont(versionL.getFont().deriveFont((versionL.getFont().getStyle() | Font.ITALIC), versionL.getFont().getSize() - 1));
+        versionL.setFont(versionL.getFont().deriveFont((versionL.getFont().getStyle() | Font.ITALIC), versionL.getFont().getSize()-1));
         versionL.setHorizontalAlignment(SwingConstants.CENTER);
         versionL.setText("release");
         versionL.addMouseListener(new MouseAdapter() {
@@ -301,7 +301,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
 
         jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel1.setIcon(new HiResIcon("images/logo", false));
-        jLabel1.setBorder(new HiResEmptyBorder(16, 0, 30, 0));
+        jLabel1.setBorder(new HiResEmptyBorder(16,0,30,0));
         jPanel8.add(jLabel1, BorderLayout.CENTER);
 
         jPanel5.setOpaque(false);

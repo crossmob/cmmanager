@@ -13,6 +13,7 @@ import org.crossmobile.gui.elements.Theme;
 import java.awt.*;
 
 public class ActiveLabel extends HiResLabel {
+    private final TooltipManager ttm = new TooltipManager(this);
 
     {
         setOpaque(false);
@@ -44,5 +45,11 @@ public class ActiveLabel extends HiResLabel {
     @Override
     public Color getForeground() {
         return Theme.current().text;
+    }
+
+    @Override
+    public void setToolTipText(String text) {
+        if (ttm != null)
+            ttm.setToolTipText(text);
     }
 }

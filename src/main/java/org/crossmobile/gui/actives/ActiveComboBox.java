@@ -39,11 +39,8 @@ public class ActiveComboBox<T> extends HiResComboBox<T> {
 
     @Override
     public void setToolTipText(String text) {
-        ttm.setToolTipText(text);
-    }
-
-    public void setToolTip(JToolTip toolTip) {
-        ttm.setToolTip(toolTip);
+        if (ttm != null)
+            ttm.setToolTipText(text);
     }
 
     @Override

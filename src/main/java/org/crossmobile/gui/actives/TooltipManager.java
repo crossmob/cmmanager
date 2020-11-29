@@ -15,7 +15,7 @@ class TooltipManager {
 
     private static final PopupFactory popupFactory = PopupFactory.getSharedInstance();
     private Popup popup;
-    private JToolTip toolTip;
+    private ActiveTooltip toolTip;
     private final JComponent parent;
 
     TooltipManager(JComponent parent) {
@@ -54,12 +54,12 @@ class TooltipManager {
             toolTip = null;
         else {
             if (toolTip == null)
-                toolTip = parent.createToolTip();
+                toolTip = new ActiveTooltip(parent);
             toolTip.setTipText(text);
         }
     }
 
-    void setToolTip(JToolTip toolTip) {
+    void setToolTip(ActiveTooltip toolTip) {
         this.toolTip = toolTip;
     }
 }

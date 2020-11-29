@@ -14,7 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class ActiveLink extends ActiveLabel {
-
+    private final TooltipManager ttm = new TooltipManager(this);
     private Runnable action;
     private boolean multiRun = false;
 
@@ -70,5 +70,18 @@ public class ActiveLink extends ActiveLabel {
     @Override
     public Color getForeground() {
         return Theme.current().text;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        FontMetrics metrics = getFontMetrics(getFont());
+        g.drawLine(0, metrics.getAscent() + 1, metrics.stringWidth(getText()), metrics.getAscent() + 1);
+    }
+
+    @Override
+    public void setToolTipText(String text) {
+        if (ttm != null)
+            ttm.setToolTipText(text);
     }
 }

@@ -18,7 +18,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class ActiveToggleButton extends HiResToggleButton {
-
     private final TooltipManager ttm = new TooltipManager(this);
 
     private boolean isPressed = false;
@@ -81,11 +80,8 @@ public class ActiveToggleButton extends HiResToggleButton {
 
     @Override
     public void setToolTipText(String text) {
-        ttm.setToolTipText(text);
-    }
-
-    public void setToolTip(JToolTip toolTip) {
-        ttm.setToolTip(toolTip);
+        if (ttm != null)
+            ttm.setToolTipText(text);
     }
 
     @Override

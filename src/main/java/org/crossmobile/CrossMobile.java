@@ -101,7 +101,7 @@ public class CrossMobile {
     }
 
     private static void postInit(WelcomeFrame frame) {
-        if (Prefs.isWizardExecuted())
+        if (!Prefs.isWizardExecuted())
             executeWizard(frame);
         else if (!isAndroidConfigured() && !isJDKconfigured())
             frame.setLink("Configure CrossMobile environment", () -> executeWizard(frame));

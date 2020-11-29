@@ -3,6 +3,9 @@
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
     <Container class="javax.swing.JPopupMenu" name="itemPopUp">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActivePopupMenu()"/>
+      </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
         <Property name="useNullLayout" type="boolean" value="true"/>
@@ -15,8 +18,14 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="openMActionPerformed"/>
           </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
+          </AuxValues>
         </MenuItem>
         <Component class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuSeparator()"/>
+          </AuxValues>
         </Component>
         <MenuItem class="javax.swing.JMenuItem" name="removeM">
           <Properties>
@@ -25,6 +34,9 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeMActionPerformed"/>
           </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveMenuItem()"/>
+          </AuxValues>
         </MenuItem>
       </SubComponents>
     </Container>

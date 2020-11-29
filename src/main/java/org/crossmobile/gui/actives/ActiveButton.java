@@ -10,7 +10,6 @@ import com.panayotis.hrgui.HiResButton;
 import com.panayotis.hrgui.HiResEmptyBorder;
 import org.crossmobile.gui.elements.Theme;
 
-import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -53,11 +52,8 @@ public class ActiveButton extends HiResButton {
 
     @Override
     public void setToolTipText(String text) {
-        ttm.setToolTipText(text);
-    }
-
-    public void setToolTip(JToolTip toolTip) {
-        ttm.setToolTip(toolTip);
+        if (ttm != null)
+            ttm.setToolTipText(text);
     }
 
     @Override
