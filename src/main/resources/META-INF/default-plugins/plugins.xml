@@ -65,7 +65,7 @@
         <version>3.4.0</version>
         <name>Notifications Framework</name>
         <description>CrossMobile© Compatibility library for UserNotifications Framework</description>
-        <url>https://crossmobile.tech/usernotifications/</url>
+        <url>https://crossmobile.org/developer/plugins/notifications/</url>
         <param>
             <property>target</property>
             <description>Client target</description>
