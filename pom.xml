@@ -148,8 +148,6 @@
                                       todir="${datadir}" failonerror="false"/>
                                 <copy file="../cmplugins/cmtheme-bright/target/classes/org/crossmobile/backend/plugins.xml"
                                       tofile="${datadir}/cmtheme-bright.xml" failonerror="false"/>
-                                <copy file="../cmplugins/cmtheme-styled/target/classes/org/crossmobile/backend/plugins.xml"
-                                      tofile="${datadir}/cmtheme-styled.xml" failonerror="false"/>
                             </target>
                         </configuration>
                     </execution>
