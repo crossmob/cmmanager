@@ -282,6 +282,7 @@
                                         <argument>--notarize=${app.notarize}</argument>
                                         <argument>--p12file=secret/code-signing.p12</argument>
                                         <argument>--gpgdir=${user.home}/.gnupg</argument>
+                                        <argument>--timestamp=http://timestamp.comodoca.com</argument>
                                         <argument>--os=${mac.dist},${win32.dist},${win64.dist},${linux.dist},${generic.dist},${arm32.dist},${arm64.dist}</argument>
                                         <argument>--jdk=${user.home}/.sdkman/candidates/java/15.0.1.hs-adpt</argument>
                                     </arguments>
