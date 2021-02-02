@@ -266,11 +266,11 @@
                                     <arguments>
                                         <argument>create</argument>
                                         <argument>--name=CrossMobile</argument>
-                                        <argument>--appdir=target/crossmobile</argument>
+                                        <argument>--input=target/crossmobile</argument>
                                         <argument>--output=target/apps</argument>
                                         <argument>--instoutput=target/installer</argument>
                                         <argument>--res=instres</argument>
-                                        <argument>--jar=crossmobile.jar</argument>
+                                        <argument>--jarname=crossmobile.jar</argument>
                                         <argument>--jvmopt=DEFAULT</argument>
                                         <argument>--jvmopt=-splash:$APPDIR/splash.jpg</argument>
                                         <argument>--version=${project.version}</argument>

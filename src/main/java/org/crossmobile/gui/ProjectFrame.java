@@ -539,7 +539,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                             SystemDependent.getEnvWithFixedPaths(), null,
                             Paths.getMakeAppExec(), alsoInstaller ? "create" : "java",
                             "--os", os, "--name", proj.getProperty(DISPLAY_NAME), "--version", proj.getProperty(BUNDLE_VERSION),
-                            "--jar", jar.getAbsolutePath(), "--output", destDir.getAbsolutePath(),
+                            "--input", jar.getAbsolutePath(), "--output", destDir.getAbsolutePath(),
                             "--res", resDir.getAbsolutePath(),
                             "--descr", Opt.of(proj.getProperty(CM_DESCRIPTION)).filter(d -> !d.trim().isEmpty()).getOrElse(proj.getProperty(DISPLAY_NAME) + ": A CrossMobile application"),
                             "--id", proj.getProperty(GROUP_ID) + "." + proj.getProperty(ARTIFACT_ID),
