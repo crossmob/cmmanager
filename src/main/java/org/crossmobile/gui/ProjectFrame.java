@@ -21,6 +21,7 @@ import org.crossmobile.gui.project.PropertySheet;
 import org.crossmobile.gui.utils.*;
 import org.crossmobile.gui.utils.CMMvnActions.MavenExecInfo;
 import org.crossmobile.gui.utils.Deguard.MagicWand;
+import org.crossmobile.prefs.LaunchTarget;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.*;
 import org.crossmobile.utils.func.Opt;
@@ -42,7 +43,9 @@ import static java.io.File.separator;
 import static org.crossmobile.gui.actives.ActiveContextPanel.Context.*;
 import static org.crossmobile.gui.utils.CMMvnActions.Clean.*;
 import static org.crossmobile.gui.utils.Profile.OBFUSCATE;
-import static org.crossmobile.prefs.Prefs.*;
+import static org.crossmobile.prefs.LaunchTarget.*;
+import static org.crossmobile.prefs.Prefs.LAUNCH_ACTION_BUILD;
+import static org.crossmobile.prefs.Prefs.LAUNCH_ACTION_RUN;
 import static org.crossmobile.utils.ParamsCommon.*;
 import static org.crossmobile.utils.SystemDependent.Execs.ADB;
 import static org.crossmobile.utils.SystemDependent.safeArg;
@@ -102,8 +105,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         setTitle("Loading project " + path.getName() + "...");
         autoDisabled.add(iosT);
         autoDisabled.add(androidT);
-        autoDisabled.add(desktopT);
-        autoDisabled.add(uwpT);
+        autoDisabled.add(swingT);
+        autoDisabled.add(avianT);
         autoDisabled.add(cleanB);
         autoDisabled.add(expandCB);
         autoDisabled.add(expandRB);
@@ -193,18 +196,18 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         updateLaunchVisuals();
         if (!proj.isPlugin())
             switch (Prefs.getSelectedLaunchTarget(proj.getPath().getAbsolutePath())) {
-                case LAUNCH_TARGET_ANDROID:
+                case Android:
                     androidT.setSelected(true);
                     break;
-                case LAUNCH_TARGET_IOS:
+                case iOS:
                     iosT.setSelected(true);
                     break;
-                case LAUNCH_TARGET_UWP:
-                    uwpT.setSelected(true);
+                case Avian:
+                    avianT.setSelected(true);
                     break;
                 default:
-                case LAUNCH_TARGET_DESKTOP:
-                    desktopT.setSelected(true);
+                case Swing:
+                    swingT.setSelected(true);
                     break;
             }
         if (proj.isPlugin()) {
@@ -214,8 +217,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             deactivateComponent(expandCB);
             deactivateComponent(iosT);
             deactivateComponent(androidT);
-            deactivateComponent(uwpT);
-            deactivateComponent(desktopT);
+            deactivateComponent(avianT);
+            deactivateComponent(swingT);
             actionB.setActionCommand(LAUNCH_ACTION_BUILD);
             updateLaunchVisuals();
         }
@@ -251,7 +254,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             button.setEnabled(status);
     }
 
-    private synchronized void setLaunchButtonStatus(Integer result, String currentTaskName, String target) {
+    private synchronized void setLaunchButtonStatus(Integer result, String currentTaskName, LaunchTarget target) {
         Opt.of(solutionCallbackRef.get()).ifExists(r -> {
             solutionCallbackRef.set(null);
             SwingUtilities.invokeLater(r);
@@ -296,13 +299,13 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         taskName = currentTaskName;
     }
 
-    private void updateToolButtons(String target) {
+    private void updateToolButtons(LaunchTarget target) {
         idInfoP.removeAll();
         idInfoP.add(pidL, BorderLayout.CENTER);
         if (proj.getProfile() == OBFUSCATE) {
-            File mapFile = "android".equals(target)
+            File mapFile = Android == target
                     ? new File(proj.getPath(), "target/app/build/outputs/mapping/release/mapping.txt")
-                    : "desktop".equals(target)
+                    : Swing == target
                     ? new File(proj.getPath(), "target/" + proj.getProperty(ARTIFACT_ID) + "-" + proj.getProperty(BUNDLE_VERSION) + ".map")
                     : null;
             if (mapFile != null) {
@@ -354,8 +357,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         }
     }
 
-    private String getCurrentTarget() {
-        return targetG.getSelection() == null ? null : targetG.getSelection().getActionCommand();
+    private LaunchTarget getCurrentTarget() {
+        return LaunchTarget.find(targetG.getSelection() == null ? null : targetG.getSelection().getActionCommand());
     }
 
     private ActiveTextPane getTextPane() {
@@ -371,23 +374,23 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             out.addLine("\n" + execInfo.consoleText + "\n", StreamQuality.INFO);
     }
 
-    private void buildAndRun(String target) {
+    private void buildAndRun(LaunchTarget target) {
         buildAndRun(target, NOCLEAN,
                 proj.getProfile().isRelease(),
                 !LAUNCH_ACTION_BUILD.equals(actionB.getActionCommand()),
                 null);
     }
 
-    private void buildAndRun(String target, CMMvnActions.Clean clean, boolean release, boolean run, Consumer<Integer> execCallback) {
+    private void buildAndRun(LaunchTarget target, CMMvnActions.Clean clean, boolean release, boolean run, Consumer<Integer> execCallback) {
         if (taskName != null)
             EventUtils.postAction(() -> {
                 Opt.of(launch).ifExists(Commander::kill);
                 setLaunchButtonStatus(KILL_RESULT, null, null);
             });
         else {
-            initLaunchVisualsOut(new MavenExecInfo("Launch" + (target == null ? "" : " " + target) + " target", "Building product", target));
+            initLaunchVisualsOut(new MavenExecInfo("Launch" + (target == null ? "" : " " + target.prettyName()) + " target", "Building product", target));
             Runnable launcher = () -> launchMaven("install",
-                    target == null ? null : target
+                    target == null ? null : target.tname()
                             + (run ? ",run" : "")
                             + (release ? ",release" : "")
                             + (proj.getProfile() == OBFUSCATE ? ",obfuscate" : "")
@@ -407,18 +410,18 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         }
     }
 
-    private void openTarget(String target) {
+    private void openTarget(LaunchTarget target) {
         String info = "Request to launch project in " + target;
         initLaunchVisualsOut(new MavenExecInfo(info, "Open project in " + target, target));
-        String preproc = OPEN_STUDIO.equals(target) ? LAUNCH_TARGET_ANDROID : (OPEN_XCODE.equals(target) ? LAUNCH_TARGET_IOS : (OPEN_VSTUDIO.equals(target) ? LAUNCH_TARGET_UWP : null));
+        LaunchTarget preproc = Android_Studio == target ? Android : (Xcode == target ? iOS : null);
         if (preproc != null)
-            launchMaven("process-classes", preproc, new MavenExecInfo(info, "Open project in " + target, target),
+            launchMaven("process-classes", preproc.tname(), new MavenExecInfo(info, "Open project in " + target, target),
                     onSuccess(() -> postProcessCode(getTextPane(), "", target)));
         else
             postProcessCode(getTextPane(), info, target);
     }
 
-    private void postProcessCode(ActiveTextPane out, String info, String ide) {
+    private void postProcessCode(ActiveTextPane out, String info, LaunchTarget ide) {
         if (!info.isEmpty())
             out.addLine("\n" + info + "\n", StreamQuality.INFO);
         ExternalCommands.openCode(ide, proj, out, this::mavenFeedback);
@@ -450,8 +453,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }
 
     private Commander execMavenInConsole(String goal, String profiles, Project proj, ActiveTextPane outP, Consumer<Integer> launchCallback, String... params) {
-        if (profiles != null && profiles.contains("uwp"))
-            outP.addLine(" *** WARNING *** Universal Windows Platform support  is still in alpha stage\n", StreamQuality.ERROR);
         AtomicLong pid = new AtomicLong(Long.MIN_VALUE);
         AtomicInteger port = new AtomicInteger(Integer.MIN_VALUE);
         Commander commander = CMMvnActions.callMaven(goal, profiles, proj.getPath(), outP, pidF -> {
@@ -461,7 +462,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             port.set(portF);
             updateInfo(pid, port);
         }, launchCallback == null ? this::mavenFeedback : launchCallback, solutionCallbackRef, proj.getProfile(), params);
-        if (profiles != null && profiles.contains("desktop")) {
+        if (profiles != null && profiles.contains(Swing.tname())) {
             pid.set(commander.getPid());
             updateInfo(pid, port);
         }
@@ -497,14 +498,14 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             return null;
     }
 
-    private File getJarPath() {
-        File path = new File(proj.getPath(), "target" + separator + proj.getProperty(ARTIFACT_ID) + "-" + proj.getProperty(BUNDLE_VERSION) + "-desktop.jar");
+    private File getJarPath(LaunchTarget target) {
+        File path = new File(proj.getPath(), "target" + separator + proj.getProperty(ARTIFACT_ID) + "-" + proj.getProperty(BUNDLE_VERSION) + "-" + target.tname() + ".jar");
         return path.exists() ? path : null;
     }
 
     private void createPluginPackage(boolean installOnly) {
         File cmp = new File(proj.getPath(), "target" + separator + "package" + separator + proj.getProperty(ARTIFACT_ID) + "-" + proj.getProperty(BUNDLE_VERSION) + ".cmp");
-        buildAndRun("package", CLEAN, false, false, res -> Opt.of(cmp).onError(Log::error).filter(File::isFile)
+        buildAndRun(PACKAGE, CLEAN, false, false, res -> Opt.of(cmp).onError(Log::error).filter(File::isFile)
                 .ifMissing(() -> mavenFeedback(res == 0 ? 1 : res))
                 .ifExists(f -> {
                     if (installOnly)
@@ -517,8 +518,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 }));
     }
 
-    private void createDesktopPackage(String os, boolean alsoInstaller) {
-        buildAndRun("desktop", DISTCLEAN, true, false, res -> Opt.of(getJarPath()).onError(Log::error).filter(File::isFile)
+    private void createSwingPackage(String os, boolean alsoInstaller) {
+        buildAndRun(Swing, DISTCLEAN, true, false, res -> Opt.of(getJarPath(Swing)).onError(Log::error).filter(File::isFile)
                 .ifMissing(() -> mavenFeedback(res == 0 ? 1 : res))
                 .ifExists(jar -> {
                     ((ActiveTextPane) outputTxt).addLine("CREATING " + os.toUpperCase() + " " + (alsoInstaller ? "INSTALLER" : "PACKAGE") + "\n------------------------------------------------------------------------", StreamQuality.INFO);
@@ -585,8 +586,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         packAM = new ActivePopupMenu();
         debugP = new ActiveMenuItem();
         releaseP = new ActiveMenuItem();
-        packWM = new ActivePopupMenu();
-        nosupportedWP = new ActiveMenuItem();
+        packAvM = new ActivePopupMenu();
+        nosupportedAvP = new ActiveMenuItem();
         packDMM = new ActivePopupMenu();
         filesOnlyM = new ActiveMenu();
         genericP = new ActiveMenuItem();
@@ -630,8 +631,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         targetP = new javax.swing.JPanel();
         iosT = new ActiveToggleButton("", new ActiveIcon("images/ios_small"));
         androidT = new ActiveToggleButton("", new ActiveIcon("images/android_small"));
-        uwpT = new ActiveToggleButton("", new ActiveIcon("images/uwp_small"));
-        desktopT = new ActiveToggleButton("", new ActiveIcon("images/desktop_small"));
+        swingT = new ActiveToggleButton("", new ActiveIcon("images/desktop_small"));
+        avianT = new ActiveToggleButton("", new ActiveIcon("images/avian_small"));
         commandP = new javax.swing.JPanel();
         expandRB = new ActiveButton();
         actionB = new ActiveButton();
@@ -709,7 +710,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         intellijM.setIcon(INTELLIJ_I);
         intellijM.setText(" in IntelliJ IDEA");
-        intellijM.setActionCommand(OPEN_INTELLIJ);
+        intellijM.setActionCommand(IntelliJ_IDEA.tname());
         intellijM.setDisabledIcon(INTELLIJ_D);
         intellijM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -720,7 +721,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         netbeansM.setIcon(NETBEANS_I);
         netbeansM.setText(" in Netbeans");
-        netbeansM.setActionCommand(OPEN_NETBEANS);
+        netbeansM.setActionCommand(Netbeans.tname());
         netbeansM.setDisabledIcon(NETBEANS_D);
         netbeansM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -734,7 +735,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         xcodeM.setIcon(XCODE_I);
         xcodeM.setText(" Xcode");
-        xcodeM.setActionCommand(OPEN_XCODE);
+        xcodeM.setActionCommand(Xcode.tname());
         xcodeM.setDisabledIcon(XCODE_D);
         xcodeM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -745,7 +746,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         vscodeM.setIcon(VSCODE_I);
         vscodeM.setText("VS Code");
-        vscodeM.setActionCommand(OPEN_VSCODE);
+        vscodeM.setActionCommand(VS_Code.tname());
         vscodeM.setDisabledIcon(VSCODE_D);
         vscodeM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -756,7 +757,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         vstudioM.setIcon(VSTUDIO_I);
         vstudioM.setText(" Visual Studio");
-        vstudioM.setActionCommand(OPEN_VSTUDIO);
+        vstudioM.setActionCommand(VStudio.tname());
         vstudioM.setDisabledIcon(VSTUDIO_D);
         vstudioM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -767,7 +768,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         studioM.setIcon(STUDIO_I);
         studioM.setText(" Android Studio");
-        studioM.setActionCommand(OPEN_STUDIO);
+        studioM.setActionCommand(Android_Studio.tname());
         studioM.setDisabledIcon(STUDIO_D);
         studioM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -800,9 +801,9 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         });
         packAM.add(releaseP);
 
-        nosupportedWP.setText("No supported packages for UWP");
-        nosupportedWP.setEnabled(false);
-        packWM.add(nosupportedWP);
+        nosupportedAvP.setText("No supported packages for Avian");
+        nosupportedAvP.setEnabled(false);
+        packAvM.add(nosupportedAvP);
 
         filesOnlyM.setText("Files only");
 
@@ -1024,7 +1025,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         projectB.setIcon(PROJECT_I);
         projectB.setSelected(true);
         projectB.setText("Project");
-        projectB.setActionCommand(LAUNCH_TARGET_IOS);
         projectB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 0, 8, 8));
         projectB.setDisabledIcon(PROJECT_D);
         projectB.addActionListener(new java.awt.event.ActionListener() {
@@ -1051,7 +1051,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         projectG.add(outputB);
         outputB.setIcon(OUTPUT_I);
         outputB.setText("Output");
-        outputB.setActionCommand(LAUNCH_TARGET_IOS);
         outputB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 0, 8, 8));
         outputB.setDisabledIcon(OUTPUT_D);
         outputB.setEnabled(false);
@@ -1104,7 +1103,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         targetG.add(iosT);
         iosT.setToolTipText("iOS Project");
-        iosT.setActionCommand(LAUNCH_TARGET_IOS);
+        iosT.setActionCommand(iOS.tname());
         iosT.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         iosT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1115,7 +1114,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         targetG.add(androidT);
         androidT.setToolTipText("Android Project");
-        androidT.setActionCommand(LAUNCH_TARGET_ANDROID);
+        androidT.setActionCommand(Android.tname());
         androidT.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         androidT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1124,27 +1123,27 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         });
         targetP.add(androidT);
 
-        targetG.add(uwpT);
-        uwpT.setToolTipText("Universal Windows Platform Project");
-        uwpT.setActionCommand(LAUNCH_TARGET_UWP);
-        uwpT.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        uwpT.addActionListener(new java.awt.event.ActionListener() {
+        targetG.add(swingT);
+        swingT.setToolTipText("Swing Project");
+        swingT.setActionCommand(Swing.tname());
+        swingT.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        swingT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 targetSelection(evt);
             }
         });
-        targetP.add(uwpT);
+        targetP.add(swingT);
 
-        targetG.add(desktopT);
-        desktopT.setToolTipText("Desktop Project");
-        desktopT.setActionCommand(LAUNCH_TARGET_DESKTOP);
-        desktopT.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        desktopT.addActionListener(new java.awt.event.ActionListener() {
+        targetG.add(avianT);
+        avianT.setToolTipText("Avian Project");
+        avianT.setActionCommand(Avian.tname());
+        avianT.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        avianT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 targetSelection(evt);
             }
         });
-        targetP.add(desktopT);
+        targetP.add(avianT);
 
         controlP_L.add(targetP);
 
@@ -1305,7 +1304,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private void expandRBMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_expandRBMousePressed
         if (expandRB.isEnabled()) {
             switch (getCurrentTarget()) {
-                case "android":
+                case Android:
                     actionsAndroidM.show(expandRB, 0, expandRB.getHeight());
                     break;
                 default:
@@ -1328,7 +1327,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }//GEN-LAST:event_openBMousePressed
 
     private void openCommand(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openCommand
-        openTarget(evt.getActionCommand());
+        openTarget(LaunchTarget.find(evt.getActionCommand()));
     }//GEN-LAST:event_openCommand
 
     private void projectBtargetSelection(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_projectBtargetSelection
@@ -1396,18 +1395,18 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             case "err":
                 cmds.add("System.err:W");
         }
-        initLaunchVisualsOut(new MavenExecInfo("Display Android Logs", "Android logs", "android"));
+        initLaunchVisualsOut(new MavenExecInfo("Display Android Logs", "Android logs", Android));
         launch = ProjectLauncher.launch(null, getTextPane(), this::mavenFeedback, null,
                 StreamListener.NONE, cmds.toArray(new String[0]));
     }//GEN-LAST:event_logMActionPerformed
 
     private void desktopPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desktopPackage
-        createDesktopPackage(evt.getActionCommand(), false);
+        createSwingPackage(evt.getActionCommand(), false);
     }//GEN-LAST:event_desktopPackage
 
     private void androidPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_androidPackage
         boolean release = "release".equals(evt.getActionCommand());
-        buildAndRun("android", DISTCLEAN, release, false, res -> Opt.of(getApkPath(true))
+        buildAndRun(Android, DISTCLEAN, release, false, res -> Opt.of(getApkPath(true))
                 .onError(Log::error)
                 .ifExists(f -> Desktop.getDesktop().open(f.getParentFile())).always(i -> mavenFeedback(res)));
     }//GEN-LAST:event_androidPackage
@@ -1418,26 +1417,23 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 packPl.show(packB, 0, packB.getHeight());
             else
                 switch (getCurrentTarget()) {
-                    case "android":
+                    case Android:
                         packAM.show(packB, 0, packB.getHeight());
                         break;
-                    case "desktop":
+                    case Swing:
                         if (Paths.getMakeAppExec().isEmpty())
                             packDEM.show(packB, 0, packB.getHeight());
                         else
                             packDMM.show(packB, 0, packB.getHeight());
                         break;
-                    case "ios":
+                    case iOS:
                         packIM.show(packB, 0, packB.getHeight());
-                        break;
-                    case "uwp":
-                        packWM.show(packB, 0, packB.getHeight());
                         break;
                 }
     }//GEN-LAST:event_packBMousePressed
 
     private void desktopInstaller(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_desktopInstaller
-        createDesktopPackage(evt.getActionCommand(), true);
+        createSwingPackage(evt.getActionCommand(), true);
     }//GEN-LAST:event_desktopInstaller
 
     private void pluginPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pluginPActionPerformed
@@ -1450,6 +1446,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPopupMenu actionsAndroidM;
     private javax.swing.JPopupMenu actionsM;
     private javax.swing.JToggleButton androidT;
+    private javax.swing.JToggleButton avianT;
     private javax.swing.JMenuItem buildAM;
     private javax.swing.JMenuItem buildM;
     private javax.swing.JMenuItem cleanAllPM;
@@ -1464,7 +1461,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPanel controlP_R;
     private javax.swing.JMenuItem debugP;
     private javax.swing.JMenuItem desktopM;
-    private javax.swing.JToggleButton desktopT;
     private javax.swing.JMenuItem distribPP;
     private javax.swing.JButton expandCB;
     private javax.swing.JButton expandOB;
@@ -1494,8 +1490,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JMenuItem macosI;
     private javax.swing.JMenuItem macosP;
     private javax.swing.JMenuItem netbeansM;
+    private javax.swing.JMenuItem nosupportedAvP;
     private javax.swing.JMenuItem nosupportedIP;
-    private javax.swing.JMenuItem nosupportedWP;
     private javax.swing.JButton openB;
     private javax.swing.JPopupMenu openM;
     private javax.swing.JMenu otherIDEs;
@@ -1506,12 +1502,12 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPopupMenu outputM;
     private javax.swing.JTextPane outputTxt;
     private javax.swing.JPopupMenu packAM;
+    private javax.swing.JPopupMenu packAvM;
     private javax.swing.JButton packB;
     private javax.swing.JPopupMenu packDEM;
     private javax.swing.JPopupMenu packDMM;
     private javax.swing.JPopupMenu packIM;
     private javax.swing.JPopupMenu packPl;
-    private javax.swing.JPopupMenu packWM;
     private javax.swing.JPanel parameters;
     private javax.swing.JLabel pidL;
     private javax.swing.JToggleButton projectB;
@@ -1526,9 +1522,9 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JMenuItem savePM;
     private javax.swing.JScrollPane scrollOutP;
     private javax.swing.JMenuItem studioM;
+    private javax.swing.JToggleButton swingT;
     private javax.swing.ButtonGroup targetG;
     private javax.swing.JPanel targetP;
-    private javax.swing.JToggleButton uwpT;
     private javax.swing.JMenuItem vscodeM;
     private javax.swing.JMenuItem vstudioM;
     private javax.swing.JMenuItem win32I;

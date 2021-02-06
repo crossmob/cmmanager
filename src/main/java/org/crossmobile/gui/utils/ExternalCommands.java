@@ -9,41 +9,41 @@ package org.crossmobile.gui.utils;
 import org.crossmobile.gui.actives.ActiveTextPane;
 import org.crossmobile.gui.project.Project;
 import org.crossmobile.gui.project.ProjectLauncher;
+import org.crossmobile.prefs.LaunchTarget;
 import org.crossmobile.prefs.Prefs;
 
 import java.io.File;
 import java.util.function.Consumer;
 
-import static org.crossmobile.prefs.Prefs.*;
 import static org.crossmobile.utils.ParamsCommon.ARTIFACT_ID;
 
 public class ExternalCommands {
 
-    public static void openCode(String ide, Project proj, ActiveTextPane txtPane, Consumer<Integer> launchCallback) {
+    public static void openCode(LaunchTarget ide, Project proj, ActiveTextPane txtPane, Consumer<Integer> launchCallback) {
         String[] args;
         switch (ide) {
-            case OPEN_NETBEANS:
+            case Netbeans:
                 args = new String[]{Prefs.getNetbeansLocation(),
                         "--open",
                         proj.getPath().getAbsolutePath()};
                 break;
-            case OPEN_INTELLIJ:
+            case IntelliJ_IDEA:
                 args = new String[]{Prefs.getIntelliJLocation(),
                         proj.getPom().getAbsolutePath()};
                 break;
-            case OPEN_VSCODE:
+            case VS_Code:
                 args = new String[]{Prefs.getVSCodeLocation(),
                         proj.getPath().getAbsolutePath()};
                 break;
-            case OPEN_STUDIO:
+            case Android_Studio:
                 args = new String[]{Prefs.getAndroidStudioLocation(),
                         proj.getPath().getAbsolutePath()};
                 break;
-            case OPEN_XCODE:
+            case Xcode:
                 args = new String[]{"/usr/bin/open",
                         proj.getPath().getAbsolutePath() + File.separator + proj.getProperty(ARTIFACT_ID) + ".xcodeproj"};
                 break;
-            case OPEN_VSTUDIO:
+            case VStudio:
                 args = new String[]{"cmd.exe", "/C", "start",
                         proj.getPath().getAbsolutePath() + File.separator + proj.getProperty(ARTIFACT_ID) + "-WinStore10.sln"};
                 break;

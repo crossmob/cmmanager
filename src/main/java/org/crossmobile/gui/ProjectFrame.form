@@ -146,7 +146,7 @@
             </Property>
             <Property name="text" type="java.lang.String" value=" in IntelliJ IDEA"/>
             <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="OPEN_INTELLIJ" type="code"/>
+              <Connection code="IntelliJ_IDEA.tname()" type="code"/>
             </Property>
             <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="INTELLIJ_D" type="code"/>
@@ -166,7 +166,7 @@
             </Property>
             <Property name="text" type="java.lang.String" value=" in Netbeans"/>
             <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="OPEN_NETBEANS" type="code"/>
+              <Connection code="Netbeans.tname()" type="code"/>
             </Property>
             <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="NETBEANS_D" type="code"/>
@@ -199,7 +199,7 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value=" Xcode"/>
                 <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="OPEN_XCODE" type="code"/>
+                  <Connection code="Xcode.tname()" type="code"/>
                 </Property>
                 <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="XCODE_D" type="code"/>
@@ -219,7 +219,7 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="VS Code"/>
                 <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="OPEN_VSCODE" type="code"/>
+                  <Connection code="VS_Code.tname()" type="code"/>
                 </Property>
                 <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="VSCODE_D" type="code"/>
@@ -239,7 +239,7 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value=" Visual Studio"/>
                 <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="OPEN_VSTUDIO" type="code"/>
+                  <Connection code="VStudio.tname()" type="code"/>
                 </Property>
                 <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="VSTUDIO_D" type="code"/>
@@ -259,7 +259,7 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value=" Android Studio"/>
                 <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="OPEN_STUDIO" type="code"/>
+                  <Connection code="Android_Studio.tname()" type="code"/>
                 </Property>
                 <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="STUDIO_D" type="code"/>
@@ -331,7 +331,7 @@
         </MenuItem>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPopupMenu" name="packWM">
+    <Container class="javax.swing.JPopupMenu" name="packAvM">
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActivePopupMenu()"/>
       </AuxValues>
@@ -340,9 +340,9 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="javax.swing.JMenuItem" name="nosupportedWP">
+        <MenuItem class="javax.swing.JMenuItem" name="nosupportedAvP">
           <Properties>
-            <Property name="text" type="java.lang.String" value="No supported packages for UWP"/>
+            <Property name="text" type="java.lang.String" value="No supported packages for Avian"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <AuxValues>
@@ -774,9 +774,6 @@
                         </Property>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="text" type="java.lang.String" value="Project"/>
-                        <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                          <Connection code="LAUNCH_TARGET_IOS" type="code"/>
-                        </Property>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                             <EmptyBorder bottom="8" left="0" right="8" top="8"/>
@@ -839,9 +836,6 @@
                           <Connection code="OUTPUT_I" type="code"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Output"/>
-                        <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                          <Connection code="LAUNCH_TARGET_IOS" type="code"/>
-                        </Property>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                             <EmptyBorder bottom="8" left="0" right="8" top="8"/>
@@ -960,7 +954,7 @@
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="iOS Project"/>
                         <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                          <Connection code="LAUNCH_TARGET_IOS" type="code"/>
+                          <Connection code="iOS.tname()" type="code"/>
                         </Property>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
@@ -982,7 +976,7 @@
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="Android Project"/>
                         <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                          <Connection code="LAUNCH_TARGET_ANDROID" type="code"/>
+                          <Connection code="Android.tname()" type="code"/>
                         </Property>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
@@ -997,36 +991,14 @@
                         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveToggleButton(&quot;&quot;, new ActiveIcon(&quot;images/android_small&quot;))"/>
                       </AuxValues>
                     </Component>
-                    <Component class="javax.swing.JToggleButton" name="uwpT">
+                    <Component class="javax.swing.JToggleButton" name="swingT">
                       <Properties>
                         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                           <ComponentRef name="targetG"/>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value="Universal Windows Platform Project"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Swing Project"/>
                         <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                          <Connection code="LAUNCH_TARGET_UWP" type="code"/>
-                        </Property>
-                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-                            <EmptyBorder bottom="0" left="0" right="0" top="0"/>
-                          </Border>
-                        </Property>
-                      </Properties>
-                      <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="targetSelection"/>
-                      </Events>
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveToggleButton(&quot;&quot;, new ActiveIcon(&quot;images/uwp_small&quot;))"/>
-                      </AuxValues>
-                    </Component>
-                    <Component class="javax.swing.JToggleButton" name="desktopT">
-                      <Properties>
-                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                          <ComponentRef name="targetG"/>
-                        </Property>
-                        <Property name="toolTipText" type="java.lang.String" value="Desktop Project"/>
-                        <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                          <Connection code="LAUNCH_TARGET_DESKTOP" type="code"/>
+                          <Connection code="Swing.tname()" type="code"/>
                         </Property>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
@@ -1039,6 +1011,28 @@
                       </Events>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveToggleButton(&quot;&quot;, new ActiveIcon(&quot;images/desktop_small&quot;))"/>
+                      </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JToggleButton" name="avianT">
+                      <Properties>
+                        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                          <ComponentRef name="targetG"/>
+                        </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Avian Project"/>
+                        <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                          <Connection code="Avian.tname()" type="code"/>
+                        </Property>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                            <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+                          </Border>
+                        </Property>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="targetSelection"/>
+                      </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ActiveToggleButton(&quot;&quot;, new ActiveIcon(&quot;images/avian_small&quot;))"/>
                       </AuxValues>
                     </Component>
                   </SubComponents>

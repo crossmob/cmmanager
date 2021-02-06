@@ -116,7 +116,7 @@ public class LibraryEditor extends ActivePanel {
                 map(d -> d.groupId + ":" + d.artifactId + ":" + d.packaging + ":" + d.version).
                 reduce((s, s2) -> s + ";" + s2).ifPresent(art ->
                 fetchEvent.launchMaven(Unaar.GROUP + ":" + Unaar.ARTIFACT + ":" + Unaar.VERSION + ":" + Unaar.GOAL,
-                        null, new MavenExecInfo(null, "Retrieve shadow plugins", "Retrieve shadow plugins"),
+                        null, new MavenExecInfo(null, "Retrieve shadow plugins", null),
                         fetchEvent::mavenFeedback, "-Dartifacts=" + art, "-DshadowGroup=" + Pom.SHADOW));
     }//GEN-LAST:event_fetchBActionPerformed
 

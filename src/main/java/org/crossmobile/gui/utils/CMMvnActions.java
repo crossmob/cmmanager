@@ -12,11 +12,11 @@ import org.crossmobile.gui.actives.ActiveTextPane;
 import org.crossmobile.gui.android.InstallerFrame;
 import org.crossmobile.gui.project.ProjectLauncher;
 import org.crossmobile.prefs.Config;
+import org.crossmobile.prefs.LaunchTarget;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.Commander;
 import org.crossmobile.utils.FileUtils;
 
-import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,12 +48,12 @@ public class CMMvnActions {
     public static final class MavenExecInfo {
         public final String consoleText;
         public final String infoText;
-        public final String target;
+        public final LaunchTarget target;
 
-        public MavenExecInfo(String consoleText, String infoText, String target) {
+        public MavenExecInfo(String consoleText, String infoText, LaunchTarget target) {
             this.consoleText = consoleText == null ? "" : consoleText;
             this.infoText = infoText == null ? "" : infoText;
-            this.target = target == null ? "" : target;
+            this.target = target;
         }
     }
 
@@ -87,7 +87,7 @@ public class CMMvnActions {
             cmd.add("-e");
             String agent = profile == Profile.XRAY ? Paths.getXRayPath() : null;
             agent = agent == null ? "" : "-javaagent:" + agent + " ";
-            if (profiles != null && profiles.contains("desktop"))
+            if (LaunchTarget.profilesSupportDebugging(profiles))
                 env.put("MAVEN_OPTS", agent + "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0");
         }
         if (params != null)

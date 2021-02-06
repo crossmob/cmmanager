@@ -54,16 +54,16 @@ public class ProjectLoader {
             welcomeFrame.ProjectsL.setEnabled(false);
         RecentsProjectManager.addProject(pinfo, true);
 
-        final ProjectFrame projframe = new ProjectFrame(pinfo.getPath());
+        final ProjectFrame projFrame = new ProjectFrame(pinfo.getPath());
         EventUtils.postAction(() -> {
             try {
                 Project proj = new Project(pinfo);
                 proj.save();
-                projframe.initVisuals(proj);
-                projframe.setVisible(true);
+                projFrame.initVisuals(proj);
+                projFrame.setVisible(true);
                 if (welcomeFrame != null) {
                     welcomeFrame.updateProjects(pinfo);
-                    projframe.setCloseCallback(selected -> {
+                    projFrame.setCloseCallback(selected -> {
                         welcomeFrame.updateProjects(pinfo);
                         if (welcomeFrame.isVisible() || RegisteredFrame.count() <= 1)  // if welcome frame is already visible or if the closing frame is the last one
                             welcomeFrame.setVisible(true); // bring to front
@@ -74,10 +74,10 @@ public class ProjectLoader {
                     });
                 }
                 proj.setApplicationNameListener((dirty, name) -> {
-                    EnhancerManager.getDefault().setFrameSaveState(projframe, dirty);
-                    projframe.setTitle(name);
+                    EnhancerManager.getDefault().setFrameSaveState(projFrame, dirty);
+                    projFrame.setTitle(name);
                 });
-                ProjectLoader.registerProject(projframe, proj.getPath());
+                ProjectLoader.registerProject(projFrame, proj.getPath());
             } catch (Exception ex) {
                 Log.error("Error while loading project\n" + (ex instanceof ProjectException ? ex.getMessage() : ex.toString()), ex);
             } finally {

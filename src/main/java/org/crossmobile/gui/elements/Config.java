@@ -79,7 +79,7 @@ public class Config extends HiResDialog {
         UIUtils.syncWidth(Arrays.asList(jdkB, androidB, netbeansB, intellijB, studioB, keystoreB));
 
         try {
-            setIconImage(ImageIO.read(requireNonNull(getClass().getClassLoader().getResourceAsStream("images/logo-small.png"))));
+            setIconImage(ImageIO.read(requireNonNull(getClass().getClassLoader().getResourceAsStream("images/logo-small@2x.png"))));
         } catch (IOException ignored) {
         }
         setLocationRelativeTo(null);
