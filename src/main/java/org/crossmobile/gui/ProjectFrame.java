@@ -106,7 +106,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         autoDisabled.add(iosT);
         autoDisabled.add(androidT);
         autoDisabled.add(swingT);
-        autoDisabled.add(avianT);
+        autoDisabled.add(aromaT);
         autoDisabled.add(cleanB);
         autoDisabled.add(expandCB);
         autoDisabled.add(expandRB);
@@ -202,8 +202,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 case iOS:
                     iosT.setSelected(true);
                     break;
-                case Avian:
-                    avianT.setSelected(true);
+                case Aroma:
+                    aromaT.setSelected(true);
                     break;
                 default:
                 case Swing:
@@ -217,7 +217,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             deactivateComponent(expandCB);
             deactivateComponent(iosT);
             deactivateComponent(androidT);
-            deactivateComponent(avianT);
+            deactivateComponent(aromaT);
             deactivateComponent(swingT);
             actionB.setActionCommand(LAUNCH_ACTION_BUILD);
             updateLaunchVisuals();
@@ -632,7 +632,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         iosT = new ActiveToggleButton("", new ActiveIcon("images/ios_small"));
         androidT = new ActiveToggleButton("", new ActiveIcon("images/android_small"));
         swingT = new ActiveToggleButton("", new ActiveIcon("images/desktop_small"));
-        avianT = new ActiveToggleButton("", new ActiveIcon("images/avian_small"));
+        aromaT = new ActiveToggleButton("", new ActiveIcon("images/aroma_small"));
         commandP = new javax.swing.JPanel();
         expandRB = new ActiveButton();
         actionB = new ActiveButton();
@@ -801,7 +801,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         });
         packAM.add(releaseP);
 
-        nosupportedAvP.setText("No supported packages for Avian");
+        nosupportedAvP.setText("No supported packages for Aroma");
         nosupportedAvP.setEnabled(false);
         packAvM.add(nosupportedAvP);
 
@@ -1134,16 +1134,16 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         });
         targetP.add(swingT);
 
-        targetG.add(avianT);
-        avianT.setToolTipText("Avian Project");
-        avianT.setActionCommand(Avian.tname());
-        avianT.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        avianT.addActionListener(new java.awt.event.ActionListener() {
+        targetG.add(aromaT);
+        aromaT.setToolTipText("Aroma Project");
+        aromaT.setActionCommand(Aroma.tname());
+        aromaT.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        aromaT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 targetSelection(evt);
             }
         });
-        targetP.add(avianT);
+        targetP.add(aromaT);
 
         controlP_L.add(targetP);
 
@@ -1446,7 +1446,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPopupMenu actionsAndroidM;
     private javax.swing.JPopupMenu actionsM;
     private javax.swing.JToggleButton androidT;
-    private javax.swing.JToggleButton avianT;
+    private javax.swing.JToggleButton aromaT;
     private javax.swing.JMenuItem buildAM;
     private javax.swing.JMenuItem buildM;
     private javax.swing.JMenuItem cleanAllPM;
