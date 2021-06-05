@@ -13,10 +13,7 @@ import org.crossmobile.gui.codehound.source.FileHit;
 import org.crossmobile.gui.codehound.source.SourceParser;
 import org.crossmobile.gui.codehound.source.SourcePattern;
 import org.crossmobile.gui.codehound.source.SourcePatternFactory;
-import org.crossmobile.gui.parameters.DependenciesParameter;
-import org.crossmobile.gui.parameters.LibrariesParameter;
-import org.crossmobile.gui.parameters.ProjectParameter;
-import org.crossmobile.gui.parameters.ScreenScaleParameter;
+import org.crossmobile.gui.parameters.*;
 import org.crossmobile.gui.parameters.impl.*;
 import org.crossmobile.gui.utils.CMMvnActions.MavenExecutor;
 import org.crossmobile.gui.utils.Paths;
@@ -282,6 +279,10 @@ public class Project {
         csheet.add(new AndroidTargetParameter(params));
         csheet.add(new AndroidTargetNumericParameter(params));
 //        csheet.setBottomPanel(PrivateArtifactForm.getPanel());
+        sheets.add(csheet);
+
+        csheet = new PropertySheet("Aroma", listener);
+        csheet.add(new DisplayInfoParameter("Welcome"));
         sheets.add(csheet);
 
         csheet = new PropertySheet("Desktop", listener);

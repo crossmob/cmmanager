@@ -105,7 +105,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         setTitle("Loading project " + path.getName() + "...");
         autoDisabled.add(iosT);
         autoDisabled.add(androidT);
-        autoDisabled.add(swingT);
+        autoDisabled.add(desktopT);
         autoDisabled.add(aromaT);
         autoDisabled.add(cleanB);
         autoDisabled.add(expandCB);
@@ -207,7 +207,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                     break;
                 default:
                 case Swing:
-                    swingT.setSelected(true);
+                    desktopT.setSelected(true);
                     break;
             }
         if (proj.isPlugin()) {
@@ -218,7 +218,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             deactivateComponent(iosT);
             deactivateComponent(androidT);
             deactivateComponent(aromaT);
-            deactivateComponent(swingT);
+            deactivateComponent(desktopT);
             actionB.setActionCommand(LAUNCH_ACTION_BUILD);
             updateLaunchVisuals();
         }
@@ -631,8 +631,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         targetP = new javax.swing.JPanel();
         iosT = new ActiveToggleButton("", new ActiveIcon("images/ios_small"));
         androidT = new ActiveToggleButton("", new ActiveIcon("images/android_small"));
-        swingT = new ActiveToggleButton("", new ActiveIcon("images/desktop_small"));
         aromaT = new ActiveToggleButton("", new ActiveIcon("images/aroma_small"));
+        desktopT = new ActiveToggleButton("", new ActiveIcon("images/desktop_small"));
         commandP = new javax.swing.JPanel();
         expandRB = new ActiveButton();
         actionB = new ActiveButton();
@@ -1008,7 +1008,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 formWindowClosing(evt);
             }
         });
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         Background.setLayout(new java.awt.BorderLayout());
 
@@ -1123,17 +1122,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         });
         targetP.add(androidT);
 
-        targetG.add(swingT);
-        swingT.setToolTipText("Swing Project");
-        swingT.setActionCommand(Swing.tname());
-        swingT.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        swingT.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                targetSelection(evt);
-            }
-        });
-        targetP.add(swingT);
-
         targetG.add(aromaT);
         aromaT.setToolTipText("Aroma Project");
         aromaT.setActionCommand(Aroma.tname());
@@ -1144,6 +1132,17 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             }
         });
         targetP.add(aromaT);
+
+        targetG.add(desktopT);
+        desktopT.setToolTipText("Desktop Project");
+        desktopT.setActionCommand(Swing.tname());
+        desktopT.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        desktopT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                targetSelection(evt);
+            }
+        });
+        targetP.add(desktopT);
 
         controlP_L.add(targetP);
 
@@ -1238,7 +1237,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
@@ -1461,6 +1460,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPanel controlP_R;
     private javax.swing.JMenuItem debugP;
     private javax.swing.JMenuItem desktopM;
+    private javax.swing.JToggleButton desktopT;
     private javax.swing.JMenuItem distribPP;
     private javax.swing.JButton expandCB;
     private javax.swing.JButton expandOB;
@@ -1522,7 +1522,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JMenuItem savePM;
     private javax.swing.JScrollPane scrollOutP;
     private javax.swing.JMenuItem studioM;
-    private javax.swing.JToggleButton swingT;
     private javax.swing.ButtonGroup targetG;
     private javax.swing.JPanel targetP;
     private javax.swing.JMenuItem vscodeM;

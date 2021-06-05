@@ -6,16 +6,36 @@
 
 package org.crossmobile.gui.parameters;
 
-import org.crossmobile.utils.ParamList;
+import com.panayotis.hrgui.HiResComponent;
+import com.panayotis.hrgui.HiResLabel;
 
-public abstract class DisplayInfoParameter extends ProjectParameter {
+public class DisplayInfoParameter extends ProjectParameter {
 
-    public DisplayInfoParameter(ParamList list) {
-        super(list, null);
+    private final String header;
+    private final String text;
+
+    public DisplayInfoParameter(String text) {
+        this(null, text);
+    }
+
+    public DisplayInfoParameter(String header, String text) {
+        super(null, null);
+        this.header = header;
+        this.text = text;
     }
 
     @Override
     public String getValue() {
         return "";
+    }
+
+    @Override
+    protected String getVisualTag() {
+        return "";
+    }
+
+    @Override
+    protected HiResComponent initVisuals() {
+        return new HiResLabel(text);
     }
 }
