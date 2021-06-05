@@ -33,7 +33,6 @@ public class ActiveLink extends ActiveLabel {
         });
         setOpaque(false);
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        setText("");
     }
 
     public ActiveLink(String text, HiResIcon icon, int horizontalAlignment) {

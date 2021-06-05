@@ -250,8 +250,9 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
     private void setProjectEnabled(boolean status) {
         isProjectEnabled = status;
-        for (JComponent button : autoDisabled)
-            button.setEnabled(status);
+        for (JComponent component : autoDisabled)
+            component.setEnabled(status);
+        rightPanel.setVisible(status);
     }
 
     private synchronized void setLaunchButtonStatus(Integer result, String currentTaskName, LaunchTarget target) {
@@ -617,6 +618,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         buildAM = new ActiveMenuItem();
         logAM = new ActiveMenuItem();
         Background = new GradientPanel();
+        baseP = new javax.swing.JPanel();
         controlP = new javax.swing.JPanel();
         controlP_R = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -642,8 +644,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         contentP = new HiResPanel();
         projectP = new HiResPanel();
         parameters = new GradientPanel();
-        rightPanel = new javax.swing.JPanel();
-        leftButtonPanel = new javax.swing.JPanel();
         javax.swing.JPanel outputP = new HiResPanel();
         outerrorP = new javax.swing.JPanel();
         scrollOutP = new javax.swing.JScrollPane();
@@ -652,6 +652,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         outResult = new ActiveLabel();
         idInfoP = new ActivePanel();
         pidL = new ActiveLabel();
+        rightPanel = new javax.swing.JPanel();
+        leftButtonPanel = new javax.swing.JPanel();
 
         runM.setIcon(RUN_I);
         runM.setText("Run");
@@ -1002,7 +1004,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         });
         actionsAndroidM.add(logAM);
 
-        setMinimumSize(new java.awt.Dimension(840, 620));
+        setMinimumSize(new java.awt.Dimension(840, 634));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -1010,6 +1012,9 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         });
 
         Background.setLayout(new java.awt.BorderLayout());
+
+        baseP.setOpaque(false);
+        baseP.setLayout(new java.awt.BorderLayout());
 
         controlP.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, java.awt.Color.gray));
         controlP.setOpaque(false);
@@ -1197,7 +1202,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         controlP.add(controlP_L, java.awt.BorderLayout.WEST);
 
-        Background.add(controlP, java.awt.BorderLayout.NORTH);
+        baseP.add(controlP, java.awt.BorderLayout.NORTH);
 
         contentP.setOpaque(false);
         contentP.setLayout(new java.awt.CardLayout());
@@ -1209,15 +1214,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         parameters.setOpaque(false);
         parameters.setLayout(new java.awt.CardLayout());
         projectP.add(parameters, java.awt.BorderLayout.CENTER);
-
-        rightPanel.setOpaque(false);
-        rightPanel.setLayout(new java.awt.BorderLayout());
-
-        leftButtonPanel.setOpaque(false);
-        leftButtonPanel.setLayout(new java.awt.GridLayout(0, 1));
-        rightPanel.add(leftButtonPanel, java.awt.BorderLayout.CENTER);
-
-        projectP.add(rightPanel, java.awt.BorderLayout.EAST);
 
         contentP.add(projectP, "project");
 
@@ -1237,7 +1233,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
@@ -1251,7 +1247,18 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         contentP.add(outputP, "output");
 
-        Background.add(contentP, java.awt.BorderLayout.CENTER);
+        baseP.add(contentP, java.awt.BorderLayout.CENTER);
+
+        Background.add(baseP, java.awt.BorderLayout.CENTER);
+
+        rightPanel.setOpaque(false);
+        rightPanel.setLayout(new java.awt.BorderLayout());
+
+        leftButtonPanel.setOpaque(false);
+        leftButtonPanel.setLayout(new java.awt.GridLayout(0, 1));
+        rightPanel.add(leftButtonPanel, java.awt.BorderLayout.CENTER);
+
+        Background.add(rightPanel, java.awt.BorderLayout.EAST);
 
         getContentPane().add(Background, java.awt.BorderLayout.CENTER);
 
@@ -1446,6 +1453,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPopupMenu actionsM;
     private javax.swing.JToggleButton androidT;
     private javax.swing.JToggleButton aromaT;
+    private javax.swing.JPanel baseP;
     private javax.swing.JMenuItem buildAM;
     private javax.swing.JMenuItem buildM;
     private javax.swing.JMenuItem cleanAllPM;

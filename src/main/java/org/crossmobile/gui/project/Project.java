@@ -282,7 +282,8 @@ public class Project {
         sheets.add(csheet);
 
         csheet = new PropertySheet("Aroma", listener);
-        csheet.add(new DisplayInfoParameter("Welcome"));
+        csheet.add(new DisplayInfoParameter("Aroma is", "...", "https://aroma-ui.com"));
+        csheet.add(new AromaTargetParameter(params));
         sheets.add(csheet);
 
         csheet = new PropertySheet("Desktop", listener);
