@@ -239,12 +239,14 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
     private void displayOutput() {
         ((CardLayout) contentP.getLayout()).show(contentP, "output");
+        rightPanel.setVisible(false);
         outputB.setSelected(true);
         outputB.setText("Output");
     }
 
     private void displayProject() {
         ((CardLayout) contentP.getLayout()).show(contentP, "project");
+        rightPanel.setVisible(true);
         projectB.setSelected(true);
     }
 
@@ -252,7 +254,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         isProjectEnabled = status;
         for (JComponent component : autoDisabled)
             component.setEnabled(status);
-        rightPanel.setVisible(status);
     }
 
     private synchronized void setLaunchButtonStatus(Integer result, String currentTaskName, LaunchTarget target) {
