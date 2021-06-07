@@ -1040,7 +1040,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         jPanel2.add(projectB, java.awt.BorderLayout.CENTER);
 
         expandPB.setIcon(EXPAND_I);
-        expandPB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 24, 8, 2));
+        expandPB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 32, 8, 2));
         expandPB.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 expandPBMousePressed(evt);
@@ -1156,7 +1156,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         commandP.setLayout(new java.awt.BorderLayout());
 
         expandRB.setIcon(EXPAND_I);
-        expandRB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 24, 8, 2));
+        expandRB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 32, 8, 2));
         expandRB.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 expandRBMousePressed(evt);
@@ -1181,7 +1181,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         cleanP.setLayout(new java.awt.BorderLayout());
 
         expandCB.setIcon(EXPAND_I);
-        expandCB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 24, 8, 2));
+        expandCB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 32, 8, 2));
         expandCB.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 expandCBMousePressed(evt);
