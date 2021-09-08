@@ -33,6 +33,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -377,13 +378,18 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }
 
     private void buildAndRun(LaunchTarget target) {
+        buildAndRun(target, false);
+    }
+
+    private void buildAndRun(LaunchTarget target, boolean aab) {
         buildAndRun(target, NOCLEAN,
                 proj.getProfile().isRelease(),
                 !LAUNCH_ACTION_BUILD.equals(actionB.getActionCommand()),
+                aab,
                 null);
     }
 
-    private void buildAndRun(LaunchTarget target, CMMvnActions.Clean clean, boolean release, boolean run, Consumer<Integer> execCallback) {
+    private void buildAndRun(LaunchTarget target, CMMvnActions.Clean clean, boolean release, boolean run, boolean aab, Consumer<Integer> execCallback) {
         if (taskName != null)
             EventUtils.postAction(() -> {
                 Opt.of(launch).ifExists(Commander::kill);
@@ -395,6 +401,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                     target == null ? null : target.tname()
                             + (run ? ",run" : "")
                             + (release ? ",release" : "")
+                            + (aab ? ",androidappbundle" : "")
                             + (proj.getProfile() == OBFUSCATE ? ",obfuscate" : "")
                     , null, execCallback, "-D" + DEBUG_PROFILE.tag().name + "=" + proj.getDebugProfile());
             EventUtils.postAction(() -> {
@@ -471,33 +478,22 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         return commander;
     }
 
-    private File getApkPath(boolean preferRelease) {
-        File release_new = new File(proj.getPath(), "target/app/build/outputs/apk/release/" + proj.getPath().getName() + "-release.apk");
-        File release_old = new File(proj.getPath(), "target/app/build/outputs/apk/" + proj.getPath().getName() + "-release.apk");
-        File debug_new = new File(proj.getPath(), "target/app/build/outputs/apk/debug/" + proj.getPath().getName() + "-debug.apk");
-        File debug_old = new File(proj.getPath(), "target/app/build/outputs/apk/" + proj.getPath().getName() + "-debug.apk");
-        File pref1, pref2, pref3, pref4;
-        if (preferRelease) {
-            pref1 = release_new;
-            pref2 = release_old;
-            pref3 = debug_new;
-            pref4 = debug_old;
-        } else {
-            pref1 = debug_new;
-            pref2 = debug_old;
-            pref3 = release_new;
-            pref4 = release_old;
-        }
-        if (pref1.isFile())
-            return pref1;
-        else if (pref2.isFile())
-            return pref2;
-        else if (pref3.isFile())
-            return pref3;
-        else if (pref4.isFile())
-            return pref4;
-        else
-            return null;
+    private File getApkPath(boolean preferRelease, boolean asApk) {
+        String type = asApk ? "apk" : "bundle";
+        String preferred = preferRelease ? "release" : "debug";
+        String secondary = preferRelease ? "debug" : "release";
+        String prefFilename = proj.getPath().getName() + "-" + preferred + "." + (asApk ? "apk" : "aab");
+        String secFilename = proj.getPath().getName() + "-" + secondary + "." + (asApk ? "apk" : "aab");
+        Collection<File> candidates = Arrays.asList(
+                new File(proj.getPath(), "target/app/build/outputs/" + type + "/" + preferred + "/" + prefFilename),
+                new File(proj.getPath(), "target/app/build/outputs/" + type + "/" + prefFilename),
+                new File(proj.getPath(), "target/app/build/outputs/" + type + "/" + secondary + "/" + secFilename),
+                new File(proj.getPath(), "target/app/build/outputs/" + type + "/" + secFilename)
+        );
+        for (File candidate : candidates)
+            if (candidate.isFile())
+                return candidate;
+        return null;
     }
 
     private File getJarPath(LaunchTarget target) {
@@ -507,12 +503,12 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
     private void createPluginPackage(boolean installOnly) {
         File cmp = new File(proj.getPath(), "target" + separator + "package" + separator + proj.getProperty(ARTIFACT_ID) + "-" + proj.getProperty(BUNDLE_VERSION) + ".cmp");
-        buildAndRun(PACKAGE, CLEAN, false, false, res -> Opt.of(cmp).onError(Log::error).filter(File::isFile)
+        buildAndRun(PACKAGE, CLEAN, false, false, false, res -> Opt.of(cmp).onError(Log::error).filter(File::isFile)
                 .ifMissing(() -> mavenFeedback(res == 0 ? 1 : res))
                 .ifExists(f -> {
                     if (installOnly)
                         Opt.of(PluginInstaller
-                                .installPluginMetaInfo(new File(proj.getPath(), "target" + separator + "artifacts" + separator + "cmplugin-" + proj.getProperty(ARTIFACT_ID) + "-" + proj.getProperty(BUNDLE_VERSION) + ".jar")))
+                                        .installPluginMetaInfo(new File(proj.getPath(), "target" + separator + "artifacts" + separator + "cmplugin-" + proj.getProperty(ARTIFACT_ID) + "-" + proj.getProperty(BUNDLE_VERSION) + ".jar")))
                                 .ifExists(Log::error);
                     else
                         Desktop.getDesktop().open(f.getParentFile());
@@ -521,7 +517,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     }
 
     private void createSwingPackage(String os, boolean alsoInstaller) {
-        buildAndRun(Swing, DISTCLEAN, true, false, res -> Opt.of(getJarPath(Swing)).onError(Log::error).filter(File::isFile)
+        buildAndRun(Swing, DISTCLEAN, true, false, false, res -> Opt.of(getJarPath(Swing)).onError(Log::error).filter(File::isFile)
                 .ifMissing(() -> mavenFeedback(res == 0 ? 1 : res))
                 .ifExists(jar -> {
                     ((ActiveTextPane) outputTxt).addLine("CREATING " + os.toUpperCase() + " " + (alsoInstaller ? "INSTALLER" : "PACKAGE") + "\n------------------------------------------------------------------------", StreamQuality.INFO);
@@ -586,8 +582,11 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         packIM = new ActivePopupMenu();
         nosupportedIP = new ActiveMenuItem();
         packAM = new ActivePopupMenu();
-        debugP = new ActiveMenuItem();
-        releaseP = new ActiveMenuItem();
+        debugApkP = new ActiveMenuItem();
+        releaseApkP = new ActiveMenuItem();
+        javax.swing.JPopupMenu.Separator androidPackSep = new javax.swing.JPopupMenu.Separator();
+        debugAabP = new ActiveMenuItem();
+        releaseAabP = new ActiveMenuItem();
         packAvM = new ActivePopupMenu();
         nosupportedAvP = new ActiveMenuItem();
         packDMM = new ActivePopupMenu();
@@ -786,23 +785,42 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         nosupportedIP.setEnabled(false);
         packIM.add(nosupportedIP);
 
-        debugP.setText("as debug APK");
-        debugP.setActionCommand("debug");
-        debugP.addActionListener(new java.awt.event.ActionListener() {
+        debugApkP.setText("as debug APK");
+        debugApkP.setActionCommand("debug");
+        debugApkP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                androidPackage(evt);
+                apkPackage(evt);
             }
         });
-        packAM.add(debugP);
+        packAM.add(debugApkP);
 
-        releaseP.setText("as release APK");
-        releaseP.setActionCommand("release");
-        releaseP.addActionListener(new java.awt.event.ActionListener() {
+        releaseApkP.setText("as release APK");
+        releaseApkP.setActionCommand("release");
+        releaseApkP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                androidPackage(evt);
+                apkPackage(evt);
             }
         });
-        packAM.add(releaseP);
+        packAM.add(releaseApkP);
+        packAM.add(androidPackSep);
+
+        debugAabP.setText("as debug App Bundle");
+        debugAabP.setActionCommand("debug");
+        debugAabP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aabPackage(evt);
+            }
+        });
+        packAM.add(debugAabP);
+
+        releaseAabP.setText("as release App Bundle");
+        releaseAabP.setActionCommand("release");
+        releaseAabP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aabPackage(evt);
+            }
+        });
+        packAM.add(releaseAabP);
 
         nosupportedAvP.setText("No supported packages for Aroma");
         nosupportedAvP.setEnabled(false);
@@ -1411,12 +1429,12 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         createSwingPackage(evt.getActionCommand(), false);
     }//GEN-LAST:event_desktopPackage
 
-    private void androidPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_androidPackage
+    private void apkPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_apkPackage
         boolean release = "release".equals(evt.getActionCommand());
-        buildAndRun(Android, DISTCLEAN, release, false, res -> Opt.of(getApkPath(true))
+        buildAndRun(Android, DISTCLEAN, release, false, false, res -> Opt.of(getApkPath(release, true))
                 .onError(Log::error)
                 .ifExists(f -> Desktop.getDesktop().open(f.getParentFile())).always(i -> mavenFeedback(res)));
-    }//GEN-LAST:event_androidPackage
+    }//GEN-LAST:event_apkPackage
 
     private void packBMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_packBMousePressed
         if (packB.isEnabled())
@@ -1447,6 +1465,13 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         createPluginPackage("install".equals(evt.getActionCommand()));
     }//GEN-LAST:event_pluginPActionPerformed
 
+    private void aabPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aabPackage
+        boolean release = "release".equals(evt.getActionCommand());
+        buildAndRun(Android, DISTCLEAN, release, false, true, res -> Opt.of(getApkPath(release, false))
+                .onError(Log::error)
+                .ifExists(f -> Desktop.getDesktop().open(f.getParentFile())).always(i -> mavenFeedback(res)));
+    }//GEN-LAST:event_aabPackage
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Background;
     private javax.swing.JButton actionB;
@@ -1467,7 +1492,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPanel controlP;
     private javax.swing.JPanel controlP_L;
     private javax.swing.JPanel controlP_R;
-    private javax.swing.JMenuItem debugP;
+    private javax.swing.JMenuItem debugAabP;
+    private javax.swing.JMenuItem debugApkP;
     private javax.swing.JMenuItem desktopM;
     private javax.swing.JToggleButton desktopT;
     private javax.swing.JMenuItem distribPP;
@@ -1523,7 +1549,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.ButtonGroup projectG;
     private javax.swing.JPopupMenu projectM;
     private javax.swing.JPanel projectP;
-    private javax.swing.JMenuItem releaseP;
+    private javax.swing.JMenuItem releaseAabP;
+    private javax.swing.JMenuItem releaseApkP;
     private javax.swing.JPanel rightPanel;
     private javax.swing.JMenuItem runAM;
     private javax.swing.JMenuItem runM;
