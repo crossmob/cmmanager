@@ -12,7 +12,6 @@ import org.crossmobile.gui.elements.Theme;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import java.awt.*;
-import java.lang.reflect.Field;
 
 public class ActiveMenu extends HiResMenu {
     private final TooltipManager ttm = new TooltipManager(this);
@@ -21,19 +20,10 @@ public class ActiveMenu extends HiResMenu {
 
     {
         setBorder(new CompoundBorder(getBorder(), BorderFactory.createEmptyBorder(6, DELTA, 6, DELTA)));
-
-        JPopupMenu popupMenu = new ActivePopupMenu();
+        JPopupMenu popupMenu = getPopupMenu();
+        popupMenu.setUI(ActivePopupMenu.createActivePopupMenuUI());
         popupMenu.setInvoker(this);
         popupListener = createWinListener(popupMenu);
-        try {
-            Field popupMenuF = JMenu.class.getDeclaredField("popupMenu");
-            if (popupMenuF != null) {
-                popupMenuF.setAccessible(true);
-                popupMenuF.set(this, popupMenu);
-            }
-        } catch (NoSuchFieldException | IllegalAccessException exception) {
-            System.out.println(exception);
-        }
     }
 
     @Override

@@ -9,15 +9,22 @@ package org.crossmobile.gui.actives;
 import org.crossmobile.gui.elements.Theme;
 
 import javax.swing.*;
+import javax.swing.plaf.PopupMenuUI;
+import javax.swing.plaf.synth.SynthContext;
+import javax.swing.plaf.synth.SynthPopupMenuUI;
 import java.awt.*;
 
 public class ActivePopupMenu extends JPopupMenu {
+    {
+        setUI(createActivePopupMenuUI());
+    }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        super.paintComponent(g);
-        g2d.setColor(Theme.current().areaPrimary);
-        g2d.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
+    static PopupMenuUI createActivePopupMenuUI() {
+        return new SynthPopupMenuUI() {
+            protected void paint(SynthContext context, Graphics g) {
+                g.setColor(Theme.current().areaPrimary);
+                g.fillRect(0, 0, context.getComponent().getWidth() - 1, context.getComponent().getHeight() - 1);
+            }
+        };
     }
 }
