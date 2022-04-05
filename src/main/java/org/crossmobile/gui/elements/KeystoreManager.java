@@ -49,7 +49,7 @@ public class KeystoreManager {
                 aliases = ks.aliases();
                 while (aliases.hasMoreElements())
                     list.add(aliases.nextElement());
-            } catch (KeyStoreException ex) {
+            } catch (KeyStoreException ignored) {
             }
         }
         return list;
@@ -63,12 +63,12 @@ public class KeystoreManager {
             fis = new java.io.FileInputStream(file);
             ks.load(fis, null); // no password
             return ks;
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         } finally {
             if (fis != null)
                 try {
                     fis.close();
-                } catch (IOException ex) {
+                } catch (IOException ignored) {
                 }
         }
         return null;
