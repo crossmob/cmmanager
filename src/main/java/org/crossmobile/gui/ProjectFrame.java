@@ -10,7 +10,10 @@ import com.panayotis.appenh.AFileChooser;
 import com.panayotis.appenh.EnhancerManager;
 import com.panayotis.hrgui.*;
 import org.crossmobile.gui.actives.*;
-import org.crossmobile.gui.elements.*;
+import org.crossmobile.gui.elements.BottomPanel;
+import org.crossmobile.gui.elements.DebugInfo;
+import org.crossmobile.gui.elements.GradientPanel;
+import org.crossmobile.gui.elements.Theme;
 import org.crossmobile.gui.project.Project;
 import org.crossmobile.gui.project.ProjectLauncher;
 import org.crossmobile.gui.project.ProjectLoader;
@@ -104,7 +107,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         autoDisabled.add(iosT);
         autoDisabled.add(androidT);
         autoDisabled.add(desktopT);
-        autoDisabled.add(aromaT);
         autoDisabled.add(cleanB);
         autoDisabled.add(expandCB);
         autoDisabled.add(expandRB);
@@ -115,8 +117,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         magicWandB = Deguard.getWandButton(this);
         actionB.setEnabled(false);
         setProjectEnabled(false);
-        if (!Config.USE_AROMA)
-            aromaT.getParent().remove(aromaT);
     }
 
     public void setCloseCallback(Consumer<Project> callBack) {
@@ -202,9 +202,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 case iOS:
                     iosT.setSelected(true);
                     break;
-                case Aroma:
-                    aromaT.setSelected(true);
-                    break;
                 default:
                 case Swing:
                     desktopT.setSelected(true);
@@ -217,7 +214,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             deactivateComponent(expandCB);
             deactivateComponent(iosT);
             deactivateComponent(androidT);
-            deactivateComponent(aromaT);
             deactivateComponent(desktopT);
             actionB.setActionCommand(LAUNCH_ACTION_BUILD);
             updateLaunchVisuals();
@@ -586,8 +582,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         javax.swing.JPopupMenu.Separator androidPackSep = new javax.swing.JPopupMenu.Separator();
         debugAabP = new ActiveMenuItem();
         releaseAabP = new ActiveMenuItem();
-        packAvM = new ActivePopupMenu();
-        nosupportedAvP = new ActiveMenuItem();
         packDMM = new ActivePopupMenu();
         filesOnlyM = new ActiveMenu();
         genericP = new ActiveMenuItem();
@@ -632,7 +626,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         targetP = new javax.swing.JPanel();
         iosT = new ActiveToggleButton("", new ActiveIcon("images/ios_small"));
         androidT = new ActiveToggleButton("", new ActiveIcon("images/android_small"));
-        aromaT = new ActiveToggleButton("", new ActiveIcon("images/aroma_small"));
         desktopT = new ActiveToggleButton("", new ActiveIcon("images/desktop_small"));
         commandP = new javax.swing.JPanel();
         expandRB = new ActiveButton();
@@ -820,10 +813,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             }
         });
         packAM.add(releaseAabP);
-
-        nosupportedAvP.setText("No supported packages for Aroma");
-        nosupportedAvP.setEnabled(false);
-        packAvM.add(nosupportedAvP);
 
         filesOnlyM.setText("Files only");
 
@@ -1145,17 +1134,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         });
         targetP.add(androidT);
 
-        targetG.add(aromaT);
-        aromaT.setToolTipText("Aroma Project");
-        aromaT.setActionCommand(Aroma.tname());
-        aromaT.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        aromaT.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                targetSelection(evt);
-            }
-        });
-        targetP.add(aromaT);
-
         targetG.add(desktopT);
         desktopT.setToolTipText("Desktop Project");
         desktopT.setActionCommand(Swing.tname());
@@ -1251,7 +1229,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
@@ -1477,7 +1455,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPopupMenu actionsAndroidM;
     private javax.swing.JPopupMenu actionsM;
     private javax.swing.JToggleButton androidT;
-    private javax.swing.JToggleButton aromaT;
     private javax.swing.JPanel baseP;
     private javax.swing.JMenuItem buildAM;
     private javax.swing.JMenuItem buildM;
@@ -1524,7 +1501,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JMenuItem macosI;
     private javax.swing.JMenuItem macosP;
     private javax.swing.JMenuItem netbeansM;
-    private javax.swing.JMenuItem nosupportedAvP;
     private javax.swing.JMenuItem nosupportedIP;
     private javax.swing.JButton openB;
     private javax.swing.JPopupMenu openM;
@@ -1536,7 +1512,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JPopupMenu outputM;
     private javax.swing.JTextPane outputTxt;
     private javax.swing.JPopupMenu packAM;
-    private javax.swing.JPopupMenu packAvM;
     private javax.swing.JButton packB;
     private javax.swing.JPopupMenu packDEM;
     private javax.swing.JPopupMenu packDMM;

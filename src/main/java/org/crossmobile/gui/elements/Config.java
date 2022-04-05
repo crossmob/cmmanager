@@ -28,8 +28,6 @@ import static org.crossmobile.utils.SystemDependent.Execs.*;
 
 public class Config extends HiResDialog {
 
-    public static final boolean USE_AROMA = false;
-
     public static final LocationTarget Netbeans = new LocationTarget(NETBEANS, NETBEANS.filename());
     public static final LocationTarget Studio = new LocationTarget(STUDIO, STUDIO.filename(), STUDIO64.filename());
     public static final LocationTarget IntelliJ = new LocationTarget(IDEA, IDEA.filename());
