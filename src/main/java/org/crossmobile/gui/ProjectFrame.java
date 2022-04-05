@@ -10,10 +10,7 @@ import com.panayotis.appenh.AFileChooser;
 import com.panayotis.appenh.EnhancerManager;
 import com.panayotis.hrgui.*;
 import org.crossmobile.gui.actives.*;
-import org.crossmobile.gui.elements.BottomPanel;
-import org.crossmobile.gui.elements.DebugInfo;
-import org.crossmobile.gui.elements.GradientPanel;
-import org.crossmobile.gui.elements.Theme;
+import org.crossmobile.gui.elements.*;
 import org.crossmobile.gui.project.Project;
 import org.crossmobile.gui.project.ProjectLauncher;
 import org.crossmobile.gui.project.ProjectLoader;
@@ -118,6 +115,8 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         magicWandB = Deguard.getWandButton(this);
         actionB.setEnabled(false);
         setProjectEnabled(false);
+        if (!Config.USE_AROMA)
+            aromaT.getParent().remove(aromaT);
     }
 
     public void setCloseCallback(Consumer<Project> callBack) {

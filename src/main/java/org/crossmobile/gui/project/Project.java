@@ -13,6 +13,7 @@ import org.crossmobile.gui.codehound.source.FileHit;
 import org.crossmobile.gui.codehound.source.SourceParser;
 import org.crossmobile.gui.codehound.source.SourcePattern;
 import org.crossmobile.gui.codehound.source.SourcePatternFactory;
+import org.crossmobile.gui.elements.Config;
 import org.crossmobile.gui.parameters.*;
 import org.crossmobile.gui.parameters.impl.*;
 import org.crossmobile.gui.utils.CMMvnActions.MavenExecutor;
@@ -281,10 +282,12 @@ public class Project {
 //        csheet.setBottomPanel(PrivateArtifactForm.getPanel());
         sheets.add(csheet);
 
-        csheet = new PropertySheet("Aroma", listener);
-        csheet.add(new DisplayInfoParameter("Aroma is", "...", "https://aroma-ui.com"));
-        csheet.add(new AromaTargetParameter(params));
-        sheets.add(csheet);
+        if (Config.USE_AROMA) {
+            csheet = new PropertySheet("Aroma", listener);
+            csheet.add(new DisplayInfoParameter("Aroma is", "...", "https://aroma-ui.com"));
+            csheet.add(new AromaTargetParameter(params));
+            sheets.add(csheet);
+        }
 
         csheet = new PropertySheet("Desktop", listener);
         csheet.add(new SkinListParameter(params));
