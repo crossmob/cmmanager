@@ -13,7 +13,7 @@ import java.awt.*;
 
 public class ActiveMenuSeparator extends JPopupMenu.Separator {
 
-    private static final boolean shouldDraw = System.getProperty("os.name").toLowerCase().contains("mac");
+    private static final boolean SHOULD_DRAW = System.getProperty("os.name").toLowerCase().contains("mac");
 
     {
         setPreferredSize(new Dimension(10, 2));
@@ -22,7 +22,7 @@ public class ActiveMenuSeparator extends JPopupMenu.Separator {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        if (shouldDraw) {
+        if (SHOULD_DRAW) {
             g.setColor(Theme.current().iconbottom);
             g.drawLine(0, 1, getWidth(), 1);
         }

@@ -237,7 +237,8 @@
             <properties>
                 <makeapp.exec>extra/macos/bin/makeapp</makeapp.exec>
             </properties>
-        </profile>        <profile>
+        </profile>
+        <profile>
             <id>all</id>
             <properties>
                 <mac.dist>macos</mac.dist>

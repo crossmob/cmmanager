@@ -6,12 +6,10 @@
 
 package org.crossmobile.gui.elements;
 
-import com.panayotis.appenh.EnhancerManager;
 import org.crossmobile.gui.actives.ThemeManager;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.SystemDependent;
 
-import javax.swing.*;
 import java.awt.*;
 
 public final class Theme {

@@ -17,10 +17,19 @@ import java.awt.event.MouseEvent;
 
 public class ActiveButton extends HiResButton {
 
-    private final TooltipManager ttm = new TooltipManager(this);
+    private final transient TooltipManager ttm = new TooltipManager(this);
     private boolean isRollover = false;
 
-    {
+    public ActiveButton() {
+        this(8, 8);
+    }
+
+    public ActiveButton(int border) {
+        this(border, border);
+    }
+
+    public ActiveButton(int horizBorder, int vertBorder) {
+        setBorder(new HiResEmptyBorder(vertBorder, horizBorder, vertBorder, horizBorder));
         setUI(new BasicButtonUI());
         setOpaque(false);
         addMouseListener(new MouseAdapter() {
@@ -36,18 +45,6 @@ public class ActiveButton extends HiResButton {
                 repaint();
             }
         });
-    }
-
-    public ActiveButton() {
-        this(8, 8);
-    }
-
-    public ActiveButton(int border) {
-        this(border, border);
-    }
-
-    public ActiveButton(int horizBorder, int vertBorder) {
-        setBorder(new HiResEmptyBorder(vertBorder, horizBorder, vertBorder, horizBorder));
     }
 
     @Override

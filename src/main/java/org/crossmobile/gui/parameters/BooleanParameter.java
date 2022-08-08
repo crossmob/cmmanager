@@ -64,7 +64,7 @@ public abstract class BooleanParameter extends ProjectParameter {
     protected HiResComponent initVisuals() {
         HiResComponent comp;
         if (!enabledIcon.isEmpty() || !disabledIcon.isEmpty()) {
-            HiResPanel basePanel = new HiResPanel(new BorderLayout(0, (int) (3 * ScreenUtils.getGraphicsScale())));
+            HiResPanel basePanel = new HiResPanel(new BorderLayout(0, (int) (3 * ScreenUtils.getScaleFactor())));
             basePanel.setOpaque(false);
             ActiveToggleButton enabledB = new ActiveToggleButton(enabledText, new ActiveIcon(enabledIcon));
             enabledB.addActionListener(e -> {

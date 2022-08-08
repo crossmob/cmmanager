@@ -13,8 +13,8 @@ import java.awt.*;
 
 public class ActiveIcon extends HiResIcon implements ThemeChanged {
 
-    private final Image bright;
-    private final Image dark;
+    private final transient Image bright;
+    private final transient Image dark;
 
     {
         ThemeManager.register(this);

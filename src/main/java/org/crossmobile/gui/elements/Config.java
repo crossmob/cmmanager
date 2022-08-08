@@ -7,10 +7,7 @@
 package org.crossmobile.gui.elements;
 
 import com.panayotis.hrgui.*;
-import org.crossmobile.gui.actives.ActiveLabel;
-import org.crossmobile.gui.actives.ActiveRadioButton;
-import org.crossmobile.gui.actives.ActiveTextField;
-import org.crossmobile.gui.actives.ActiveToggleButton;
+import org.crossmobile.gui.actives.*;
 import org.crossmobile.prefs.Prefs;
 import org.crossmobile.utils.*;
 
@@ -57,6 +54,8 @@ public class Config extends HiResDialog {
         INSTANCE.setResizable(false);
     }
 
+    private float scale = new ActivePreferences().scaleFactor();
+
     @SuppressWarnings("OverridableMethodCallInConstructor")
     private Config() {
         super((Dialog) null, true);
@@ -85,6 +84,12 @@ public class Config extends HiResDialog {
         setLocationRelativeTo(null);
     }
 
+    private void updateScale(float scaleFactor, boolean save, boolean updateSlider) {
+        if (save) new ActivePreferences().storePrefs(scaleFactor);
+        if (updateSlider) scaleSlider.setValue((int) (scaleFactor * 10));
+        scaleViewer.setText(Float.toString(scaleFactor));
+    }
+
     private void refreshPlugins() {
         boxedP.removeAll();
         for (Dependency dep : PluginRegistry.getExternalPlugins())
@@ -108,6 +113,16 @@ public class Config extends HiResDialog {
             keyT.setText(Prefs.getAndroidKeyLocation());
             vscodeT.setText(Prefs.getVSCodeLocation());
             refreshPlugins();
+            updateScale(scale, false, true);
+        } else {
+            float newScale = scaleSlider.getValue() / 10f;
+            if (Math.abs(scale - newScale) > 0.001) {
+                new HiResOptions().parent(this)
+                        .message("Scaling has changed from " + scale + " to " + newScale + ".\nChanges will appear next time the application is launched")
+                        .info()
+                        .show();
+                scale = newScale;
+            }
         }
         super.setVisible(visible);
     }
@@ -166,6 +181,10 @@ public class Config extends HiResDialog {
         lightB = new ActiveRadioButton();
         darkB = new ActiveRadioButton();
         systemB = new ActiveRadioButton();
+        jPanel1 = new HiResPanel();
+        jLabel1 = new ActiveLabel();
+        scaleSlider = new javax.swing.JSlider();
+        scaleViewer = new ActiveLabel();
         javax.swing.JPanel pluginsContainerP = new javax.swing.JPanel();
         scrollP = new javax.swing.JScrollPane();
         topP = new GradientPanel();
@@ -431,6 +450,28 @@ public class Config extends HiResDialog {
 
         jPanel20.add(jPanel22, java.awt.BorderLayout.CENTER);
 
+        jPanel1.setBorder(new HiResEmptyBorder(8, 0, 0, 0));
+        jPanel1.setOpaque(false);
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        jLabel1.setText("Scale factor  ");
+        jPanel1.add(jLabel1, java.awt.BorderLayout.WEST);
+
+        scaleSlider.setMajorTickSpacing(10);
+        scaleSlider.setMaximum(50);
+        scaleSlider.setMinimum(10);
+        scaleSlider.setMinorTickSpacing(5);
+        scaleSlider.setValue(10);
+        scaleSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                scaleSliderStateChanged(evt);
+            }
+        });
+        jPanel1.add(scaleSlider, java.awt.BorderLayout.CENTER);
+        jPanel1.add(scaleViewer, java.awt.BorderLayout.EAST);
+
+        jPanel20.add(jPanel1, java.awt.BorderLayout.SOUTH);
+
         pathconfigP.add(jPanel20);
 
         contentP.add(pathconfigP, "paths");
@@ -601,6 +642,10 @@ public class Config extends HiResDialog {
         wiz.fire(VSCode, Prefs.getVSCodeLocation());
     }//GEN-LAST:event_vscodeBActionPerformed
 
+    private void scaleSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_scaleSliderStateChanged
+        updateScale(scaleSlider.getValue() / 10f, true, false);
+    }//GEN-LAST:event_scaleSliderStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton androidB;
     private javax.swing.JLabel androidL;
@@ -612,6 +657,8 @@ public class Config extends HiResDialog {
     private javax.swing.JButton intellijB;
     private javax.swing.JLabel intellijL;
     private javax.swing.JTextField intellijT;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JButton jdkB;
     private javax.swing.JLabel jdkL;
     private javax.swing.JTextField jdkT;
@@ -623,6 +670,8 @@ public class Config extends HiResDialog {
     private javax.swing.JLabel netbeansL;
     private javax.swing.JTextField netbeansT;
     private javax.swing.JToggleButton pluginsB;
+    private javax.swing.JSlider scaleSlider;
+    private javax.swing.JLabel scaleViewer;
     private javax.swing.JScrollPane scrollP;
     private javax.swing.JButton studioB;
     private javax.swing.JLabel studioL;

@@ -40,7 +40,7 @@ public class ActiveEtchedBorder extends EtchedBorder implements ThemeChanged {
 
     @Override
     public void themeChanged(boolean dark) {
-        highlight =  Theme.current().iconbottom;
+        highlight = Theme.current().iconbottom;
         shadow = dark ? Color.black : Color.lightGray;
     }
 }

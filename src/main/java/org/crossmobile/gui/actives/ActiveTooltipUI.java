@@ -6,7 +6,6 @@
 
 package org.crossmobile.gui.actives;
 
-import com.panayotis.hrgui.HiResTooltip;
 import com.panayotis.hrgui.ScreenUtils;
 import org.crossmobile.gui.elements.Theme;
 
@@ -17,10 +16,10 @@ import javax.swing.plaf.basic.BasicToolTipUI;
 import java.awt.*;
 
 public class ActiveTooltipUI extends BasicToolTipUI {
-    private static ActiveTooltipUI instance;
+    private static final int DELTA = (int) Math.ceil(ScreenUtils.getScaleFactor() * 3);
     private static final ActiveTextArea textArea = new ActiveTextArea();
+    private static ActiveTooltipUI instance;
     private CellRendererPane rendererPane;
-    private static final int delta = (int) Math.ceil(ScreenUtils.getGraphicsScale() * 3);
 
     static {
         textArea.setWrapStyleWord(true);
@@ -28,9 +27,8 @@ public class ActiveTooltipUI extends BasicToolTipUI {
         textArea.setBackground(new Color(0, 0, 0, 0));
     }
 
-    public static ComponentUI createUI(HiResTooltip hiResTooltip) {
-        if (instance == null)
-            instance = new ActiveTooltipUI();
+    public static ComponentUI createUI() {
+        if (instance == null) instance = new ActiveTooltipUI();
         return instance;
     }
 
@@ -48,21 +46,22 @@ public class ActiveTooltipUI extends BasicToolTipUI {
         rendererPane = null;
     }
 
+    @Override
     public void paint(Graphics g, JComponent c) {
         Dimension size = c.getSize();
         g.setColor(Theme.current().areaPrimary);
         g.fillRect(0, 0, size.width, size.height);
         g.setColor(Theme.current().iconbottom);
         g.drawRect(0, 0, size.width - 1, size.height - 1);
-        rendererPane.paintComponent(g, textArea, c, delta, delta, size.width - 2 * delta, size.height - 2 * delta, true);
+        rendererPane.paintComponent(g, textArea, c, DELTA, DELTA, size.width - 2 * DELTA, size.height - 2 * DELTA, true);
     }
 
     @Override
     public Dimension getPreferredSize(JComponent c) {
         textArea.setText(((JToolTip) c).getTipText());
         Dimension preferredSize = textArea.getPreferredSize();
-        preferredSize.width += delta * 2;
-        preferredSize.height += delta * 2;
+        preferredSize.width += DELTA * 2;
+        preferredSize.height += DELTA * 2;
         return preferredSize;
     }
 

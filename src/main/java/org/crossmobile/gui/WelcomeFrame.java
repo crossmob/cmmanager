@@ -491,7 +491,7 @@ final class CustomListRenderer implements ListCellRenderer {
 
         int scaledSize = 32 * (isHiDPI() ? 2 : 1);
         BufferedImage image = projectInfo.getImageHound().findFore(scaledSize, true).withBackground(projectInfo.getImageHound().findBack(scaledSize, true)).image;
-        icon.setIcon(new HiResIcon(image));
+        icon.setIcon(new HiResIcon(image, 1));
         icon.setBorder(new HiResEmptyBorder(4, 4, 4, 8));
 
         name.setText(projectInfo.getName());

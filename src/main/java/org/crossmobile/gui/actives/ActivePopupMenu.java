@@ -21,6 +21,7 @@ public class ActivePopupMenu extends JPopupMenu {
 
     static PopupMenuUI createActivePopupMenuUI() {
         return new SynthPopupMenuUI() {
+            @Override
             protected void paint(SynthContext context, Graphics g) {
                 g.setColor(Theme.current().areaPrimary);
                 g.fillRect(0, 0, context.getComponent().getWidth() - 1, context.getComponent().getHeight() - 1);

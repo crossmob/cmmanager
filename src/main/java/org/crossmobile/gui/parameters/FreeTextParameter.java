@@ -101,7 +101,7 @@ public abstract class FreeTextParameter extends ProjectParameter {
             case PASSWORDFIELD:
                 data = new ActivePanel(new BorderLayout());
                 ActiveToggleButton visible = new ActiveToggleButton("", new ActiveIcon("images/show"));
-                int delta = (int) (6 * ScreenUtils.getGraphicsScale());
+                int delta = (int) (6 * ScreenUtils.getScaleFactor());
                 visible.setBorder(new EmptyBorder(delta, delta * 2 / 3, delta, delta * 2 / 3));
                 char c = ((ActivePasswordField) text).getEchoChar();
                 visible.addActionListener(evt -> ((HiResPasswordField) text.comp()).setEchoChar(visible.isSelected() ? '\0' : c));
@@ -111,7 +111,7 @@ public abstract class FreeTextParameter extends ProjectParameter {
             case TEXTFIELD:
             default:
                 ((HiResPasswordField) text).setEchoChar('\0');
-                text.comp().setPreferredSize(new Dimension(10, (int) (28 * ScreenUtils.getGraphicsScale())));
+                text.comp().setPreferredSize(new Dimension(10, (int) (28 * ScreenUtils.getScaleFactor())));
                 break;
         }
         if (filter != null) {
