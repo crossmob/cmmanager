@@ -37,11 +37,12 @@ public abstract class SelectionListParameter extends ProjectParameter {
             throw new NullPointerException("Empty parameter list found for " + key.name);
         try {
             String v = plist.get(key).trim().toLowerCase();
-            for (int i = 0; i < parameter.length; i++)
-                if (parameter[i].toLowerCase().endsWith(v)) {
-                    value = i;
-                    break;
-                }
+            if (!v.isEmpty())
+                for (int i = 0; i < parameter.length; i++)
+                    if (parameter[i].toLowerCase().endsWith(v)) {
+                        value = i;
+                        break;
+                    }
         } catch (Exception ex) {
             Log.error(ex);
         }
