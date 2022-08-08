@@ -291,6 +291,7 @@ public class Project {
         csheet.add(new DescriptionParameter(params));
         csheet.add(new VendorParameter(params));
         csheet.add(new URLParameter(params));
+        csheet.add(new ScaleFactorParameter(params));
 //        csheet.setBottomPanel(SendStackTrace.getPanel());
         sheets.add(csheet);
     }
