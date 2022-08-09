@@ -29,7 +29,7 @@ public class Config extends HiResDialog {
     public static final LocationTarget Studio = new LocationTarget(STUDIO, STUDIO.filename(), STUDIO64.filename());
     public static final LocationTarget IntelliJ = new LocationTarget(IDEA, IDEA.filename());
     public static final LocationTarget VSCode = new LocationTarget(CODE, CODE.filename(), CODIUM.filename());
-    public static final LocationTarget Android = new LocationTarget("tools/bin/sdkmanager.bat", "tools/bin/sdkmanager", "platform-tools/adb", "platform-tools/adb.exe");
+    public static final LocationTarget Android = new LocationTarget("cmdline-tools/bin/sdkmanager", "cmdline-tools/bin/sdkmanager.bat", "tools/bin/sdkmanager.bat", "tools/bin/sdkmanager", "platform-tools/adb", "platform-tools/adb.exe");
     public static final LocationTarget JDK = new LocationTarget(f -> {
         File javac = new File(f, "bin/" + JAVAC.filename());
         if (!javac.isFile())
