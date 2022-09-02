@@ -1500,7 +1500,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 String name = proj.getProperty(DISPLAY_NAME);
                 try {
                     File tempOut = File.createTempFile("crossmobile-source-project-", ".zip");
-                    File finalOut = new File(proj.getPath(), "target" + separator + name);
+                    File finalOut = new File(proj.getPath(), "target" + separator + name + "_src-" + proj.getProperty(BUNDLE_VERSION) + ".zip");
                     finalOut.getParentFile().mkdirs();
                     FileUtils.zip(proj.getPath(), tempOut);
                     Files.move(tempOut.toPath(), finalOut.toPath());
