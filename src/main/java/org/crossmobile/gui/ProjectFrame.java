@@ -32,6 +32,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -575,13 +576,15 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         vstudioM = new ActiveMenuItem();
         studioM = new ActiveMenuItem();
         packIM = new ActivePopupMenu();
-        nosupportedIP = new ActiveMenuItem();
+        sourceIP = new ActiveMenuItem();
         packAM = new ActivePopupMenu();
         debugApkP = new ActiveMenuItem();
         releaseApkP = new ActiveMenuItem();
         javax.swing.JPopupMenu.Separator androidPackSep = new javax.swing.JPopupMenu.Separator();
         debugAabP = new ActiveMenuItem();
         releaseAabP = new ActiveMenuItem();
+        javax.swing.JPopupMenu.Separator androidPackSep1 = new javax.swing.JPopupMenu.Separator();
+        sourceAP = new ActiveMenuItem();
         packDMM = new ActivePopupMenu();
         filesOnlyM = new ActiveMenu();
         genericP = new ActiveMenuItem();
@@ -599,11 +602,15 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         win32I = new ActiveMenuItem();
         win64I = new ActiveMenuItem();
         macosI = new ActiveMenuItem();
+        javax.swing.JPopupMenu.Separator desktopPackSep = new javax.swing.JPopupMenu.Separator();
+        sourceDP = new ActiveMenuItem();
         packDEM = new ActivePopupMenu();
         genericEP = new ActiveMenuItem();
+        sourceEP = new ActiveMenuItem();
         packPl = new ActivePopupMenu();
         installPP = new ActiveMenuItem();
         distribPP = new ActiveMenuItem();
+        sourcePP = new ActiveMenuItem();
         cleanM = new ActivePopupMenu();
         cleanAllPM = new ActiveMenuItem();
         actionsAndroidM = new ActivePopupMenu();
@@ -773,9 +780,13 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         openM.add(otherIDEs);
 
-        nosupportedIP.setText("No supported packages for iOS");
-        nosupportedIP.setEnabled(false);
-        packIM.add(nosupportedIP);
+        sourceIP.setText("Source bundle");
+        sourceIP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sourcePackage(evt);
+            }
+        });
+        packIM.add(sourceIP);
 
         debugApkP.setText("as debug APK");
         debugApkP.setActionCommand("debug");
@@ -813,6 +824,15 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             }
         });
         packAM.add(releaseAabP);
+        packAM.add(androidPackSep1);
+
+        sourceAP.setText("as source bundle");
+        sourceAP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sourcePackage(evt);
+            }
+        });
+        packAM.add(sourceAP);
 
         filesOnlyM.setText("Files only");
 
@@ -947,6 +967,15 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         filesInstallerM.add(macosI);
 
         packDMM.add(filesInstallerM);
+        packDMM.add(desktopPackSep);
+
+        sourceDP.setText("Source bundle");
+        sourceDP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sourcePackage(evt);
+            }
+        });
+        packDMM.add(sourceDP);
 
         genericEP.setText("as self-contained JAR");
         genericEP.setActionCommand("generic");
@@ -956,6 +985,14 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             }
         });
         packDEM.add(genericEP);
+
+        sourceEP.setText("Source bundle");
+        sourceEP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sourcePackage(evt);
+            }
+        });
+        packDEM.add(sourceEP);
 
         installPP.setText("Install plugin");
         installPP.setActionCommand("install");
@@ -974,6 +1011,14 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
             }
         });
         packPl.add(distribPP);
+
+        sourcePP.setText("Source bundle");
+        sourcePP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sourcePackage(evt);
+            }
+        });
+        packPl.add(sourcePP);
 
         cleanAllPM.setIcon(CLEANPROJ_I);
         cleanAllPM.setText("Clean Project files");
@@ -1229,7 +1274,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
@@ -1449,6 +1494,25 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 .ifExists(f -> Desktop.getDesktop().open(f.getParentFile())).always(i -> mavenFeedback(res)));
     }//GEN-LAST:event_aabPackage
 
+    private void sourcePackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sourcePackage
+        launchMaven("clean", "distclean", new MavenExecInfo("Clean project and build files", "Clean project", null), onSuccess(() -> {
+            if (saveProjectWithErrorMessage()) {
+                String name = proj.getProperty(DISPLAY_NAME);
+                try {
+                    File tempOut = File.createTempFile("crossmobile-source-project-", ".zip");
+                    File finalOut = new File(proj.getPath(), "target" + separator + name);
+                    finalOut.getParentFile().mkdirs();
+                    FileUtils.zip(proj.getPath(), tempOut);
+                    Files.move(tempOut.toPath(), finalOut.toPath());
+                    Desktop.getDesktop().open(finalOut.getParentFile());
+                } catch (IOException e) {
+                    Log.error(e);
+                    new HiResOptions().parent(this).message("Can not create source package for project " + name).buttons("OK").title(name + " Project").show();
+                }
+            }
+        }));
+    }//GEN-LAST:event_sourcePackage
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Background;
     private javax.swing.JButton actionB;
@@ -1501,7 +1565,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JMenuItem macosI;
     private javax.swing.JMenuItem macosP;
     private javax.swing.JMenuItem netbeansM;
-    private javax.swing.JMenuItem nosupportedIP;
     private javax.swing.JButton openB;
     private javax.swing.JPopupMenu openM;
     private javax.swing.JMenu otherIDEs;
@@ -1531,6 +1594,11 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
     private javax.swing.JMenuItem saveOM;
     private javax.swing.JMenuItem savePM;
     private javax.swing.JScrollPane scrollOutP;
+    private javax.swing.JMenuItem sourceAP;
+    private javax.swing.JMenuItem sourceDP;
+    private javax.swing.JMenuItem sourceEP;
+    private javax.swing.JMenuItem sourceIP;
+    private javax.swing.JMenuItem sourcePP;
     private javax.swing.JMenuItem studioM;
     private javax.swing.ButtonGroup targetG;
     private javax.swing.JPanel targetP;
