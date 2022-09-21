@@ -58,12 +58,17 @@ public class CMMvnActions {
     }
 
     public enum Clean {
-        NOCLEAN(false, null), CLEAN(true, null), DISTCLEAN(true, "-Pdistclean");
+        NOCLEAN(false, false, null),
+        CLEAN(true, false, null),
+        DISTCLEAN(true, false, "-Pdistclean"),
+        DISTCLEAN_MAKE_LOCAL(true, true, "-Pdistclean");
         public final boolean shouldClean;
+        public final boolean rebuildLocal;
         public final String cleanTarget;
 
-        Clean(boolean shouldClean, String cleanTarget) {
+        Clean(boolean shouldClean, boolean rebuildLocal, String cleanTarget) {
             this.shouldClean = shouldClean;
+            this.rebuildLocal = rebuildLocal;
             this.cleanTarget = cleanTarget;
         }
     }
@@ -102,8 +107,8 @@ public class CMMvnActions {
                 foundOldVersion.set(true);
             if (line.contains("sun.security.provider.certpath.SunCertPathBuilderException"))
                 solutionCallbackRef.set(() -> new HiResOptions().message("A Certification exception was found\n\n"
-                        + "You might need to upgrade your JDK 8 version beyond " + Config.MIN_JAVA_VERSION_FULL + ",\n"
-                        + "or else Maven resolving issues will occur.").
+                                + "You might need to upgrade your JDK 8 version beyond " + Config.MIN_JAVA_VERSION_FULL + ",\n"
+                                + "or else Maven resolving issues will occur.").
                         title("Error while executing Java target").error().show());
             else if (line.contains("accept the SDK license agreements"))
                 solutionCallbackRef.set(() -> {
@@ -117,37 +122,37 @@ public class CMMvnActions {
                         String Title = "Error while building Android project";
                         if (!FileUtils.isWritable(new File(Prefs.getAndroidSDKLocation()))) {
                             new HiResOptions().message(BaseText + "\nThe provided SDK location at:\n"
-                                    + Prefs.getAndroidSDKLocation() + "\nis not writable.\n\nPlease accept the license agreement and relaunch "
-                                    + "the build procedure.").
+                                            + Prefs.getAndroidSDKLocation() + "\nis not writable.\n\nPlease accept the license agreement and relaunch "
+                                            + "the build procedure.").
                                     title(Title).error().show();
                         } else if (Prefs.getAndroidSDKManagerLocation().isEmpty()) {
                             new HiResOptions().message(BaseText + "\nUnable to locate the sdkmanager tool.\n\n" +
-                                    "Please use the Android Studio to accept the license agreement\nand then relauch the build procedure.").
+                                            "Please use the Android Studio to accept the license agreement\nand then relauch the build procedure.").
                                     title(Title).error().show();
                         } else if (new HiResOptions().message(BaseText
-                                + "Do you want to accept the Android license now?\n\n"
-                                + "Note that after accepting, you will need to relaunch\n"
-                                + "the build procedure.").
+                                        + "Do you want to accept the Android license now?\n\n"
+                                        + "Note that after accepting, you will need to relaunch\n"
+                                        + "the build procedure.").
                                 title(Title).buttons("Yes", "No").warning().show() == 0)
                             new InstallerFrame().launch();
                     }
                 });
             else if (line.contains("SDK location not found"))
                 solutionCallbackRef.set(() -> new HiResOptions().message("Android SDK location is required\n\n"
-                        + "Please rerun the initialization wizard first\nand define the Android SDK location.").
+                                + "Please rerun the initialization wizard first\nand define the Android SDK location.").
                         title("Error while locating Android SDK").error().show());
             else if (line.contains("No value has been specified for property 'signingConfig"))
                 solutionCallbackRef.set(() -> new HiResOptions().message("No keystore passwords found\n\n"
-                        + "Please provide the Keystore/Alias password to sign the APK\nunder the Android preferences").
+                                + "Please provide the Keystore/Alias password to sign the APK\nunder the Android preferences").
                         title("Error signing Android APK").error().show());
             else if (line.contains("[INSTALL_FAILED"))
                 solutionCallbackRef.set(() -> new HiResOptions().message(line.substring(line.indexOf("[INSTALL_FAILED") + 1, line.length() - 1).replace(":", "\n")).
                         title("Error installing Android APK").error().show());
             else if (line.contains("xcode-select: error: tool 'xcodebuild' requires Xcode"))
                 solutionCallbackRef.set(() -> new HiResOptions().message("XCode tools not properly installed\n\n" +
-                        "You probably need to install and activate Command Line Tools,\n" +
-                        "or use xcode-select with a command similar to:\n" +
-                        "sudo xcode-select -s /Applications/Xcode.app/Contents/Developer").
+                                "You probably need to install and activate Command Line Tools,\n" +
+                                "or use xcode-select with a command similar to:\n" +
+                                "sudo xcode-select -s /Applications/Xcode.app/Contents/Developer").
                         title("Command Line Tools problem").error().show());
 
             if (debugPort != null) {

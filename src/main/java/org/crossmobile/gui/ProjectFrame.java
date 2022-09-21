@@ -404,8 +404,11 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 if (saveProjectWithErrorMessage()) {
                     if (clean.shouldClean)
                         launchMaven("clean", null, null, result -> {
-                            if (result == 0)
+                            if (result == 0) {
+                                if (clean.rebuildLocal)
+                                    saveProjectWithErrorMessage();
                                 launcher.run();
+                            }
                         }, clean.cleanTarget);
                     else
                         launcher.run();
@@ -1453,7 +1456,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
     private void apkPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_apkPackage
         boolean release = "release".equals(evt.getActionCommand());
-        buildAndRun(Android, DISTCLEAN, release, false, false, res -> Opt.of(getApkPath(release, true))
+        buildAndRun(Android, DISTCLEAN_MAKE_LOCAL, release, false, false, res -> Opt.of(getApkPath(release, true))
                 .onError(Log::error)
                 .ifExists(f -> Desktop.getDesktop().open(f.getParentFile())).always(i -> mavenFeedback(res)));
     }//GEN-LAST:event_apkPackage
@@ -1489,14 +1492,14 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
     private void aabPackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aabPackage
         boolean release = "release".equals(evt.getActionCommand());
-        buildAndRun(Android, DISTCLEAN, release, false, true, res -> Opt.of(getApkPath(release, false))
+        buildAndRun(Android, DISTCLEAN_MAKE_LOCAL, release, false, true, res -> Opt.of(getApkPath(release, false))
                 .onError(Log::error)
                 .ifExists(f -> Desktop.getDesktop().open(f.getParentFile())).always(i -> mavenFeedback(res)));
     }//GEN-LAST:event_aabPackage
 
     private void sourcePackage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sourcePackage
-        launchMaven("clean", "distclean", new MavenExecInfo("Clean project and build files", "Clean project", null), onSuccess(() -> {
-            if (saveProjectWithErrorMessage()) {
+        if (saveProjectWithErrorMessage()) {
+            launchMaven("clean", "distclean", new MavenExecInfo("Clean project and build files", "Clean project", null), onSuccess(() -> {
                 String name = proj.getProperty(DISPLAY_NAME);
                 try {
                     File tempOut = File.createTempFile("crossmobile-source-project-", ".zip");
@@ -1505,12 +1508,13 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                     FileUtils.zip(proj.getPath(), tempOut);
                     Files.move(tempOut.toPath(), finalOut.toPath());
                     Desktop.getDesktop().open(finalOut.getParentFile());
+                    saveProjectWithErrorMessage();
                 } catch (IOException e) {
                     Log.error(e);
                     new HiResOptions().parent(this).message("Can not create source package for project " + name).buttons("OK").title(name + " Project").show();
                 }
-            }
-        }));
+            }));
+        }
     }//GEN-LAST:event_sourcePackage
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
