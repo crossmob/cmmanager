@@ -11,7 +11,6 @@ import com.panayotis.hrgui.HiResIcon;
 import com.panayotis.hrgui.HiResToggleButton;
 import org.crossmobile.gui.elements.Theme;
 
-import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -61,6 +60,10 @@ public class ActiveToggleButton extends HiResToggleButton {
         this(null, null, bordersize);
     }
 
+    public ActiveToggleButton(int borderTop, int borderLeft, int borderBottom, int borderRight) {
+        this(null, null, borderTop, borderLeft, borderBottom, borderRight);
+    }
+
     public ActiveToggleButton(String text, int borderSize) {
         this(text, null, borderSize);
     }
@@ -71,12 +74,15 @@ public class ActiveToggleButton extends HiResToggleButton {
 
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public ActiveToggleButton(String text, HiResIcon icon, int bordersize) {
+        this(text, icon, bordersize, bordersize, bordersize, bordersize);
+    }
+
+    public ActiveToggleButton(String text, HiResIcon icon, int borderTop, int borderLeft, int borderBottom, int borderRight) {
         super(text);
         if (icon != null)
             setIcons(icon);
-        setBorder(new HiResEmptyBorder(bordersize, bordersize, bordersize, bordersize));
+        setBorder(new HiResEmptyBorder(borderTop, borderLeft, borderBottom, borderRight));
     }
-
 
     @Override
     public void setToolTipText(String text) {

@@ -181,8 +181,8 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         jLabel1 = new ActiveLabel();
         jPanel5 = new JPanel();
         jPanel7 = new JPanel();
-        newProjectB = new ActiveButton(20,8);
-        openProjectB = new ActiveButton(20,8);
+        newProjectB = new ActiveButton();
+        openProjectB = new ActiveButton();
         jPanel9 = new JPanel();
         settingsB = new ActiveButton();
         aboutB = new ActiveButton();
@@ -208,6 +208,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
 
         setTitle("CrossMobile Manager");
         setMinimumSize(new Dimension(640, 408));
+        getContentPane().setLayout(new BorderLayout());
 
         Background.setLayout(new BorderLayout());
 
@@ -239,7 +240,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
         jPanel3.add(ProjectsSP, BorderLayout.CENTER);
 
         jPanel10.setOpaque(false);
-        jPanel10.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        jPanel10.setLayout(new FlowLayout(2));
 
         clearAllB.setIcon(new ActiveIcon("images/trash"));
         clearAllB.setText("Clear all");
@@ -355,7 +356,7 @@ public class WelcomeFrame extends RegisteredFrame implements UpdatedApplication 
 
         jPanel6.setBorder(BorderFactory.createEmptyBorder(6, 0, 0, 0));
         jPanel6.setOpaque(false);
-        jPanel6.setLayout(new FlowLayout(FlowLayout.LEFT));
+        jPanel6.setLayout(new FlowLayout(0));
 
         actionL.setEnabled(false);
         jPanel6.add(actionL);

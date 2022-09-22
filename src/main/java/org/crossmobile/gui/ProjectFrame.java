@@ -625,24 +625,24 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         controlP = new javax.swing.JPanel();
         controlP_R = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        projectB = new ActiveToggleButton("", null);
-        expandPB = new ActiveButton();
+        projectB = new ActiveToggleButton(12, 2, 12, 12);
+        expandPB = new ActiveButton(12,24,12,2);
         jPanel1 = new javax.swing.JPanel();
-        outputB = new ActiveToggleButton("", null);
-        expandOB = new ActiveButton();
-        packB = new ActiveButton();
-        openB = new ActiveButton();
+        outputB = new ActiveToggleButton(12, 2, 12, 12);
+        expandOB = new ActiveButton(12,24,12,2);
+        packB = new ActiveButton(12);
+        openB = new ActiveButton(12);
         controlP_L = new javax.swing.JPanel();
         targetP = new javax.swing.JPanel();
-        iosT = new ActiveToggleButton("", new ActiveIcon("images/ios_small"));
-        androidT = new ActiveToggleButton("", new ActiveIcon("images/android_small"));
-        desktopT = new ActiveToggleButton("", new ActiveIcon("images/desktop_small"));
+        iosT = new ActiveToggleButton("", new ActiveIcon("images/ios_small"), 12);
+        androidT = new ActiveToggleButton("", new ActiveIcon("images/android_small"), 12);
+        desktopT = new ActiveToggleButton("", new ActiveIcon("images/desktop_small"), 12);
         commandP = new javax.swing.JPanel();
-        expandRB = new ActiveButton();
-        actionB = new ActiveButton();
+        expandRB = new ActiveButton(12,24,12,2);
+        actionB = new ActiveButton(12, 2, 12, 12);
         cleanP = new javax.swing.JPanel();
-        expandCB = new ActiveButton();
-        cleanB = new ActiveButton();
+        expandCB = new ActiveButton(12,24,12,2);
+        cleanB = new ActiveButton(12, 2, 12, 12);
         contentP = new HiResPanel();
         projectP = new HiResPanel();
         parameters = new GradientPanel();
@@ -1065,6 +1065,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
                 formWindowClosing(evt);
             }
         });
+        getContentPane().setLayout(new java.awt.BorderLayout());
 
         Background.setLayout(new java.awt.BorderLayout());
 
@@ -1084,7 +1085,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         projectB.setIcon(PROJECT_I);
         projectB.setSelected(true);
         projectB.setText("Project");
-        projectB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 0, 8, 8));
         projectB.setDisabledIcon(PROJECT_D);
         projectB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1094,7 +1094,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         jPanel2.add(projectB, java.awt.BorderLayout.CENTER);
 
         expandPB.setIcon(EXPAND_I);
-        expandPB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 32, 8, 2));
         expandPB.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 expandPBMousePressed(evt);
@@ -1110,7 +1109,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         projectG.add(outputB);
         outputB.setIcon(OUTPUT_I);
         outputB.setText("Output");
-        outputB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 0, 8, 8));
         outputB.setDisabledIcon(OUTPUT_D);
         outputB.setEnabled(false);
         outputB.addActionListener(new java.awt.event.ActionListener() {
@@ -1121,7 +1119,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         jPanel1.add(outputB, java.awt.BorderLayout.CENTER);
 
         expandOB.setIcon(EXPAND_I);
-        expandOB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 24, 8, 2));
         expandOB.setEnabled(false);
         expandOB.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -1134,7 +1131,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         packB.setIcon(PACK_I);
         packB.setText("Pack");
-        packB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 12, 8, 8));
         packB.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 packBMousePressed(evt);
@@ -1144,7 +1140,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         openB.setIcon(OPEN_I);
         openB.setText("Open");
-        openB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 12, 8, 8));
         openB.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 openBMousePressed(evt);
@@ -1163,7 +1158,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         targetG.add(iosT);
         iosT.setToolTipText("iOS Project");
         iosT.setActionCommand(iOS.tname());
-        iosT.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         iosT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 targetSelection(evt);
@@ -1174,7 +1168,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         targetG.add(androidT);
         androidT.setToolTipText("Android Project");
         androidT.setActionCommand(Android.tname());
-        androidT.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         androidT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 targetSelection(evt);
@@ -1185,7 +1178,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         targetG.add(desktopT);
         desktopT.setToolTipText("Desktop Project");
         desktopT.setActionCommand(Swing.tname());
-        desktopT.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         desktopT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 targetSelection(evt);
@@ -1199,7 +1191,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         commandP.setLayout(new java.awt.BorderLayout());
 
         expandRB.setIcon(EXPAND_I);
-        expandRB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 32, 8, 2));
         expandRB.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 expandRBMousePressed(evt);
@@ -1209,7 +1200,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         actionB.setIcon(RUN_I);
         actionB.setText("Run");
-        actionB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 0, 8, 8));
         actionB.setDisabledIcon(STOP_D);
         actionB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1224,7 +1214,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
         cleanP.setLayout(new java.awt.BorderLayout());
 
         expandCB.setIcon(EXPAND_I);
-        expandCB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 32, 8, 2));
         expandCB.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 expandCBMousePressed(evt);
@@ -1234,7 +1223,6 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         cleanB.setIcon(CLEAN_I);
         cleanB.setText("Clean");
-        cleanB.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 0, 8, 8));
         cleanB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cleanBactOnProject(evt);
@@ -1277,7 +1265,7 @@ public final class ProjectFrame extends RegisteredFrame implements DebugInfo.Con
 
         infoP.setLayout(new java.awt.BorderLayout());
 
-        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4, 8, 4, 0));
+        outResult.setBorder(new com.panayotis.hrgui.HiResEmptyBorder(4,8,4,0));
         infoP.add(outResult, java.awt.BorderLayout.CENTER);
 
         idInfoP.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));

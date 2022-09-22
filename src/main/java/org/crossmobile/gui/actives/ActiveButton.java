@@ -21,15 +21,15 @@ public class ActiveButton extends HiResButton {
     private boolean isRollover = false;
 
     public ActiveButton() {
-        this(8, 8);
+        this(8, 8, 8, 8);
     }
 
     public ActiveButton(int border) {
-        this(border, border);
+        this(border, border, border, border);
     }
 
-    public ActiveButton(int horizBorder, int vertBorder) {
-        setBorder(new HiResEmptyBorder(vertBorder, horizBorder, vertBorder, horizBorder));
+    public ActiveButton(int borderTop, int borderLeft, int borderBottom, int borderRight) {
+        setBorder(new HiResEmptyBorder(borderTop, borderLeft, borderBottom, borderRight));
         setUI(new BasicButtonUI());
         setOpaque(false);
         addMouseListener(new MouseAdapter() {
