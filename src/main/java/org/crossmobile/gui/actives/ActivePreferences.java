@@ -26,6 +26,6 @@ public class ActivePreferences implements HiResPreferences {
     }
 
     private Preferences getPreferences() {
-        return Preferences.systemNodeForPackage(ActivePreferences.class);
+        return Preferences.userNodeForPackage(ActivePreferences.class);
     }
 }
