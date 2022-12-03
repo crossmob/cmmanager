@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
-import static org.crossmobile.prefs.Config.JAVA_RANGE;
+import static org.crossmobile.prefs.Config.MIN_JAVA_VERSION_FULL;
 import static org.crossmobile.utils.SystemDependent.Execs.*;
 
 public class Config extends HiResDialog {
@@ -558,7 +558,7 @@ public class Config extends HiResDialog {
 
     private void jdkBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jdkBActionPerformed
         jdkB.setEnabled(false);
-        JWizard wiz = new JWizard("Java Development Kit " + JAVA_RANGE);
+        JWizard wiz = new JWizard("Java Development Kit");
         wiz.setCallback((String fname) -> {
             if (fname != null) {
                 Prefs.setJDKLocation(fname);

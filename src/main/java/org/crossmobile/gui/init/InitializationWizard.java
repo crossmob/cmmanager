@@ -9,7 +9,6 @@ package org.crossmobile.gui.init;
 import com.panayotis.hrgui.HiResButton;
 import com.panayotis.hrgui.HiResDialog;
 import com.panayotis.hrgui.HiResIcon;
-import com.panayotis.hrgui.HiResMenuItem;
 import org.crossmobile.gui.actives.ActiveLabel;
 import org.crossmobile.gui.actives.ActiveMenuItem;
 import org.crossmobile.gui.actives.ActivePopupMenu;
@@ -28,7 +27,7 @@ import java.util.Collection;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.crossmobile.prefs.Config.JAVA_RANGE;
+import static org.crossmobile.prefs.Config.MIN_JAVA_VERSION_FULL;
 
 public class InitializationWizard extends HiResDialog implements Active {
 
@@ -291,7 +290,7 @@ public class InitializationWizard extends HiResDialog implements Active {
 
         jPanel4.setLayout(new java.awt.BorderLayout());
 
-        titleL.setFont(titleL.getFont().deriveFont((float)20));
+        titleL.setFont(titleL.getFont().deriveFont((float) 20));
         titleL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         titleL.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 0, 16, 0));
         jPanel4.add(titleL, java.awt.BorderLayout.NORTH);
@@ -359,7 +358,7 @@ public class InitializationWizard extends HiResDialog implements Active {
         jPanel2.setOpaque(false);
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        jdkL.setText("Java Development Environment " + JAVA_RANGE);
+        jdkL.setText("Java Development Kit");
         jdkL.setIconTextGap(8);
         jPanel2.add(jdkL, java.awt.BorderLayout.WEST);
 
