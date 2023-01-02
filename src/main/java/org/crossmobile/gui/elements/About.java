@@ -1,5 +1,5 @@
 /*
- * (c) 2022 by Panayotis Katsaloulis
+ * (c) 2023 by Panayotis Katsaloulis
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -39,7 +39,7 @@ public class About extends HiResDialog {
             setIconImage(ImageIO.read(getClass().getClassLoader().getResourceAsStream("images/logo-small.png")));
         } catch (Exception ignored) {
         }
-        licenseT.setText(FileUtils.readSafe(getClass().getResourceAsStream("/org/crossmobile/LICENSE"), "license", "(c) 2022 by Panayotis Katsaloulis"));
+        licenseT.setText(FileUtils.readSafe(getClass().getResourceAsStream("/org/crossmobile/LICENSE"), "license", "(c) 2023 by Panayotis Katsaloulis"));
         licenseT.setCaretPosition(0);
         ((ActiveTextArea) licenseT).removeMouseListeners();
 
