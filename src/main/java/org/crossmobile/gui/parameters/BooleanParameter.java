@@ -122,7 +122,7 @@ public abstract class BooleanParameter extends ProjectParameter {
     /**
      * The tooltip to display based on the currently selected status
      *
-     * @param status the status: could be null if a check box is used instead of a boolean image icon
+     * @param status the status: could be null if a checkbox is used instead of a boolean image icon
      * @return the desired tooltip
      */
     protected String tooltipForStatus(Boolean status) {
