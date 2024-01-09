@@ -14,7 +14,6 @@
 
     <properties>
         <app.out>${project.build.directory}/crossmobile</app.out>
-        <app.notarize>false</app.notarize>
         <mac.dist/>
         <win32.dist/>
         <win64.dist/>
@@ -158,12 +157,6 @@
 
     <profiles>
         <profile>
-            <id>notarize</id>
-            <properties>
-                <app.notarize>true</app.notarize>
-            </properties>
-        </profile>
-        <profile>
             <id>macos</id>
             <properties>
                 <mac.dist>macos</mac.dist>
@@ -248,7 +241,6 @@
                 <arm32.dist>linuxarm32</arm32.dist>
                 <arm64.dist>linuxarm64</arm64.dist>
                 <generic.dist>generic</generic.dist>
-                <app.notarize>true</app.notarize>
             </properties>
         </profile>
         <profile>
@@ -275,16 +267,17 @@
                                         <argument>--jvmopt=DEFAULT</argument>
                                         <argument>--jvmopt=-splash:$APPDIR/splash.jpg</argument>
                                         <argument>--version=${project.version}</argument>
-                                        <argument>--vendor=CrossMobile P.C.</argument>
+                                        <argument>--vendor=Panayotis Katsaloulis</argument>
                                         <argument>--id=org.crossmobile.gui</argument>
                                         <argument>--url=https://crossmobile.org</argument>
                                         <argument>--descr=Create native iOS, Android, Windows 10 and Desktop Applications from a singe code base</argument>
                                         <argument>--extra=extra</argument>
-                                        <argument>--notarize=${app.notarize}</argument>
-                                        <argument>--p12file=secret/code-signing.p12</argument>
-                                        <argument>--gpgdir=${user.home}/.gnupg</argument>
-                                        <argument>--gpgkey=${gpg.passphrase}</argument>
-                                        <argument>--timestamp=http://timestamp.comodoca.com</argument>
+                                        <argument>--p12file=${user.home}/.ssh/apple-developer.p12</argument>
+                                        <argument>--p12pass=${user.home}/.ssh/apple-sign.password</argument>
+                                        <argument>--notary=${user.home}/.ssh/apple-notarizing.json</argument>
+                                        <argument>--wincert=${user.home}/.ssh/windows-cert.pem</argument>
+                                        <argument>--winidfile=${user.home}/.ssh/windows-id.file</argument>
+                                        <argument>--winpinfile=${user.home}/.ssh/windows-pin.file</argument>
                                         <argument>--os=${mac.dist},${win32.dist},${win64.dist},${linux.dist},${generic.dist},${arm32.dist},${arm64.dist}</argument>
                                         <argument>--jdk=${user.home}/.sdkman/candidates/java/15.0.1.hs-adpt</argument>
                                     </arguments>
