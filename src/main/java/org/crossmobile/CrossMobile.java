@@ -91,7 +91,7 @@ public class CrossMobile {
 
     private static void initEnhancer() {
         Enhancer enhancer = EnhancerManager.getDefault();
-        enhancer.setSafeLookAndFeel();
+        enhancer.setDefaultLookAndFeel();
         enhancer.registerPreferences(Config::showConfig);
         enhancer.registerAbout(About::showAbout);
         enhancer.setApplicationIcons("images/logo-frame.png");

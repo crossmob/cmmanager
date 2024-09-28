@@ -16,7 +16,7 @@ import java.awt.*;
 
 public class ActivePopupMenu extends JPopupMenu {
     {
-        setUI(createActivePopupMenuUI());
+//        setUI(createActivePopupMenuUI());
     }
 
     static PopupMenuUI createActivePopupMenuUI() {

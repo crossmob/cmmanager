@@ -66,7 +66,7 @@ public final class DependencyCreator extends javax.swing.JFrame {
                 return comp;
             }
         });
-        cmPlugin.setSelectedIndex(1);
+  //      cmPlugin.setSelectedIndex(1);
 
         this.dependencyCallback = dependency;
         enableGroup(true);

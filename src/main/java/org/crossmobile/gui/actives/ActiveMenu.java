@@ -21,7 +21,7 @@ public class ActiveMenu extends HiResMenu {
     {
         setBorder(new CompoundBorder(getBorder(), BorderFactory.createEmptyBorder(6, DELTA, 6, DELTA)));
         JPopupMenu popupMenu = getPopupMenu();
-        popupMenu.setUI(ActivePopupMenu.createActivePopupMenuUI());
+//        popupMenu.setUI(ActivePopupMenu.createActivePopupMenuUI());
         popupMenu.setInvoker(this);
         popupListener = createWinListener(popupMenu);
     }
